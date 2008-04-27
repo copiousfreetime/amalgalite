@@ -27,6 +27,7 @@ Configuration.for('packaging') {
   proj_conf = Configuration.for('project')
   files {
     bin       FileList["bin/*"]
+    ext       FileList["ext/**/*"]
     lib       FileList["lib/**/*.rb"]
     test      FileList["spec/**/*.rb", "test/**/*.rb"]
     data      FileList["data/**/*"]
@@ -83,6 +84,13 @@ Configuration.for('rdoc') {
   title       Configuration.for('project').name
   options     %w[ --line-numbers --inline-source ]
   output_dir  "doc"
+}
+
+#-----------------------------------------------------------------------
+# Extensions
+#-----------------------------------------------------------------------
+Configuration.for('extension') {
+  configs   Configuration.for('packaging').files.ext.find_all { |x| %w[ mkrf_conf.rb extconf.rb ].include?(File.basename(x)) }
 }
 
 #-----------------------------------------------------------------------
