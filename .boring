@@ -45,7 +45,8 @@
 (^|/)(tags|TAGS)$
 #(^|/)\.[^/]
 (^|/|\.)core$
-\.(obj|a|exe|so|lo|la)$
+\.(obj|a|exe|so|lo|la|bundle)$
 ^\.darcs-temp-mail$
 ext/Rakefile
 ext/mkrf.log
+(^|/|\.)coverage($|/)

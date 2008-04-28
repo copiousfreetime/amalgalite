@@ -1,0 +1,167 @@
+Top level "methods"
+===================
+
+  const char* sqlite3_libversion(void)
+  int sqlite3_libversion_number(void)
+  int sqlite3_threadsave(void)
+  int sqlite3_complete(const char*sql);
+  int sqlite3_complete16(const void *sql);
+ 
+  sqlite3_int64 sqlite3_memory_used(void);
+  sqlite3_int64 sqtlie3_memory_highwater(int resetFlag);
+  void sqlite3_randomness(int N, void *p)
+  int sqlite3_enabled_shared_cache(int);
+  int sqlite3_release_memory(int);   // maybe, hook into gc calls ?
+
+  void sqlite3_soft_heap_limit(int);
+
+  char* sqlite3_temp_directory;
+
+Core 'Objects'
+==============
+
+  sqlite3 (typdef struct sqlite3) -> main database handle
+  -------
+
+ 
+  int   sqlite3_open_v2(*filename, sqlite3**, flags, NULL)
+  int   sqlite3_open16  -- maybe not implement
+  int   sqlite3_close(sqlite3 *)
+  int   sqlite3_exec -> don't use, wrap in ruby exec
+  sqlite3_int64 sqlite3_last_insert_rowid(sqlite3*)
+  int   sqlite3_get_autocommit(sqlite3*)
+
+  int   sqlite3_extended_result_codes(sqlite3, int onoff) # default to turning this on
+  int   sqlite3_changes(sqlite3*)
+  int   sqlite3_total_changes(sqlite3*)
+  int   sqlite3_busy_timeout(sqlite3*)
+  void  sqlite3_progress_hander(sqlite3*, int, int(*)(void*), void*)
+  int   sqlite3_errcode(sqlite3 *db)
+  const char *sqlite3_errmsg(sqlite3*);
+  const void *sqlite3_errmsg16(sqlite3*);
+  int sqlite3_prepare_v2(sqlite3* db, sql, nbyte, sqlite3_stmt**, const char **tail)
+  int sqlite3_prepare16_v2(sqlite3* db, sql, nbyte, sqlite3_stmt**, const char **tail)
+
+  // not yet, but implement if/when a purchase of sqlite3 encryption works
+  int sqlite3_key(sqlite3* db, const void *pKey, int nKey);
+  int sqlite3_rekey(sqlite3* db, const void *pKey, int nKey);
+
+  int sqlite3_table_column_metadata();
+
+  // BLOB
+  int sqlite3_blog_open(sqlite3*, *db, *table, *column, rowid, flags, **blob);
+
+
+  for later implementation
+  ________________________
+  sqlite3_enable_load_extensions
+  sqlite3_load_extension
+  sqlite3_interrupt
+  sqlite3_busy_handler(sqlite3*, function pointer, void *)
+  sqlite3_trace
+  sqlite3_profile
+  sqlite3_limit(sqlite3*, int id, int newVal) -- maybe implement
+  sqlite3_commit_hook(sqlite3*, int(*)(void*), void*);
+  sqlite3_rollback_hook(sqlite3*, void(*)(void *), void*);
+  sqlite3_update_hook(sqlite3*, function ponter, void*);
+
+
+  sqlite3_stmt (typedef struct sqlite3_stmt) -> handle for statements
+  ------------
+  const char *sqlite3_sql(sqlite3_stmt *pStmt)
+  int sqlite3_bind_parameter_count(sqlite3_stmt*);
+
+  # binding by name or index, if passed in an array to the bind() method then
+  # bind by index, if passed in a hash, bind by name, using hte keys of the hash
+  sqlite3_bind_blob(sqlite3_stmt*, int, const void *, int n, void(*)(void*));
+  sqlite3_bind_double(sqlite3_stmt*, int, double);
+  sqlite3_bind_int(sqlite3_stmt*, int, int);
+  sqlite3_bind_int64(sqlite3_stmt*, int, sqlite3_int64);
+  sqlite3_bind_null(sqlite3_stmt*, int);
+  sqlite3_bind_text(sqlite3_stmt*, int, constc char*, int n, void(*)(void*));
+  sqlite3_bind_text16(sqlite3_stmt*, int, constc char*, int, void(*)(void*));
+  sqlite3_bind_valud(sqlite3_stmt*, int, const sqlite3_value*);
+  sqlite3_bind_zeroblog(sqlite3_stmt*, int, int n);
+
+  // returns a pointer to the name of nth sql paramtere in the statemetn
+  const char*  sqlite3_bind_parameter_name(sqlite3_stmt*, int )
+
+  // returns the index of the named parameters
+  sqlite3_bind_parameter_index(sqlite3_stmt*, const char *zName);
+
+  sqlite3_clear_bindings(sqlite3_stmt*);
+
+  sqlite3_column_count(sqlite3_stmt *pStmt);
+  sqlite3_column_name(sqlite3_stmt*, int N);
+  sqlite3_column_name16(sqlite3_stmt*, int N);
+  
+  sqlite3 *sqlite3_db_handle(sqlite3_stmt*);
+
+  sqlite3_column_database_name(sqlite3_stmt*, int);
+  sqlite3_column_database_name16(sqlite3_stmt*, int);
+  sqlite3_column_table_name(sqlite3_stmt*, int);
+  sqlite3_column_table_name16(sqlite3_stmt*, int);
+  sqlite3_column_origin_name(sqlite3_stmt*, int);
+  sqlite3_column_origin_name16(sqlite3_stmt*, int);
+
+  sqlite3_column_decltype(sqlite3_stmt*, int);
+  sqlite3_column_decltype16(sqlite3_stmt*, int);
+
+  sqlite3_step(sqlite3_stmt*);
+  int sqlite3_finalize(sqlite3_stmt *pStmt);
+  int sqlite3_reset(sqlite3_stmt *pStmt);
+
+  sqlite3_data_count(sqlite3_stmt *pStmt);
+
+  // use this to find the type and then call the appropriate method afterwards.
+  sqlite3_column_type(sqlite3_stmt*, int iCol);
+  sqlite3_value* sqlite3_column_value(sqlite3_stmt*, int iCol);
+
+  // dont' use these, they are just implemented in terms of the  the
+  // sqlite3_value methods
+  sqlite3_column_blog(sqlite3_stmt*, int iCol);
+  sqlite3_column_bytes(sqlite3_stmt*, int iCol);
+  sqlite3_column_bytes16(sqlite3_stmt*, int iCol);
+  sqlite3_column_double(sqlite3_stmt*, int iCol);
+  sqlite3_column_int(sqlite3_stmt*, int iCol);
+  sqlite3_column_int64(sqlite3_stmt*, int iCol);
+  sqlite3_column_text(sqlite3_stmt*, int iCol);
+  sqlite3_column_text16(sqlite3_stmt*, int iCol);
+
+
+
+              
+
+  sqlite3_context
+  ---------------
+
+  sqlite3_value
+  -------------
+    //  most of these cannot be called on the results of a
+    //  sqlite3_column_value() call, that returns unprotected values and these
+    //  require protected sqlite3_value's
+    const void *sqlite3_value_blob(sqlite3_value*)
+    int sqlite3_value_bytes(sqlite3_value*)
+    int sqlite3_value_bytes16(sqlite3_value*)
+    double sqlite3_value_double(sqlite3_value*);
+    int sqlite3_value_int(sqlite3_value*);
+    sqlite3_int64 sqlite3_value_int64(sqlite3_value*);
+    const unsigned char *sqlite3_value_text(sqlite3_value *);
+    const void *sqlite3_value_text16(sqlite3_value *);
+    const void *sqlite3_value_text16le(sqlite3_value *);
+    const void *sqlite3_value_text16be(sqlite3_value *);
+    int sqlite3_value_type(sqlite3_value *);   // switch on this and pick the right method
+    int sqlite3_value_numeric_type(sqlite3_value*); // maybe not.
+
+  sqlite3_blob
+  ------------
+  sqlite3_blob_close(sqlite3_blob*)
+  sqlite3_blob_bytes(sqlite3_blob*)
+  sqlite3_blob_read(sqlite3_blob*, *to_buffer, bytes_to_read, starting_at_offset); 
+  sqlite3_blob_write(sqlite3_blob*, *from_buffer, bytes_to_write, starting_at_offset);
+
+Result Codes
+============
+
+  Convert to Individual Exceptions and allow the top level module generate them
+  based upon integer value

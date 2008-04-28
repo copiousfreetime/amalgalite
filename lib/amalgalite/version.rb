@@ -4,6 +4,7 @@
 #++
 
 module Amalgalite
+  # Version information for Amagalite
   module Version
     MAJOR   = 0
     MINOR   = 0
@@ -23,4 +24,4 @@ module Amalgalite
     STRING = Version.to_s
   end
   VERSION = Version.to_s
-end
+end 

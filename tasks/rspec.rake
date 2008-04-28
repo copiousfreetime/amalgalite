@@ -14,6 +14,7 @@ if spec_config = Configuration.for_if_exist?("test") then
       Spec::Rake::SpecTask.new do |r| 
         r.ruby_opts   = spec_config.ruby_opts
         r.libs        = [ Amalgalite.lib_path, 
+                          Amalgalite.ext_path,
                           Amalgalite.root_dir ]
         r.spec_files  = spec_config.files 
         r.spec_opts   = spec_config.options
