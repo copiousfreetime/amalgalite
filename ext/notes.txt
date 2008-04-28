@@ -1,8 +1,8 @@
 Top level "methods"
 ===================
 
-  const char* sqlite3_libversion(void)
-  int sqlite3_libversion_number(void)
+  *done* const char* sqlite3_libversion(void)
+  *done* int sqlite3_libversion_number(void)
   int sqlite3_threadsave(void)
   int sqlite3_complete(const char*sql);
   int sqlite3_complete16(const void *sql);
