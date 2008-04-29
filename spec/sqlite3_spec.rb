@@ -3,6 +3,6 @@ require 'amalgalite/sqlite3'
 
 describe "Amalgalite::Sqlite3" do
   it "says if Sqlite3 is in threadsafe mode or not" do
-    Amagalite::Sqlite3.threadsafe?.should == true
+    Amalgalite::Sqlite3.threadsafe?.should == true
   end
 end
