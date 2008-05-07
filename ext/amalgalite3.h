@@ -5,15 +5,24 @@
 #include "sqlite3.h"
 
 /** module and classes **/
-extern VALUE mAmalgalite;
-extern VALUE cAmalgalite_DB;
-extern VALUE cAmalgalite_Statement;
-extern VALUE cAmalgalite_Blob;
+extern VALUE mA;
+extern VALUE mAS;
+extern VALUE mASV;
+extern VALUE cAS_Database;
+extern VALUE eAS_Error;
+
+/* wrapper struct around the sqlite opaque pointer */
+typedef struct am_sqlite3 {
+  sqlite3 *db;
+} am_sqlite3;
 
 /***********************************************************************
  * Prototypes
  **********************************************************************/
-void am_define_constants_under(VALUE);
+extern void  am_define_constants_under(VALUE);
+extern VALUE am_sqlite3_database_alloc(VALUE klass);
+extern void  am_sqlite3_database_free(am_sqlite3*);
+extern VALUE am_sqlite3_database_open(int argc, VALUE* argv, VALUE self);
 
 /***********************************************************************
  * Helpful macros

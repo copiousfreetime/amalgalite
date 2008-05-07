@@ -11,9 +11,8 @@
 VALUE mA;
 VALUE mAS;
 VALUE mASV;
-VALUE cA_DB;
-/** VALUE cAmalgalite_Statement; */
-/** VALUE cAmalgalite_Blob; */
+VALUE cAS_Database;
+VALUE eAS_Error;
 
 /*
  * Return the sqlite3 version number as a string
@@ -163,6 +162,10 @@ void Init_amalgalite3()
     rb_define_module_function(mAS, "memory_highwater_mark_reset!", am_sqlite3_memory_highwater_reset,0);
     rb_define_module_function(mAS, "randomness", am_sqlite3_randomness,1);
 
+    /* class Amalgalite::Sqlite3::Error 
+     */
+    eAS_Error = rb_define_class_under(mAS, "Error", rb_eStandardError);
+
     /* module Amalgalite::Sqlite3::Version and methods
      */
     mASV = rb_define_module_under(mAS, "Version");
@@ -174,8 +177,12 @@ void Init_amalgalite3()
     am_define_constants_under(mAS);
 
     /*
-     * class DB
+     * class Database
      */
-    cA_DB = rb_define_class_under(mA, "DB", rb_cObject); 
+    cAS_Database = rb_define_class_under(mAS, "Database", rb_cObject); 
+    rb_define_alloc_func(cAS_Database, am_sqlite3_database_alloc); /* in amalgalite3_database.c */
+    rb_define_singleton_method(cAS_Database, "open", am_sqlite3_database_open, -1); /* in amalgalite3_database.c */
+
 }
+
 

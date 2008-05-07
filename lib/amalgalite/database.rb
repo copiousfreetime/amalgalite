@@ -46,7 +46,12 @@ module Amalgalite
         raise InvalidModeError, "#{mode} is invalid, must be one of #{VALID_MODES.keys.join(', ')}" 
       end
 
-      @db = Amalgalite::SQLite3::Database.open( filename, VALID_MODES[mode], (opts[:utf16] || false))
+      if not File.exist?( filename ) and opts[:utf16] then
+        @db = Amalgalite::SQLite3::Database.open16( filename )
+      else
+        puts "opening database #{filename} in mode #{VALID_MODES[mode]}"
+        @db = Amalgalite::SQLite3::Database.open( filename, VALID_MODES[mode] )
+      end
     end
 
 
