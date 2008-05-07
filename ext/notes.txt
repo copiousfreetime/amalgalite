@@ -4,18 +4,22 @@ Top level "methods"
   *done* const char* sqlite3_libversion(void)
   *done* int sqlite3_libversion_number(void)
   *done* int sqlite3_threadsave(void)
-  int sqlite3_complete(const char*sql);
-  int sqlite3_complete16(const void *sql);
- 
-  sqlite3_int64 sqlite3_memory_used(void);
-  sqlite3_int64 sqtlie3_memory_highwater(int resetFlag);
-  void sqlite3_randomness(int N, void *p)
-  int sqlite3_enabled_shared_cache(int);
-  int sqlite3_release_memory(int);   // maybe, hook into gc calls ?
+  *done* int sqlite3_complete(const char*sql);
+  *done* int sqlite3_complete16(const void *sql);
+  *done* sqlite3_int64 sqlite3_memory_used(void);
+  *done* sqlite3_int64 sqtlie3_memory_highwater(int resetFlag);
+  *done* void sqlite3_randomness(int N, void *p)
 
-  void sqlite3_soft_heap_limit(int);
+  *future* int sqlite3_enabled_shared_cache(int); # TODO maybe
+  *future* int sqlite3_release_memory(int);   // maybe, hook into gc calls ?
+  *future* void sqlite3_soft_heap_limit(int);
+  *future* char* sqlite3_temp_directory;
 
-  char* sqlite3_temp_directory;
+UTF-8 vs. UTF-16
+----------------
+
+in cases where there is a xxx16() method in the C api, the ruby methods add a
+flag to the method.
 
 Core 'Objects'
 ==============

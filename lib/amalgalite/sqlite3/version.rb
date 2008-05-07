@@ -1,6 +1,10 @@
+#--
+# Copyright (c) 2008 Jeremy Hinegardner
+# All rights reserved.  See LICENSE and/or COPYING for details.
+#++
 require 'amalgalite3'
 module Amalgalite 
-  module Sqlite3
+  module SQLite3
     module Version
 
       # Sqlite3 version number is equal to 

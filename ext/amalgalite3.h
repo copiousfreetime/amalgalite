@@ -13,5 +13,14 @@ extern VALUE cAmalgalite_Blob;
 /***********************************************************************
  * Prototypes
  **********************************************************************/
+void am_define_constants_under(VALUE);
 
+/***********************************************************************
+ * Helpful macros
+ **********************************************************************/
+
+#define SQLINT64_2NUM(x)      ( LL2NUM( x ) )
+#define SQLUINT64_2NUM(x)     ( ULL2NUM( x ) )
+#define NUM2SQLINT64( obj )   ( NUM2LL( obj ) )
+#define NUM2SQLUINT64( obj )  ( NUM2ULL( obj ) )
 #endif

@@ -24,7 +24,8 @@ require 'rake/clean'
 # Main configuration for the project, these overwrite the items that are in
 # tasks/config.rb
 #-------------------------------------------------------------------------------
-require 'amalgalite'
+require 'amalgalite/paths'
+require 'amalgalite/version'
 Configuration.for("project") {
   name      "amalgalite"
   version   Amalgalite::VERSION
