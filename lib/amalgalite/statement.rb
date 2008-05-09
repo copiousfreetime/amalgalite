@@ -8,17 +8,14 @@ module Amalgalite
 
     attr_reader :db
     attr_reader :sql
-    attr_reader :stmt
+    attr_reader :api
 
     def initialize( db, sql )
       @db = db
       @sql = sql
-      
-      if @db.utf16? then
-        @stmt = @db.db.prepare16( sql )
-      else
-        @stmt = @db.db.prepare( sql )
-      end
+     
+      prepare_method =  @db.utf16? ? :prepare16 : :prepare
+      @api = @db.api.send( prepare_method, sql )
     end
   end
 end

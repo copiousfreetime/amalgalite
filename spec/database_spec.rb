@@ -16,7 +16,7 @@ describe Amalgalite::Database do
   it "can create a new database" do
     db = Amalgalite::Database.new( @db_name )
     db.instance_of?(Amalgalite::Database) 
-    db.db.instance_of?(Amalgalite::SQLite3::Database) 
+    db.api.instance_of?(Amalgalite::SQLite3::Database) 
     File.exist?(@db_name).should == true
   end
 
@@ -39,7 +39,7 @@ describe Amalgalite::Database do
     db = Amalgalite::Database.new( @db_name )
     stmt = db.prepare("SELECT datetime()")
     stmt.instance_of?(Amalgalite::Statement)
-    stmt.stmt.instance_of?(Amalgalite::SQLite3::Statement)
+    stmt.api.instance_of?(Amalgalite::SQLite3::Statement)
   end
 
   it "raises an error on invalid syntax when preparing a bad sql statement" do

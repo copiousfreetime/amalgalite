@@ -41,31 +41,37 @@ module Amalgalite
       "w+" => Open::READWRITE | Open::CREATE,
     }
 
-    attr_reader :db
+    attr_reader :api
 
+    ##
+    # Create a new database 
+    #
     def initialize( filename, mode = "w+", opts = {})
       unless VALID_MODES.keys.include?( mode ) 
         raise InvalidModeError, "#{mode} is invalid, must be one of #{VALID_MODES.keys.join(', ')}" 
       end
 
       if not File.exist?( filename ) and opts[:utf16] then
-        @db = Amalgalite::SQLite3::Database.open16( filename )
+        @api = Amalgalite::SQLite3::Database.open16( filename )
       else
-        @db = Amalgalite::SQLite3::Database.open( filename, VALID_MODES[mode] )
+        @api = Amalgalite::SQLite3::Database.open( filename, VALID_MODES[mode] )
       end
     end
 
     ##
-    # is the database utf16 or not
+    # Is the database utf16 or not?  A database is utf16 if the encoding is not
+    # UTF-8.  Database can only be UTF-8 or UTF-16, and the default is UTF-8
     #
     def utf16?
       unless @utf16.nil?
-        @utf16 = (encoding.index("UTF-16") == 0)
+        @utf16 = (encoding != "UTF-8") 
       end
       return @utf16
     end
 
+    ## 
     # return the encoding of the database
+    #
     def encoding
       unless @encoding
         @encoding = "UTF-8"
@@ -74,7 +80,7 @@ module Amalgalite
       return @encoding
     end
 
-    #
+    ##
     # Prepare a statement for execution
     #
     def prepare( sql )
