@@ -12,6 +12,7 @@ VALUE mA;
 VALUE mAS;
 VALUE mASV;
 VALUE cAS_Database;
+VALUE cAS_Statement;
 VALUE eAS_Error;
 
 /*
@@ -182,7 +183,14 @@ void Init_amalgalite3()
     cAS_Database = rb_define_class_under(mAS, "Database", rb_cObject); 
     rb_define_alloc_func(cAS_Database, am_sqlite3_database_alloc); /* in amalgalite3_database.c */
     rb_define_singleton_method(cAS_Database, "open", am_sqlite3_database_open, -1); /* in amalgalite3_database.c */
+    rb_define_singleton_method(cAS_Database, "open16", am_sqlite3_database_open16, 1); /* in amalgalite3_database.c */
+    rb_define_method(cAS_Database, "prepare", am_sqlite3_database_prepare, 1); /* in amalgalite3_database.c */
 
+    /*
+     * class Statement
+     */
+    cAS_Statement = rb_define_class_under(mAS, "Statement", rb_cObject); 
+    rb_define_alloc_func(cAS_Statement, am_sqlite3_statement_alloc); /* in amalgalite3_statement.c */
 }
 
 

@@ -32,5 +32,19 @@ describe Amalgalite::Database do
     lambda { Amalgalite::Database.new( @db_name, "b+" ) }.should raise_error(Amalgalite::Database::InvalidModeError)
   end
 
+  it "can be in autocommit mode"
+  it "can be in non-autocommit mode"
+
+  it "prepares a statment" do
+    db = Amalgalite::Database.new( @db_name )
+    stmt = db.prepare("SELECT datetime()")
+    stmt.instance_of?(Amalgalite::Statement)
+    stmt.stmt.instance_of?(Amalgalite::SQLite3::Statement)
+  end
+
+  it "raises an error on invalid syntax when preparing a bad sql statement" do
+    db = Amalgalite::Database.new( @db_name )
+    lambda { db.prepare("SELECT nothing FROM stuf") }.should raise_error(Amalgalite::SQLite3::Error)
+  end
 end
 

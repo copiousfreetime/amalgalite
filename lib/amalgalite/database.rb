@@ -3,6 +3,8 @@
 # All rights reserved.  See LICENSE and/or COPYING for details.
 #++
 require 'amalgalite3'
+require 'amalgalite/statement'
+
 module Amalgalite
   class Database
 
@@ -53,14 +55,32 @@ module Amalgalite
       end
     end
 
+    ##
+    # is the database utf16 or not
+    #
+    def utf16?
+      unless @utf16.nil?
+        @utf16 = (encoding.index("UTF-16") == 0)
+      end
+      return @utf16
+    end
 
     # return the encoding of the database
     def encoding
       unless @encoding
-        @encoding = db.pragma( "encoding" )
+        @encoding = "UTF-8"
+        #@encoding = db.pragma( "encoding" )
       end
       return @encoding
     end
+
+    #
+    # Prepare a statement for execution
+    #
+    def prepare( sql )
+      return Amalgalite::Statement.new( self, sql )
+    end
+
   end
 end
 

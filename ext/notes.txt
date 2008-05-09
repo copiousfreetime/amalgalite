@@ -30,20 +30,25 @@ Core 'Objects'
 
  
   *done* int   sqlite3_open_v2(*filename, sqlite3**, flags, NULL)
-  int   sqlite3_open16  -- maybe not implement
+  *done* int   sqlite3_open16
+  *done* int   sqlite3_extended_result_codes(sqlite3, int onoff) # default to turning this on
+ 
+  *skipped* called during rb_raise
+  *skipped* const char *sqlite3_errmsg(sqlite3*);
+  *skipped* const void *sqlite3_errmsg16(sqlite3*);
+
   int   sqlite3_close(sqlite3 *)
   int   sqlite3_exec -> don't use, wrap in ruby exec
   sqlite3_int64 sqlite3_last_insert_rowid(sqlite3*)
+
   int   sqlite3_get_autocommit(sqlite3*)
 
-  int   sqlite3_extended_result_codes(sqlite3, int onoff) # default to turning this on
   int   sqlite3_changes(sqlite3*)
   int   sqlite3_total_changes(sqlite3*)
   int   sqlite3_busy_timeout(sqlite3*)
   void  sqlite3_progress_hander(sqlite3*, int, int(*)(void*), void*)
   int   sqlite3_errcode(sqlite3 *db)
-  const char *sqlite3_errmsg(sqlite3*);
-  const void *sqlite3_errmsg16(sqlite3*);
+
   int sqlite3_prepare_v2(sqlite3* db, sql, nbyte, sqlite3_stmt**, const char **tail)
   int sqlite3_prepare16_v2(sqlite3* db, sql, nbyte, sqlite3_stmt**, const char **tail)
 
