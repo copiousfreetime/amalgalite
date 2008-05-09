@@ -10,9 +10,9 @@
  * Create a new SQLite3 database with a UTF-8 encoding.
  *
  */ 
-VALUE am_sqlite3_database_open(int argc, VALUE *argv, VALUE self)
+VALUE am_sqlite3_database_open(int argc, VALUE *argv, VALUE class)
 {
-    VALUE  new_self = am_sqlite3_database_alloc(self);
+    VALUE  self = am_sqlite3_database_alloc(class);
     VALUE  rFlags;
     VALUE  rFilename;
     int     flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
@@ -29,7 +29,7 @@ VALUE am_sqlite3_database_open(int argc, VALUE *argv, VALUE self)
     filename = StringValuePtr(rFilename);
 
     /* extract the sqlite3 wrapper struct */
-    Data_Get_Struct(new_self, am_sqlite3, am_db);
+    Data_Get_Struct(self, am_sqlite3, am_db);
 
     /* open the sqlite3 database */
     rc = sqlite3_open_v2( filename, &(am_db->db), flags, 0);
@@ -41,6 +41,29 @@ VALUE am_sqlite3_database_open(int argc, VALUE *argv, VALUE self)
     return self;
 }
 
+/**
+ * :call-seq:
+ *    Amalgalite::SQLite3::Database.open16( filename ) -> Database
+ *
+ * Create a new SQLite3 database with a UTF-16 encoding
+ *
+ */
+VALUE am_sqlite3_database_open16(VALUE class, VALUE rFilename)
+{
+    VALUE       self = am_seqlite3_database_alloc(class);
+    char*       filename = StringValuePtr(rFilename);
+    am_sqlite3* am_db;
+    int         rc;
+
+    Data_Get_Struct(self, am_sqlite3, am_db);
+    rc = sqlite3_open16( filename, &(am_db->db) );
+    if ( SQLITE_OK != rc ) {
+        rb_raise(eAS_Error, "Failure to open database %s : [SQLITE_ERROR %d] : %s\n",
+                filename, rc, sqlite3_errmsg( am_db->db ));
+    }
+
+    return self;
+}
 /***********************************************************************
  * Ruby life cycle methods
  ***********************************************************************/

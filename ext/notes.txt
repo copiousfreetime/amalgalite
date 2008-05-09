@@ -6,6 +6,7 @@ Top level "methods"
   *done* int sqlite3_threadsave(void)
   *done* int sqlite3_complete(const char*sql);
   *done* int sqlite3_complete16(const void *sql);
+ 
   *done* sqlite3_int64 sqlite3_memory_used(void);
   *done* sqlite3_int64 sqtlie3_memory_highwater(int resetFlag);
   *done* void sqlite3_randomness(int N, void *p)
@@ -28,7 +29,7 @@ Core 'Objects'
   -------
 
  
-  int   sqlite3_open_v2(*filename, sqlite3**, flags, NULL)
+  *done* int   sqlite3_open_v2(*filename, sqlite3**, flags, NULL)
   int   sqlite3_open16  -- maybe not implement
   int   sqlite3_close(sqlite3 *)
   int   sqlite3_exec -> don't use, wrap in ruby exec
