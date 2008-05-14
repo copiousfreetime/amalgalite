@@ -47,6 +47,7 @@ module Amalgalite
     # Create a new database 
     #
     def initialize( filename, mode = "w+", opts = {})
+      @open = false
       unless VALID_MODES.keys.include?( mode ) 
         raise InvalidModeError, "#{mode} is invalid, must be one of #{VALID_MODES.keys.join(', ')}" 
       end
@@ -56,6 +57,37 @@ module Amalgalite
       else
         @api = Amalgalite::SQLite3::Database.open( filename, VALID_MODES[mode] )
       end
+      @open = true
+    end
+
+    ##
+    # Is the database open or not
+    #
+    def open?
+      @open
+    end
+
+    ##
+    # Close the database
+    #
+    def close
+      if open? then
+        @api.close
+      end
+    end
+
+    ##
+    # Is the database in autocommit mode or not
+    #
+    def autocommit?
+      @api.autocommit?
+    end
+
+    ##
+    # Return the rowid of the last inserted row
+    #
+    def last_insert_rowid
+      @api.last_insert_rowid
     end
 
     ##

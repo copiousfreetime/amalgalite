@@ -25,15 +25,28 @@ typedef struct am_sqlite3_stmt {
 /***********************************************************************
  * Prototypes
  **********************************************************************/
+
+/*----------------------------------------------------------------------
+ * Database functions
+ *---------------------------------------------------------------------*/
 extern void  am_define_constants_under(VALUE);
 extern VALUE am_sqlite3_database_alloc(VALUE klass);
 extern void  am_sqlite3_database_free(am_sqlite3*);
 extern VALUE am_sqlite3_database_open(int argc, VALUE* argv, VALUE self);
+extern VALUE am_sqlite3_database_close(VALUE self);
 extern VALUE am_sqlite3_database_open16(VALUE self, VALUE rFilename);
+extern VALUE am_sqlite3_database_last_insert_rowid(VALUE self);
+extern VALUE am_sqlite3_database_is_autocommit(VALUE self);
+
 extern VALUE am_sqlite3_database_prepare(VALUE self, VALUE rSQL);
 
+/*----------------------------------------------------------------------
+ * Statement functions
+ *---------------------------------------------------------------------*/
 extern VALUE am_sqlite3_statement_alloc(VALUE klass);
 extern void  am_sqlite3_statement_free(am_sqlite3_stmt* );
+extern VALUE am_sqlite3_statement_sql(VALUE self);
+extern VALUE am_sqlite3_statement_close(VALUE self);
 
 
 /***********************************************************************

@@ -6,7 +6,7 @@ require 'pathname'
 #-----------------------------------------------------------------------
 
 if ext_config = Configuration.for_if_exist?('extension') then
-  namespace :extension do  
+  namespace :ext do  
     desc "Build the extension(s)"
     task :build do
       ext_config.configs.each do |extension|

@@ -46,5 +46,22 @@ describe Amalgalite::Database do
     db = Amalgalite::Database.new( @db_name )
     lambda { db.prepare("SELECT nothing FROM stuf") }.should raise_error(Amalgalite::SQLite3::Error)
   end
+
+  it "closes normally" do
+    db = Amalgalite::Database.new( @db_name )
+    lambda { db.close }.should_not raise_error( Amalgalite::SQLite3::Error )
+  end
+
+  it "returns the id of the last inserted row" do
+    db = Amalgalite::Database.new( @db_name )
+    db.last_insert_rowid.should == 0
+  end
+
+  it "is in autocommit mode by default" do
+    db = Amalgalite::Database.new( @db_name )
+    db.should be_autocommit
+  end
+
+  it "report the number of rows changed with an insert"
 end
 

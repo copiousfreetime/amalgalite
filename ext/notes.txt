@@ -37,17 +37,15 @@ Core 'Objects'
   *skipped* const char *sqlite3_errmsg(sqlite3*);
   *skipped* const void *sqlite3_errmsg16(sqlite3*);
 
-  int   sqlite3_close(sqlite3 *)
-  int   sqlite3_exec -> don't use, wrap in ruby exec
-  sqlite3_int64 sqlite3_last_insert_rowid(sqlite3*)
+  *done* int   sqlite3_close(sqlite3 *)
+  TODO: int   sqlite3_exec -> don't use, wrap in ruby exec
+  *done* sqlite3_int64 sqlite3_last_insert_rowid(sqlite3*)
 
-  int   sqlite3_get_autocommit(sqlite3*)
+  *done* int   sqlite3_get_autocommit(sqlite3*)
 
-  int   sqlite3_changes(sqlite3*)
-  int   sqlite3_total_changes(sqlite3*)
-  int   sqlite3_busy_timeout(sqlite3*)
-  void  sqlite3_progress_hander(sqlite3*, int, int(*)(void*), void*)
-  int   sqlite3_errcode(sqlite3 *db)
+  *done* int   sqlite3_changes(sqlite3*)
+  *done* int   sqlite3_total_changes(sqlite3*)
+  *skipped* int   sqlite3_errcode(sqlite3 *db)
 
   int sqlite3_prepare_v2(sqlite3* db, sql, nbyte, sqlite3_stmt**, const char **tail)
   int sqlite3_prepare16_v2(sqlite3* db, sql, nbyte, sqlite3_stmt**, const char **tail)
@@ -56,11 +54,19 @@ Core 'Objects'
   int sqlite3_key(sqlite3* db, const void *pKey, int nKey);
   int sqlite3_rekey(sqlite3* db, const void *pKey, int nKey);
 
-  int sqlite3_table_column_metadata();
 
   // BLOB
-  int sqlite3_blog_open(sqlite3*, *db, *table, *column, rowid, flags, **blob);
+  int sqlite3_blob_open(sqlite3*, *db, *table, *column, rowid, flags, **blob);
+  
+  TODO: int   sqlite3_busy_timeout(sqlite3*)
+  TODO: void  sqlite3_progress_hander(sqlite3*, int, int(*)(void*), void*)
 
+  TODO : tracing should be an IO object, if it is true then send it to STDERR
+  TODO : tracing should also yield a block like a transaction so that during the block the db has tracing turned on.
+  sqlite3_trace
+
+  TODO: create Table and Column classes
+  TODO: int sqlite3_table_column_metadata();
 
   for later implementation
   ________________________
@@ -68,17 +74,17 @@ Core 'Objects'
   sqlite3_load_extension
   sqlite3_interrupt
   sqlite3_busy_handler(sqlite3*, function pointer, void *)
-  sqlite3_trace
-  sqlite3_profile
-  sqlite3_limit(sqlite3*, int id, int newVal) -- maybe implement
-  sqlite3_commit_hook(sqlite3*, int(*)(void*), void*);
-  sqlite3_rollback_hook(sqlite3*, void(*)(void *), void*);
-  sqlite3_update_hook(sqlite3*, function ponter, void*);
+
+  *skip - experimental* sqlite3_profile
+  *Skip - experimental* sqlite3_limit(sqlite3*, int id, int newVal) -- maybe implement
+  *skip - experimental* sqlite3_commit_hook(sqlite3*, int(*)(void*), void*);
+  *skip - experimental* sqlite3_rollback_hook(sqlite3*, void(*)(void *), void*);
+  *skip - experimental* sqlite3_update_hook(sqlite3*, function ponter, void*);
 
 
   sqlite3_stmt (typedef struct sqlite3_stmt) -> handle for statements
   ------------
-  const char *sqlite3_sql(sqlite3_stmt *pStmt)
+  *done* const char *sqlite3_sql(sqlite3_stmt *pStmt)
   int sqlite3_bind_parameter_count(sqlite3_stmt*);
 
   # binding by name or index, if passed in an array to the bind() method then
@@ -90,8 +96,8 @@ Core 'Objects'
   sqlite3_bind_null(sqlite3_stmt*, int);
   sqlite3_bind_text(sqlite3_stmt*, int, constc char*, int n, void(*)(void*));
   sqlite3_bind_text16(sqlite3_stmt*, int, constc char*, int, void(*)(void*));
-  sqlite3_bind_valud(sqlite3_stmt*, int, const sqlite3_value*);
-  sqlite3_bind_zeroblog(sqlite3_stmt*, int, int n);
+  sqlite3_bind_value(sqlite3_stmt*, int, const sqlite3_value*);
+  sqlite3_bind_zeroblob(sqlite3_stmt*, int, int n);
 
   // returns a pointer to the name of nth sql paramtere in the statemetn
   const char*  sqlite3_bind_parameter_name(sqlite3_stmt*, int )
@@ -105,7 +111,7 @@ Core 'Objects'
   sqlite3_column_name(sqlite3_stmt*, int N);
   sqlite3_column_name16(sqlite3_stmt*, int N);
   
-  sqlite3 *sqlite3_db_handle(sqlite3_stmt*);
+  *skip - used internally* sqlite3 *sqlite3_db_handle(sqlite3_stmt*);
 
   sqlite3_column_database_name(sqlite3_stmt*, int);
   sqlite3_column_database_name16(sqlite3_stmt*, int);
@@ -118,7 +124,7 @@ Core 'Objects'
   sqlite3_column_decltype16(sqlite3_stmt*, int);
 
   sqlite3_step(sqlite3_stmt*);
-  int sqlite3_finalize(sqlite3_stmt *pStmt);
+  *done - as 'close' *int sqlite3_finalize(sqlite3_stmt *pStmt);
   int sqlite3_reset(sqlite3_stmt *pStmt);
 
   sqlite3_data_count(sqlite3_stmt *pStmt);
@@ -129,7 +135,7 @@ Core 'Objects'
 
   // dont' use these, they are just implemented in terms of the  the
   // sqlite3_value methods
-  sqlite3_column_blog(sqlite3_stmt*, int iCol);
+  sqlite3_column_blob(sqlite3_stmt*, int iCol);
   sqlite3_column_bytes(sqlite3_stmt*, int iCol);
   sqlite3_column_bytes16(sqlite3_stmt*, int iCol);
   sqlite3_column_double(sqlite3_stmt*, int iCol);
