@@ -8,6 +8,113 @@
 
 /**
  * :call-seq:
+ *    stmt.reset! -> nil
+ *
+ * reset the SQLite3 statement back to its initial state.
+ */
+VALUE am_sqlite3_statement_reset(VALUE self)
+{
+    am_sqlite3_stmt  *am_stmt;
+    int               rc;
+    
+    Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
+    rc = sqlite3_reset( am_stmt->stmt );
+    if ( rc != SQLITE_OK ) {
+        rb_raise(eAS_Error, "Error resetting statement: [SQLITE_ERROR %d] : %s\n",
+                rc, sqlite3_errmsg( sqlite3_db_handle( am_stmt->stmt) ));
+    }
+    return Qnil;
+}
+
+/**
+ * :call-seq:
+ *    stmt.clear_bindings! -> nil
+ *
+ * reset the SQLite3 statement back to its initial state.
+ */
+VALUE am_sqlite3_statement_clear_bindings(VALUE self)
+{
+    am_sqlite3_stmt  *am_stmt;
+    int               rc;
+    
+    Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
+    rc = sqlite3_clear_bindings( am_stmt->stmt );
+    if ( rc != SQLITE_OK ) {
+        rb_raise(eAS_Error, "Error resetting statement: [SQLITE_ERROR %d] : %s\n",
+                rc, sqlite3_errmsg( sqlite3_db_handle( am_stmt->stmt) ));
+    }
+    return Qnil;
+}
+
+
+/**
+ * :call-seq:
+ *    stmt.step -> int
+ *
+ */
+VALUE am_sqlite3_statement_step(VALUE self)
+{
+    am_sqlite3_stmt  *am_stmt;
+    
+    Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
+    return INT2FIX( sqlite3_step( am_stmt->stmt ) );
+}
+
+/**
+ * :call-seq:
+ *    stmt.column_count -> Fixnum
+ *
+ * return the number of columns in the result set.
+ *
+ */
+VALUE am_sqlite3_statement_column_count(VALUE self)
+{
+    am_sqlite3_stmt  *am_stmt;
+    
+    Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
+    return INT2FIX( sqlite3_column_count( am_stmt->stmt ) );
+}
+
+/**
+ * :call-seq:
+ *    stmt.column_name( index ) -> String
+ *  
+ * Return the column name at the ith column in the result set.  The left-most column
+ * is number 0.
+ *
+ */
+VALUE am_sqlite3_statement_column_name(VALUE self, VALUE v_idx)
+{
+    am_sqlite3_stmt  *am_stmt;
+    int               idx = FIX2INT( v_idx );
+    
+    Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
+
+    return rb_str_new2( sqlite3_column_name( am_stmt->stmt, idx ) );
+}
+
+/**
+ * :call-seq:
+ *    stmt.column_value( index ) -> String
+ *  
+ * Return the column value at the ith column in the result set.  The left-most column
+ * is number 0.
+ *
+ */
+VALUE am_sqlite3_statement_column_value(VALUE self, VALUE v_idx)
+{
+    am_sqlite3_stmt   *am_stmt;
+    int               idx = FIX2INT( v_idx );
+
+    Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
+
+    return rb_str_new2( (const char *)sqlite3_column_text( am_stmt->stmt, idx ) );
+}
+
+
+
+/**
+ * :call-seq:
  *    stmt.sql -> String
  *
  * Return a copy of the original string used to create the prepared statement.

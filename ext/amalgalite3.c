@@ -196,6 +196,12 @@ void Init_amalgalite3()
     rb_define_alloc_func(cAS_Statement, am_sqlite3_statement_alloc); /* in amalgalite3_statement.c */
     rb_define_method(cAS_Statement, "sql", am_sqlite3_statement_sql, 0); /* in amalgalite3_statement.c */
     rb_define_method(cAS_Statement, "close", am_sqlite3_statement_close, 0); /* in amalgalite3_statement.c */
+    rb_define_method(cAS_Statement, "step", am_sqlite3_statement_step, 0); /* in amalgalite3_statement.c */
+    rb_define_method(cAS_Statement, "column_count", am_sqlite3_statement_column_count, 0); /* in amalgalite3_statement.c */
+    rb_define_method(cAS_Statement, "column_name", am_sqlite3_statement_column_name, 1); /* in amalgalite3_statement.c */
+    rb_define_method(cAS_Statement, "column_value", am_sqlite3_statement_column_value, 1); /* in amalgalite3_statement.c */
+    rb_define_method(cAS_Statement, "reset!", am_sqlite3_statement_reset, 0); /* in amalgalite3_statement.c */
+    rb_define_method(cAS_Statement, "clear_bindings!", am_sqlite3_statement_clear_bindings, 0); /* in amalgalite3_statement.c */
 }
 
 

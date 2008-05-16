@@ -115,8 +115,20 @@ module Amalgalite
     ##
     # Prepare a statement for execution
     #
+    # If called with a block, the statement is yielded to the block and the
+    # statement is closed when the block is done.
+    #
     def prepare( sql )
-      return Amalgalite::Statement.new( self, sql )
+      stmt = Amalgalite::Statement.new( self, sql )
+      if block_given? then
+        begin 
+          yield stmt
+        ensure
+          stmt.close
+          stmt = nil
+        end
+      end
+      return stmt
     end
 
   end

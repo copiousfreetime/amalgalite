@@ -21,4 +21,13 @@ describe Amalgalite::Statement do
     stmt.close
   end
 
+  it "steps through results" do
+    now = Time.new.utc.strftime("%Y-%m-%d %H:%M")
+    @db.prepare( "SELECT strftime('%Y-%m-%d %H:%M', 'now') as now") do |stmt|
+      stmt.should_not == nil
+      stmt.each do |row|
+        row['now'].should == now
+      end
+    end
+  end
 end

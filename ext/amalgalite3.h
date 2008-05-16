@@ -47,6 +47,12 @@ extern VALUE am_sqlite3_statement_alloc(VALUE klass);
 extern void  am_sqlite3_statement_free(am_sqlite3_stmt* );
 extern VALUE am_sqlite3_statement_sql(VALUE self);
 extern VALUE am_sqlite3_statement_close(VALUE self);
+extern VALUE am_sqlite3_statement_step(VALUE self);
+extern VALUE am_sqlite3_statement_column_count(VALUE self);
+extern VALUE am_sqlite3_statement_column_name(VALUE self, VALUE index);
+extern VALUE am_sqlite3_statement_column_value(VALUE self, VALUE index);
+extern VALUE am_sqlite3_statement_reset(VALUE self);
+extern VALUE am_sqlite3_statement_clear_bindings(VALUE self);
 
 
 /***********************************************************************

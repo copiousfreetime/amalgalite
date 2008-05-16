@@ -47,7 +47,7 @@ Core 'Objects'
   *done* int   sqlite3_total_changes(sqlite3*)
   *skipped* int   sqlite3_errcode(sqlite3 *db)
 
-  int sqlite3_prepare_v2(sqlite3* db, sql, nbyte, sqlite3_stmt**, const char **tail)
+  *done* int sqlite3_prepare_v2(sqlite3* db, sql, nbyte, sqlite3_stmt**, const char **tail)
   int sqlite3_prepare16_v2(sqlite3* db, sql, nbyte, sqlite3_stmt**, const char **tail)
 
   // not yet, but implement if/when a purchase of sqlite3 encryption works
@@ -99,16 +99,16 @@ Core 'Objects'
   sqlite3_bind_value(sqlite3_stmt*, int, const sqlite3_value*);
   sqlite3_bind_zeroblob(sqlite3_stmt*, int, int n);
 
-  // returns a pointer to the name of nth sql paramtere in the statemetn
+  // returns a pointer to the name of nth sql paramter in the statemetn
   const char*  sqlite3_bind_parameter_name(sqlite3_stmt*, int )
 
   // returns the index of the named parameters
   sqlite3_bind_parameter_index(sqlite3_stmt*, const char *zName);
 
-  sqlite3_clear_bindings(sqlite3_stmt*);
+  *done* sqlite3_clear_bindings(sqlite3_stmt*);
 
-  sqlite3_column_count(sqlite3_stmt *pStmt);
-  sqlite3_column_name(sqlite3_stmt*, int N);
+  *done* sqlite3_column_count(sqlite3_stmt *pStmt);
+  *done* sqlite3_column_name(sqlite3_stmt*, int N);
   sqlite3_column_name16(sqlite3_stmt*, int N);
   
   *skip - used internally* sqlite3 *sqlite3_db_handle(sqlite3_stmt*);
@@ -123,11 +123,11 @@ Core 'Objects'
   sqlite3_column_decltype(sqlite3_stmt*, int);
   sqlite3_column_decltype16(sqlite3_stmt*, int);
 
-  sqlite3_step(sqlite3_stmt*);
+  *done* sqlite3_step(sqlite3_stmt*);
   *done - as 'close' *int sqlite3_finalize(sqlite3_stmt *pStmt);
-  int sqlite3_reset(sqlite3_stmt *pStmt);
+  *done* int sqlite3_reset(sqlite3_stmt *pStmt);
 
-  sqlite3_data_count(sqlite3_stmt *pStmt);
+  *done - same as sqlite3_column_count* sqlite3_data_count(sqlite3_stmt *pStmt);
 
   // use this to find the type and then call the appropriate method afterwards.
   sqlite3_column_type(sqlite3_stmt*, int iCol);
