@@ -202,6 +202,12 @@ VALUE am_sqlite3_database_prepare(VALUE self, VALUE rSQL)
         am_sqlite3_statement_free( am_stmt );
     }
 
+    if ( tail != NULL ) {
+        am_stmt->remaining_sql = rb_str_new2( tail );
+    } else {
+        am_stmt->remaining_sql = Qnil;
+    }
+
     return stmt;
 }
 

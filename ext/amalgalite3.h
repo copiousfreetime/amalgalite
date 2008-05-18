@@ -20,6 +20,7 @@ typedef struct am_sqlite3 {
 /* wrapper struct around the sqlite3_statement opaque pointer */
 typedef struct am_sqlite3_stmt {
   sqlite3_stmt *stmt;
+  VALUE         remaining_sql;
 } am_sqlite3_stmt;
 
 /***********************************************************************
@@ -53,7 +54,14 @@ extern VALUE am_sqlite3_statement_column_name(VALUE self, VALUE index);
 extern VALUE am_sqlite3_statement_column_value(VALUE self, VALUE index);
 extern VALUE am_sqlite3_statement_reset(VALUE self);
 extern VALUE am_sqlite3_statement_clear_bindings(VALUE self);
-
+extern VALUE am_sqlite3_statement_bind_parameter_count(VALUE self);
+extern VALUE am_sqlite3_statement_bind_parameter_index(VALUE self, VALUE parameter_name);
+extern VALUE am_sqlite3_statement_remaining_sql(VALUE self);
+extern VALUE am_sqlite3_statement_bind_text(VALUE self, VALUE position, VALUE value);
+extern VALUE am_sqlite3_statement_bind_int(VALUE self, VALUE position, VALUE value);
+extern VALUE am_sqlite3_statement_bind_int64(VALUE self, VALUE position, VALUE value);
+extern VALUE am_sqlite3_statement_bind_double(VALUE self, VALUE position, VALUE value);
+extern VALUE am_sqlite3_statement_bind_null(VALUE self, VALUE position);
 
 /***********************************************************************
  * Helpful macros

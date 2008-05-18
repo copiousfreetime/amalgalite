@@ -131,6 +131,52 @@ module Amalgalite
       return stmt
     end
 
+    ##
+    # Execute a single SQL statement. 
+    #
+    # If called with a block and there are result rows, then they are iteratively
+    # yielded to the block.
+    #
+    # If no block passed and there are results, then a ResultSet is returned.
+    # Otherwise nil is returned.  On an error an exception is thrown.
+    #
+    # This is just a wrapper around the preparation of an Amalgalite Statement and
+    # iterating over the results.
+    #
+    def execute( sql, *bind_params )
+      stmt = prepare( sql )
+      stmt.bind( *bind_params )
+      if block_given? then
+        stmt.each { |row| yield row }
+      else
+        return stmt.all_rows
+      end
+    ensure
+      stmt.close if stmt
+    end
+
+    ##
+    # Execute a batch of statements, this will execute all the sql in the given
+    # string until no more sql can be found in the string.  It will bind the 
+    # same parameters to each statement.  All data that would be returned from 
+    # all of the statements is thrown away.
+    #
+    # All statements to be executed in the batch must be terminated with a ';'
+    # Returns the number of statements executed
+    #
+    #
+    def execute_batch( sql, *bind_params) 
+      count = 0
+      while sql
+        prepare( sql ) do |stmt|
+          stmt.execute( *bind_params )
+          sql =  stmt.remaining_sql 
+          sql = nil unless (sql.index(";") and Amalgalite::SQLite3.complete?( sql ))
+        end
+        count += 1
+      end
+      return count
+    end
   end
 end
 

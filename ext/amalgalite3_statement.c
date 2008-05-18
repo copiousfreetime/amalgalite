@@ -8,6 +8,176 @@
 
 /**
  * :call-seq:
+ *     stmt.bind_null( position ) -> nil
+ * 
+ * bind a null value to the variable at postion.
+ *
+ */
+VALUE am_sqlite3_statement_bind_null(VALUE self, VALUE position )
+{
+    am_sqlite3_stmt  *am_stmt;
+    int               pos = FIX2INT( position );
+    int               rc;
+
+    Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
+    rc = sqlite3_bind_null( am_stmt->stmt, pos );
+    if ( SQLITE_OK != rc ) {
+        rb_raise(eAS_Error, "Error binding NULL at position %d in statement: [SQLITE_ERROR %d] : %s\n",
+                pos,
+                rc, sqlite3_errmsg( sqlite3_db_handle( am_stmt->stmt) ));
+    }
+
+    return INT2FIX(rc);
+}
+/**
+ * :call-seq:
+ *     stmt.bind_double( position, value ) -> nil
+ * 
+ * bind a double value to the variable at postion.
+ *
+ */
+VALUE am_sqlite3_statement_bind_double(VALUE self, VALUE position, VALUE value)
+{
+    am_sqlite3_stmt  *am_stmt;
+    int               pos = FIX2INT( position );
+    double            v   = NUM2DBL( value );
+    int               rc;
+
+    Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
+    rc = sqlite3_bind_double( am_stmt->stmt, pos, value );
+    if ( SQLITE_OK != rc ) {
+        rb_raise(eAS_Error, "Error binding [%s] to double at position %d in statement: [SQLITE_ERROR %d] : %s\n",
+                value, pos,
+                rc, sqlite3_errmsg( sqlite3_db_handle( am_stmt->stmt) ));
+    }
+
+    return INT2FIX(rc);
+}
+ 
+/**
+ * :call-seq:
+ *     stmt.bind_int( position, value ) -> nil
+ * 
+ * bind a int value to the variable at postion.
+ *
+ */
+VALUE am_sqlite3_statement_bind_int(VALUE self, VALUE position, VALUE value)
+{
+    am_sqlite3_stmt  *am_stmt;
+    int               pos = FIX2INT( position );
+    int               v   = NUM2INT( value );
+    int               rc;
+
+    Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
+    rc = sqlite3_bind_int( am_stmt->stmt, pos, v );
+    if ( SQLITE_OK != rc ) {
+        rb_raise(eAS_Error, "Error binding [%s] to int at position %d in statement: [SQLITE_ERROR %d] : %s\n",
+                v, pos,
+                rc, sqlite3_errmsg( sqlite3_db_handle( am_stmt->stmt) ));
+    }
+
+    return INT2FIX(rc);
+}
+ 
+/**
+ * :call-seq:
+ *     stmt.bind_int64( position, value ) -> nil
+ * 
+ * bind a int64 value to the variable at postion.
+ *
+ */
+VALUE am_sqlite3_statement_bind_int64(VALUE self, VALUE position, VALUE value)
+{
+    am_sqlite3_stmt  *am_stmt;
+    int               pos = FIX2INT( position );
+    sqlite3_int64     v   = NUM2SQLINT64( value );
+    int               rc;
+
+    Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
+    rc = sqlite3_bind_int64( am_stmt->stmt, pos, v );
+    if ( SQLITE_OK != rc ) {
+        rb_raise(eAS_Error, "Error binding [%s] to int64 at position %d in statement: [SQLITE_ERROR %d] : %s\n",
+                v, pos,
+                rc, sqlite3_errmsg( sqlite3_db_handle( am_stmt->stmt) ));
+    }
+
+    return INT2FIX(rc);
+}
+ 
+/**
+ * :call-seq:
+ *     stmt.bind_text( position, value ) -> nil
+ * 
+ * bind a string value to the variable at postion.
+ *
+ */
+VALUE am_sqlite3_statement_bind_text(VALUE self, VALUE position, VALUE value)
+{
+    am_sqlite3_stmt  *am_stmt;
+    int               pos = FIX2INT( position );
+    VALUE             str = StringValue( value );
+    int               rc;
+
+    Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
+    rc = sqlite3_bind_text( am_stmt->stmt, pos, RSTRING(str)->ptr, RSTRING(str)->len, NULL );
+    if ( SQLITE_OK != rc ) {
+        rb_raise(eAS_Error, "Error binding [%s] to text at position %d in statement: [SQLITE_ERROR %d] : %s\n",
+                RSTRING(str)->ptr, pos,
+                rc, sqlite3_errmsg( sqlite3_db_handle( am_stmt->stmt) ));
+    }
+
+    return INT2FIX(rc);
+}
+/**
+ * :call-seq:
+ *    stmt.remaining_sql -> String
+ *
+ * returns the remainging SQL leftover from the initialization sql, or nil if
+ * there is no remaining SQL
+ */
+VALUE am_sqlite3_statement_remaining_sql(VALUE self)
+{
+    am_sqlite3_stmt  *am_stmt;
+
+    Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
+    return am_stmt->remaining_sql;
+}
+/**
+ * :call-seq:
+ *    stmt.parameter_index( name ) -> Integer
+ *
+ * returns the index of the named parameter from the statement.  Used to help
+ * with the :VVV, @VVV and $VVV pareamter replacement styles.
+ */
+VALUE am_sqlite3_statement_bind_parameter_index(VALUE self, VALUE parameter_name)
+{
+    am_sqlite3_stmt  *am_stmt;
+    int               idx;
+    
+    Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
+    idx = sqlite3_bind_parameter_index( am_stmt->stmt, StringValuePtr( parameter_name ));
+    return INT2FIX( idx );
+}
+
+/**
+ * :call-seq:
+ *    stmt.parameter_count -> Integer
+ *
+ * return the index of the largest parameter in the in the statement.  For all
+ * forms except ?NNN this is the number of unique parameters.  Using ?NNN can
+ * create gaps in the list of parameters.
+ *
+ */
+VALUE am_sqlite3_statement_bind_parameter_count(VALUE self)
+{
+    am_sqlite3_stmt  *am_stmt;
+    
+    Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
+    return INT2FIX(sqlite3_bind_parameter_count( am_stmt->stmt ) );
+}
+
+/**
+ * :call-seq:
  *    stmt.reset! -> nil
  *
  * reset the SQLite3 statement back to its initial state.

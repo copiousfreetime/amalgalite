@@ -85,25 +85,26 @@ Core 'Objects'
   sqlite3_stmt (typedef struct sqlite3_stmt) -> handle for statements
   ------------
   *done* const char *sqlite3_sql(sqlite3_stmt *pStmt)
-  int sqlite3_bind_parameter_count(sqlite3_stmt*);
+  *done* int sqlite3_bind_parameter_count(sqlite3_stmt*);
 
   # binding by name or index, if passed in an array to the bind() method then
   # bind by index, if passed in a hash, bind by name, using hte keys of the hash
   sqlite3_bind_blob(sqlite3_stmt*, int, const void *, int n, void(*)(void*));
-  sqlite3_bind_double(sqlite3_stmt*, int, double);
-  sqlite3_bind_int(sqlite3_stmt*, int, int);
-  sqlite3_bind_int64(sqlite3_stmt*, int, sqlite3_int64);
-  sqlite3_bind_null(sqlite3_stmt*, int);
-  sqlite3_bind_text(sqlite3_stmt*, int, constc char*, int n, void(*)(void*));
-  sqlite3_bind_text16(sqlite3_stmt*, int, constc char*, int, void(*)(void*));
-  sqlite3_bind_value(sqlite3_stmt*, int, const sqlite3_value*);
   sqlite3_bind_zeroblob(sqlite3_stmt*, int, int n);
 
+  *done* sqlite3_bind_double(sqlite3_stmt*, int, double);
+  *done* sqlite3_bind_int(sqlite3_stmt*, int, int);
+  *done* sqlite3_bind_int64(sqlite3_stmt*, int, sqlite3_int64);
+  *done* sqlite3_bind_null(sqlite3_stmt*, int);
+  *done* sqlite3_bind_text(sqlite3_stmt*, int, constc char*, int n, void(*)(void*));
+  sqlite3_bind_text16(sqlite3_stmt*, int, constc char*, int, void(*)(void*));
+  * skipping *sqlite3_bind_value(sqlite3_stmt*, int, const sqlite3_value*);
+
   // returns a pointer to the name of nth sql paramter in the statemetn
-  const char*  sqlite3_bind_parameter_name(sqlite3_stmt*, int )
+  *done* const char*  sqlite3_bind_parameter_name(sqlite3_stmt*, int )
 
   // returns the index of the named parameters
-  sqlite3_bind_parameter_index(sqlite3_stmt*, const char *zName);
+  *done* sqlite3_bind_parameter_index(sqlite3_stmt*, const char *zName);
 
   *done* sqlite3_clear_bindings(sqlite3_stmt*);
 
