@@ -9,5 +9,6 @@ describe "Amalgalite::SQLite3::Version" do
     Amalgalite::SQLite3::Version::MAJOR.should == 3
     Amalgalite::SQLite3::Version::MINOR.should == 5
     Amalgalite::SQLite3::Version::RELEASE.should == 8
+    Amalgalite::SQLite3::Version.to_a.should have(3).items
   end
 end

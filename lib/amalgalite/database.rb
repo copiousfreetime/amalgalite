@@ -4,6 +4,8 @@
 #++
 require 'amalgalite3'
 require 'amalgalite/statement'
+require 'amalgalite/trace_tap'
+require 'amalgalite/profile_tap'
 
 module Amalgalite
   class Database
@@ -42,12 +44,17 @@ module Amalgalite
     }
 
     attr_reader :api
+    attr_reader :trace_tap
+    attr_reader :profile_tap
 
     ##
     # Create a new database 
     #
     def initialize( filename, mode = "w+", opts = {})
-      @open = false
+      @open        = false
+      @profile_tap = nil
+      @trace_tap   = nil
+
       unless VALID_MODES.keys.include?( mode ) 
         raise InvalidModeError, "#{mode} is invalid, must be one of #{VALID_MODES.keys.join(', ')}" 
       end
@@ -176,6 +183,121 @@ module Amalgalite
         count += 1
       end
       return count
+    end
+
+    ##
+    # clear all the current taps
+    #
+    def clear_taps!
+      self.trace_tap = nil
+      self.profile_tap = nil
+    end
+
+    ##
+    # :call-seq:
+    #   db.trace_tap = obj 
+    #
+    # Register a trace tap.  
+    #
+    # Registering a trace tap measn that the +obj+ registered will have its
+    # +trace+ method called with a string parameter at various times.
+    # If the object doesn't respond to the +trace+ method then +write+
+    # will be called.
+    #
+    # For instance:
+    #
+    #   db.trace_tap = Amalgalite::TraceTap.new( logger, 'debug' )
+    # 
+    # This will register an instance of TraceTap, which wraps an logger object.
+    # On each +trace+ event the TraceTap#trace method will be called, which in
+    # turn will call the +logger.debug+ method
+    #
+    #   db.trace_tap = $stderr 
+    #
+    # This will register the $stderr io stream as a trace tap.  Every time a
+    # +trace+ event happens then +$stderr.write( msg )+ will be called.
+    #
+    #   db.trace_tap = nil
+    #
+    # This will unregistere the trace tap
+    #
+    #
+    def trace_tap=( tap_obj )
+
+      # unregister any previous trace tap
+      #
+      unless @trace_tap.nil?
+        @trace_tap.trace( 'unregistered as trace tap' )
+        @trace_tap = nil
+      end
+      return @trace_tap if tap_obj.nil?
+
+
+      # wrap the tap if we need to
+      #
+      if tap_obj.respond_to?( 'trace' ) then
+        @trace_tap = tap_obj
+      elsif tap_obj.respond_to?( 'write' ) then
+        @trace_tap = Amalgalite::TraceTap.new( tap_obj, 'write' )
+      else
+        raise Amalgalite::Error, "#{tap_obj.class.name} cannot be used to tap.  It has no 'write' or 'trace' method.  Look at wrapping it in a Tap instances."
+      end
+
+      puts "tracing with #{@trace_tap.class.name}"
+      # and do the low level registration
+      #
+      @api.register_trace_tap( @trace_tap )
+
+      @trace_tap.trace( 'registered as trace tap' )
+    end
+
+
+    ##
+    # :call-seq:
+    #   db.profile_tap = obj 
+    #
+    # Register a profile tap.
+    #
+    # Registering a profile tap means that the +obj+ registered will have its
+    # +profile+ method called with an Integer and a String parameter every time
+    # a profile event happens.  The Integer is the number of nanoseconds it took
+    # for the String (SQL) to execute in wall-clock time.
+    #
+    # That is, ever time a profile event happens in SQLite the following is
+    # invoked:
+    #
+    #   obj.profile( str, int ) 
+    #
+    # For instance:
+    #
+    #   db.profile_tap = Amalgalite::ProfileTap.new( logger, 'debug' )
+    # 
+    # This will register an instance of ProfileTap, which wraps an logger object.
+    # On each +profile+ eventn the ProfileTap#profile method will be called
+    # which in turn will call +logger.debug+ with a formatted string containing
+    # the String and Integer from the profile event.
+    #
+    #   db.profile_tap = nil
+    #
+    # This will unregister the profile tap
+    #
+    #
+    def profile_tap=( tap_obj )
+
+      # unregister any previous profile tap
+      unless @profile_tap.nil?
+        @profile_tap.profile( 'unregistered as profile tap', 0.0 )
+        @profile_tap = nil
+      end
+      return @profile_tap if tap_obj.nil?
+
+      if tap_obj.respond_to?( 'profile' ) then
+        @profile_tap = tap_obj
+      else
+        raise Amalgalite::Error, "#{tap_obj.class.name} cannot be used to tap.  It has no 'profile' method"
+      end
+      @api.register_profile_tap( @profile_tap )
+      @profile_tap.profile( 'registered as profile tap', 0.0 )
     end
   end
 end

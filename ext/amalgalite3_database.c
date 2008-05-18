@@ -211,17 +211,141 @@ VALUE am_sqlite3_database_prepare(VALUE self, VALUE rSQL)
     return stmt;
 }
 
+/**
+ * This function is registered with a sqlite3 database using the sqlite3_trace
+ * function.  During the registration process a handle on a VALUE is also
+ * registered.  
+ *
+ * When this function is called, it calls the 'trace' method on the tap object, 
+ * which is the VALUE that was registered during the sqlite3_trace call.
+ *
+ * This function corresponds to the SQLite xTrace function specification.
+ *
+ */
+void amalgalite_xTrace(void* tap, const char* msg)
+{
+    VALUE     trace_obj = (VALUE) tap;
+
+    rb_funcall( trace_obj, rb_intern("trace"), 1, rb_str_new2( msg ) );
+    return;
+}
+    
+
+/**
+ * :call-seq:
+ *   database.register_trace_tap( tap_obj )
+ *
+ * This registers an object to be called with every trace event in SQLite.
+ * 
+ * This is an experimental api and is subject to change, or removal.
+ *
+ */
+VALUE am_sqlite3_database_register_trace_tap(VALUE self, VALUE tap)
+{
+    am_sqlite3   *am_db;
+    int           rc;
+
+    Data_Get_Struct(self, am_sqlite3, am_db);
+
+    /* Qnil, unregister the item and tell the garbage collector we are done with
+     * it.
+     */
+    if ( Qnil == tap ) {
+
+        sqlite3_trace( am_db->db, NULL, NULL );
+        rb_gc_unregister_address( &(am_db->trace_obj) );
+        am_db->trace_obj = Qnil;
+
+    /* register the item and store the reference to the object in the am_db
+     * structure.  We also have to tell the Ruby garbage collector that we
+     * point to the Ruby object from C.
+     */
+    } else {
+
+        am_db->trace_obj = tap;
+        rb_gc_register_address( &(am_db->trace_obj) );
+        sqlite3_trace( am_db->db, amalgalite_xTrace, (void *)am_db->trace_obj );
+    }
+
+    return Qnil;
+}    
+
+/**
+ * the amagliate trace function to be registered with register_trace_tap
+ * When it is called, it calls the 'trace' method on the tap object.
+ *
+ * This function conforms to the sqlite3 xProfile function specification.
+ */
+void amalgalite_xProfile(void* tap, const char* msg, sqlite3_uint64 time)
+{
+    VALUE     trace_obj = (VALUE) tap;
+
+    rb_funcall( trace_obj, rb_intern("profile"), 
+                2, rb_str_new2( msg ), SQLUINT64_2NUM(time) );
+
+    return;
+}
+
+/**
+ * :call-seq:
+ *   database.register_profile_tap( tap_obj )
+ *
+ * This registers an object to be called with every profile event in SQLite.
+ *
+ * This is an experimental api and is subject to change or removal.
+ *
+ */
+VALUE am_sqlite3_database_register_profile_tap(VALUE self, VALUE tap)
+{
+    am_sqlite3   *am_db;
+    int           rc;
+
+    Data_Get_Struct(self, am_sqlite3, am_db);
+
+    /* Qnil, unregister the item and tell the garbage collector we are done with
+     * it.
+     */
+
+    if ( tap == Qnil ) {
+        sqlite3_profile( am_db->db, NULL, NULL );
+        rb_gc_unregister_address( &(am_db->profile_obj) );
+        am_db->profile_obj = Qnil;
+
+    /* register the item and store the reference to the object in the am_db
+     * structure.  We also have to tell the Ruby garbage collector that we
+     * point to the Ruby object from C.
+     */
+    } else {
+        am_db->profile_obj = tap;
+        rb_gc_register_address( &(am_db->profile_obj) );
+        sqlite3_profile( am_db->db, amalgalite_xProfile, (void *)am_db->profile_obj );
+    }
+    return Qnil;
+}    
+
+
 /***********************************************************************
  * Ruby life cycle methods
  ***********************************************************************/
 
 
 /*
- * garbage collector free method for the am_data structure
+ * garbage collector free method for the am_data structure.  Make sure to un
+ * registere the trace and profile objects if they are not Qnil
  */
-void am_sqlite3_database_free(am_sqlite3* wrapper)
+void am_sqlite3_database_free(am_sqlite3* am_db)
 {
-    free(wrapper);
+    if ( Qnil != am_db->trace_obj ) {
+        rb_gc_unregister_address( &(am_db->trace_obj) );
+        am_db->trace_obj = Qnil;
+    }
+
+    if ( Qnil != am_db->profile_obj) {
+        rb_gc_unregister_address( &(am_db->profile_obj) );
+        am_db->profile_obj = Qnil;
+    }
+
+    free(am_db);
     return;
 }
 
@@ -230,9 +354,12 @@ void am_sqlite3_database_free(am_sqlite3* wrapper)
  */
 VALUE am_sqlite3_database_alloc(VALUE klass)
 {
-    am_sqlite3*  wrapper = ALLOC(am_sqlite3);
-    VALUE   obj  = (VALUE)NULL;
+    am_sqlite3*  am_db = ALLOC(am_sqlite3);
+    VALUE          obj ;
 
-    obj = Data_Wrap_Struct(klass, NULL, am_sqlite3_database_free, wrapper);
+    am_db->trace_obj   = Qnil;
+    am_db->profile_obj = Qnil;
+
+    obj = Data_Wrap_Struct(klass, NULL, am_sqlite3_database_free, am_db);
     return obj;
 }

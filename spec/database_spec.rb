@@ -3,6 +3,8 @@ require 'spec'
 
 $: << File.expand_path(File.join(File.dirname(__FILE__),"..","lib"))
 require 'amalgalite'
+require 'amalgalite/taps/io'
+require 'amalgalite/taps/console'
 
 describe Amalgalite::Database do
   before(:each) do
@@ -74,6 +76,52 @@ describe Amalgalite::Database do
   it "can execute a batch of commands" do
     db = Amalgalite::Database.new( SpecInfo.test_db )
     db.execute_batch( @schema ).should == 5
+  end
+
+  it "traces the execution of code" do
+    db = Amalgalite::Database.new( SpecInfo.test_db )
+    sql = "CREATE TABLE trace_test( x, y, z)"
+    s = db.trace_tap = ::Amalgalite::Taps::StringIO.new
+    db.execute( sql )
+    db.trace_tap.string.should== "registered as trace tap\n#{sql}\n"
+    db.trace_tap = nil
+    s.string.should== "registered as trace tap\n#{sql}\nunregistered as trace tap\n"
+  end
+
+  it "raises an exception if the wrong type of object is used for tracing" do
+    db = Amalgalite::Database.new( SpecInfo.test_db )
+    lambda { db.trace_tap = Object.new }.should raise_error(Amalgalite::Error)
+  end
+
+  it "raises an exception if the wrong type of object is used for profile" do
+    db = Amalgalite::Database.new( SpecInfo.test_db )
+    lambda { db.profile_tap = Object.new }.should raise_error(Amalgalite::Error)
+  end
+
+  it "profiles the execution of code" do
+    db = Amalgalite::Database.new( SpecInfo.test_db )
+    s = db.profile_tap = ::Amalgalite::Taps::StringIO.new
+    db.execute_batch( @schema )
+    db.profile_tap.samplers.size.should == 6
+    db.profile_tap = nil
+    s.string.should =~ /unregistered as profile tap/m
+  end
+
+  it "can use something that responds to 'write' as a tap" do
+    db = Amalgalite::Database.new( SpecInfo.test_db )
+    s2 = db.trace_tap   = StringIO.new
+    s2.string.should == "registered as trace tap"
+  end
+
+  it "can clear all registered taps" do
+    db = Amalgalite::Database.new( SpecInfo.test_db )
+    s = db.profile_tap = ::Amalgalite::Taps::StringIO.new
+    db.trace_tap = s
+    db.execute_batch( @schema )
+    db.profile_tap.samplers.size.should == 6
+    db.clear_taps!
+    s.string.should =~ /unregistered as trace tap/m
+    s.string.should =~ /unregistered as profile tap/m
   end
 
 end

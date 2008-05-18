@@ -15,6 +15,8 @@ extern VALUE eAS_Error;
 /* wrapper struct around the sqlite3 opaque pointer */
 typedef struct am_sqlite3 {
   sqlite3 *db;
+  VALUE    trace_obj;
+  VALUE    profile_obj;
 } am_sqlite3;
 
 /* wrapper struct around the sqlite3_statement opaque pointer */
@@ -22,6 +24,8 @@ typedef struct am_sqlite3_stmt {
   sqlite3_stmt *stmt;
   VALUE         remaining_sql;
 } am_sqlite3_stmt;
+
+/* 
 
 /***********************************************************************
  * Prototypes
@@ -40,6 +44,8 @@ extern VALUE am_sqlite3_database_last_insert_rowid(VALUE self);
 extern VALUE am_sqlite3_database_is_autocommit(VALUE self);
 
 extern VALUE am_sqlite3_database_prepare(VALUE self, VALUE rSQL);
+extern VALUE am_sqlite3_database_register_trace_tap(VALUE self, VALUE tap);
+extern VALUE am_sqlite3_database_register_profile_tap(VALUE self, VALUE tap);
 
 /*----------------------------------------------------------------------
  * Statement functions
