@@ -52,6 +52,10 @@ extern VALUE am_sqlite3_statement_step(VALUE self);
 extern VALUE am_sqlite3_statement_column_count(VALUE self);
 extern VALUE am_sqlite3_statement_column_name(VALUE self, VALUE index);
 extern VALUE am_sqlite3_statement_column_value(VALUE self, VALUE index);
+extern VALUE am_sqlite3_statement_column_database_name(VALUE self, VALUE position);
+extern VALUE am_sqlite3_statement_column_table_name(VALUE self, VALUE position);
+extern VALUE am_sqlite3_statement_column_origin_name(VALUE self, VALUE position);
+
 extern VALUE am_sqlite3_statement_reset(VALUE self);
 extern VALUE am_sqlite3_statement_clear_bindings(VALUE self);
 extern VALUE am_sqlite3_statement_bind_parameter_count(VALUE self);

@@ -197,7 +197,8 @@ module Amalgalite
       when ResultCode::DONE
         row = nil
       else
-        raise Amalgalite::SQLite3::Error, "Received unexepcted result code #{rc} : #{Amalgalite::SQLite3::Constants::ResultCode.from_int( rc )}"
+        raise Amalgalite::SQLite3::Error, 
+              "Received unexepcted result code #{rc} : #{Amalgalite::SQLite3::Constants::ResultCode.from_int( rc )}"
       end
       return row
     end
@@ -214,16 +215,36 @@ module Amalgalite
     end
 
     #
+    # Inspect the statement and gather all the meta information bout the
+    # results, include the name of the column result column and the origin
+    # column.  The origin column is the original database.table.column the value
+    # comes from
+    #
+    def result_meta
+      unless @result_meta
+        meta = []
+        column_count.times do |idx|
+          column_meta = OpenStruct.new
+          column_meta.origin = OpenStruct.new
+          column_meta.origin.db_name    = @stmt_api.column_database_name( idx ) 
+          column_meta.origin.table_name = @stmt_api.column_table_name( idx ) 
+          column_meta.origin.colum_name = @stmt_api.column_origin_name( idx ) 
+
+          column_meta.name = @stmt_api.column_name( idx )
+          meta << column_meta 
+        end
+        @result_meta = meta
+      end
+      return @result_meta
+    end
+
+    #
     # Return the names of the result columsn for the query.  These will be the
     # keys in the hash returned by +each+.
     #
     def column_names
       unless @column_names
-        names = []
-        column_count.times do |idx|
-          names << @stmt_api.column_name( idx )
-        end
-        @column_names = names
+        @column_names = result_meta.collect { |m| m.name }
       end
       return @column_names
     end

@@ -281,6 +281,63 @@ VALUE am_sqlite3_statement_column_value(VALUE self, VALUE v_idx)
     return rb_str_new2( (const char *)sqlite3_column_text( am_stmt->stmt, idx ) );
 }
 
+/**
+ * :call-seq:
+ *    stmt.column_database_name( index ) -> String
+ *  
+ * Return the database name where the data in the ith column of the result set
+ * comes from.
+ *
+ */
+VALUE am_sqlite3_statement_column_database_name(VALUE self, VALUE v_idx)
+{
+    am_sqlite3_stmt   *am_stmt;
+    int               idx = FIX2INT( v_idx );
+    const char        *n ;
+
+    Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
+    n = sqlite3_column_database_name( am_stmt->stmt, idx ) ;
+    return ( n == NULL ? Qnil : rb_str_new2( n ) ); 
+}
+
+/**
+ * :call-seq:
+ *    stmt.column_table_name( index ) -> String
+ *  
+ * Return the table name where the data in the ith column of the result set
+ * comes from.
+ *
+ */
+VALUE am_sqlite3_statement_column_table_name(VALUE self, VALUE v_idx)
+{
+    am_sqlite3_stmt   *am_stmt;
+    int               idx = FIX2INT( v_idx );
+    const char        *n ;
+
+    Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
+    n =  sqlite3_column_table_name( am_stmt->stmt, idx );
+    return ( n == NULL ? Qnil : rb_str_new2( n ) ); 
+}
+
+
+/**
+ * :call-seq:
+ *    stmt.column_origin_name( index ) -> String
+ *  
+ * Return the column name where the data in the ith column of the result set
+ * comes from.
+ *
+ */
+VALUE am_sqlite3_statement_column_origin_name(VALUE self, VALUE v_idx)
+{
+    am_sqlite3_stmt   *am_stmt;
+    int               idx = FIX2INT( v_idx );
+    const char        *n ;
+
+    Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
+    n = sqlite3_column_origin_name( am_stmt->stmt, idx );
+    return ( n == NULL ? Qnil : rb_str_new2( n ) ); 
+}
 
 
 /**

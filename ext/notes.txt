@@ -110,15 +110,17 @@ Core 'Objects'
 
   *done* sqlite3_column_count(sqlite3_stmt *pStmt);
   *done* sqlite3_column_name(sqlite3_stmt*, int N);
+
   sqlite3_column_name16(sqlite3_stmt*, int N);
   
   *skip - used internally* sqlite3 *sqlite3_db_handle(sqlite3_stmt*);
 
   sqlite3_column_database_name(sqlite3_stmt*, int);
-  sqlite3_column_database_name16(sqlite3_stmt*, int);
   sqlite3_column_table_name(sqlite3_stmt*, int);
-  sqlite3_column_table_name16(sqlite3_stmt*, int);
   sqlite3_column_origin_name(sqlite3_stmt*, int);
+
+  sqlite3_column_database_name16(sqlite3_stmt*, int);
+  sqlite3_column_table_name16(sqlite3_stmt*, int);
   sqlite3_column_origin_name16(sqlite3_stmt*, int);
 
   sqlite3_column_decltype(sqlite3_stmt*, int);
@@ -134,41 +136,6 @@ Core 'Objects'
   sqlite3_column_type(sqlite3_stmt*, int iCol);
   sqlite3_value* sqlite3_column_value(sqlite3_stmt*, int iCol);
 
-  // dont' use these, they are just implemented in terms of the  the
-  // sqlite3_value methods
-  sqlite3_column_blob(sqlite3_stmt*, int iCol);
-  sqlite3_column_bytes(sqlite3_stmt*, int iCol);
-  sqlite3_column_bytes16(sqlite3_stmt*, int iCol);
-  sqlite3_column_double(sqlite3_stmt*, int iCol);
-  sqlite3_column_int(sqlite3_stmt*, int iCol);
-  sqlite3_column_int64(sqlite3_stmt*, int iCol);
-  sqlite3_column_text(sqlite3_stmt*, int iCol);
-  sqlite3_column_text16(sqlite3_stmt*, int iCol);
-
-
-
-              
-
-  sqlite3_context
-  ---------------
-
-  sqlite3_value
-  -------------
-    //  most of these cannot be called on the results of a
-    //  sqlite3_column_value() call, that returns unprotected values and these
-    //  require protected sqlite3_value's
-    const void *sqlite3_value_blob(sqlite3_value*)
-    int sqlite3_value_bytes(sqlite3_value*)
-    int sqlite3_value_bytes16(sqlite3_value*)
-    double sqlite3_value_double(sqlite3_value*);
-    int sqlite3_value_int(sqlite3_value*);
-    sqlite3_int64 sqlite3_value_int64(sqlite3_value*);
-    const unsigned char *sqlite3_value_text(sqlite3_value *);
-    const void *sqlite3_value_text16(sqlite3_value *);
-    const void *sqlite3_value_text16le(sqlite3_value *);
-    const void *sqlite3_value_text16be(sqlite3_value *);
-    int sqlite3_value_type(sqlite3_value *);   // switch on this and pick the right method
-    int sqlite3_value_numeric_type(sqlite3_value*); // maybe not.
 
   sqlite3_blob
   ------------
@@ -180,5 +147,5 @@ Core 'Objects'
 Result Codes
 ============
 
-  Convert to Individual Exceptions and allow the top level module generate them
+  *done* Convert to Individual Exceptions and allow the top level module generate them
   based upon integer value
