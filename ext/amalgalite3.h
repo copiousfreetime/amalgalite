@@ -42,6 +42,7 @@ extern VALUE am_sqlite3_database_close(VALUE self);
 extern VALUE am_sqlite3_database_open16(VALUE self, VALUE rFilename);
 extern VALUE am_sqlite3_database_last_insert_rowid(VALUE self);
 extern VALUE am_sqlite3_database_is_autocommit(VALUE self);
+extern VALUE am_sqlite3_database_table_column_metadata(VALUE self, VALUE tbl_name, VALUE col_name);
 
 extern VALUE am_sqlite3_database_prepare(VALUE self, VALUE rSQL);
 extern VALUE am_sqlite3_database_register_trace_tap(VALUE self, VALUE tap);

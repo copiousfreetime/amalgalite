@@ -190,6 +190,7 @@ void Init_amalgalite3()
     rb_define_method(cAS_Database, "autocommit?", am_sqlite3_database_is_autocommit, 0); /* in amalgalite3_database.c */
     rb_define_method(cAS_Database, "register_trace_tap", am_sqlite3_database_register_trace_tap, 1); /* in amalgalite3_database.c */
     rb_define_method(cAS_Database, "register_profile_tap", am_sqlite3_database_register_profile_tap, 1); /* in amalgalite3_database.c */
+    rb_define_method(cAS_Database, "column_metadata", am_sqlite3_database_table_column_metadata, 2); /* in amalgalite3_database.c */
 
     /*
      * class Statement

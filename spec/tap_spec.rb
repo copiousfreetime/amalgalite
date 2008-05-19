@@ -34,6 +34,14 @@ describe Amalgalite::Taps::StringIO do
     s.dump_profile
     s.string.should == "42 : test\ntest[test] => sum: 42, sumsq: 1764, n: 1, mean: 42.000000, stddev: 0.000000, min: 42, max: 42\n"
   end
+
+  it "has a stdout tap" do
+    s = ::Amalgalite::Taps::Stdout.new
+  end
+  
+  it "has a stderr tap" do
+    s = ::Amalgalite::Taps::Stderr.new
+  end
 end
 
 describe Amalgalite::ProfileSampler do

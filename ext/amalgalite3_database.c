@@ -323,6 +323,61 @@ VALUE am_sqlite3_database_register_profile_tap(VALUE self, VALUE tap)
     return Qnil;
 }    
 
+/**
+ * :call-seq:
+ *    datatabase.column_metadata( table_name, column_name) -> Hash
+ *
+ * Returns a hash containing the meta information about the column.  The
+ * available keys are:
+ *
+ *  'declared_data_type'      => the declared data type of the column
+ *  'collation_sequence_name' => the name of the collation sequence for the column
+ *  'not_null_constraint'     => True if the column has a NOT NULL constraint
+ *  'primary_key'             => True if the column is part of a primary key
+ *  'auto_increment'          => True if the column is AUTO INCREMENT
+ *
+ */
+VALUE am_sqlite3_database_table_column_metadata(VALUE self, VALUE tbl_name, VALUE col_name)
+{
+    am_sqlite3  *am_db;
+    int         rc;
+
+    /* input */
+    const char  *zDbName      = NULL;
+    const char  *zTableName   = StringValuePtr( tbl_name );
+    const char  *zColumnName  = StringValuePtr( col_name ); 
+
+    /* output */
+    const char *pzDataType = NULL;
+    const char *pzCollSeq  = NULL;
+    int         pNotNull, pPrimaryKey, pAutoinc;
+    VALUE       rHash      = rb_hash_new();
+    VALUE       rStr       = Qnil;
+
+    Data_Get_Struct(self, am_sqlite3, am_db);
+
+    rc = sqlite3_table_column_metadata( am_db->db,
+                                        "main" , zTableName, zColumnName,
+                                        &pzDataType, &pzCollSeq,
+                                        &pNotNull, &pPrimaryKey, &pAutoinc);
+    if ( SQLITE_OK != rc ) {
+       rb_raise(eAS_Error, "Failure retrieveing column meta data for table '%s' column '%s' : [SQLITE_ERROR %d] : %s\n",
+                zTableName, zColumnName, rc, sqlite3_errmsg( am_db-> db ));
+  
+    }
+    
+    rStr = ( NULL == pzDataType) ? Qnil : rb_str_new2( pzDataType );
+    rb_hash_aset( rHash, rb_str_new2("declared_data_type"), rStr );
+
+    rStr = ( NULL == pzCollSeq) ? Qnil : rb_str_new2( pzCollSeq );
+    rb_hash_aset( rHash, rb_str_new2("collation_sequence_name"), rStr );
+
+    rb_hash_aset( rHash, rb_str_new2("not_null_constraint"),     ( pNotNull    ? Qtrue : Qfalse ));
+    rb_hash_aset( rHash, rb_str_new2("primary_key"),             ( pPrimaryKey ? Qtrue : Qfalse ));
+    rb_hash_aset( rHash, rb_str_new2("auto_increment"),          ( pAutoinc   ? Qtrue : Qfalse ));
+
+    return rHash;
+}
 
 /***********************************************************************
  * Ruby life cycle methods

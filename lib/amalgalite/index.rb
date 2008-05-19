@@ -5,7 +5,7 @@
 
 module Amalgalite
   #
-  # abstrace of the meta informationa about 1 Index
+  # a class representing the meta information about an SQLite index
   #
   class Index
     attr_reader   :name

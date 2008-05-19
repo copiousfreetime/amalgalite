@@ -309,6 +309,26 @@ module Amalgalite
     def schema( dbname = "main" ) 
       @schema ||= ::Amalgalite::Schema.new( self, dbname )
     end
+
+    ##
+    # :call-seq:
+    #   db.reload_schema! -> Schema
+    #
+    # By default once the schema is obtained, it is cached.  This is here to
+    # force the schema to be reloaded.
+    #
+    def reload_schema!
+      @schema = nil
+      schema
+    end
+
+    ##
+    # Run a pragma command against the database
+    # 
+    # Returns the result set of the pragma
+    def pragma( cmd )
+      execute("PRAGMA #{cmd}")
+    end
   end
 end
 

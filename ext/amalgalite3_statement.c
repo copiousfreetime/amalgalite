@@ -275,10 +275,17 @@ VALUE am_sqlite3_statement_column_value(VALUE self, VALUE v_idx)
 {
     am_sqlite3_stmt   *am_stmt;
     int               idx = FIX2INT( v_idx );
+    const char*       value;
+    VALUE             returning;
 
     Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
-
-    return rb_str_new2( (const char *)sqlite3_column_text( am_stmt->stmt, idx ) );
+    value = sqlite3_column_text( am_stmt->stmt, idx );
+    if ( NULL == value ) {
+        returning = Qnil;
+    } else {
+        returning = rb_str_new2( value );
+    }
+    return returning;
 }
 
 /**
