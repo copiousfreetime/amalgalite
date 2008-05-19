@@ -64,7 +64,7 @@ module Amalgalite
     # return all the avlues as a hash
     #
     def to_h
-      { 'name'    => @name,
+      { 'name'    => @name,  'n' => @n,
         'sum'     => @sum,   'sumsq'   => @sumsq, 'mean'    => mean,
         'stddev'  => stddev, 'min'     => @min,   'max'     => @max }
     end

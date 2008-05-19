@@ -42,11 +42,13 @@ module Amalgalite
       end
 
       def dump_profile
-        io.puts profile_tap.to_s
+        samplers.each do |s|
+          io.puts s.to_s
+        end
       end
 
       def samplers
-        @profile_tap.samplers
+        profile_tap.samplers
       end
     end
 

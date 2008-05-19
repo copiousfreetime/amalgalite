@@ -243,7 +243,6 @@ module Amalgalite
         raise Amalgalite::Error, "#{tap_obj.class.name} cannot be used to tap.  It has no 'write' or 'trace' method.  Look at wrapping it in a Tap instances."
       end
 
-      puts "tracing with #{@trace_tap.class.name}"
       # and do the low level registration
       #
       @api.register_trace_tap( @trace_tap )

@@ -15,7 +15,7 @@ module Amalgalite
     attr_reader :sql
     attr_reader :api
 
-    #
+    ##
     # Initialize a new statement on the database.  
     #
     def initialize( db, sql )
@@ -25,7 +25,7 @@ module Amalgalite
       @stmt_api = @db.api.send( prepare_method, sql )
     end
 
-    #
+    ##
     # reset the Statement back to it state right after the constructor returned,
     # except if any variables have been bound to parameters, those are still
     # bound.
@@ -35,7 +35,6 @@ module Amalgalite
       @column_names = nil
       @param_positions = {}
     end
-
 
     ##
     # reset the Statement back to it state right after the constructor returned,
@@ -62,7 +61,6 @@ module Amalgalite
         all_rows
       end
     end
-
 
     ##
     # Bind parameters to the sql statement.
@@ -91,7 +89,10 @@ module Amalgalite
     # If bind is not passed any parameters, or nil, then nothing happens.
     #
     def bind( *params )
-      return nil if params.nil? or params.empty?
+      if params.nil? or params.empty? then
+        check_parameter_count!( 0 )
+        return nil 
+      end
 
       if params.first.instance_of?( Hash ) then
         bind_named_parameters( params.first )
@@ -110,7 +111,7 @@ module Amalgalite
         if position > 0 then
           bind_parameter_to( position, value )
         else
-          raise "Unable to find parameter '#{param}' in SQL statement [#{sql}]"
+          raise Amalgalite::Error, "Unable to find parameter '#{param}' in SQL statement [#{sql}]"
         end
       end
     end

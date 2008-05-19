@@ -42,6 +42,13 @@ describe Amalgalite::Statement do
     end
   end
 
+  it "raises an error if there are not enough parameters are passed in a statement" do
+    @iso_db.prepare("SELECT * FROM country WHERE two_letter = :two") do |stmt|
+      lambda{ stmt.execute }.should raise_error( Amalgalite::Error )
+    end
+  end
+
+
   it "can run a query with a named parameter" do
     @iso_db.prepare("SELECT * FROM country WHERE two_letter = :two") do |stmt|
       all_rows = stmt.execute( ":two" => "JP" )
@@ -50,6 +57,19 @@ describe Amalgalite::Statement do
     end
   end
 
+  it "it can execute a query with a named parameter and yield the rows" do 
+    @iso_db.prepare("SELECT * FROM country WHERE id = @id ORDER BY name") do |stmt|
+      rows = []
+      stmt.execute( "@id" => 891 ) do |row|
+        rows << row
+      end
+      rows.size.should == 2
+      rows.last['name'].should == "Yugoslavia"
+      rows.first['two_letter'].should == "CS"
+    end
+  end
+
+
   it "binds a integer variable correctly" do
     @iso_db.prepare("SELECT * FROM country WHERE id = ? ORDER BY name ") do |stmt|
       all_rows = stmt.execute( 891 )
@@ -57,6 +77,18 @@ describe Amalgalite::Statement do
       all_rows.last['name'].should == "Yugoslavia"
       all_rows.first['two_letter'].should == "CS"
     end
+  end
+
+  it "raises and error if an invaliding binding is attempted" do 
+    @iso_db.prepare("SELECT * FROM country WHERE id = :somevar ORDER BY name ") do |stmt|
+      lambda{ stmt.execute( "blah" => 42 ) }.should raise_error(Amalgalite::Error)
+    end
+  end
+
+  it "can reset the statement to the state it was before executing" do
+    stmt = @iso_db.prepare("SELECT * FROM country WHERE id = :somevar ORDER BY name ") 
+    stmt.reset_and_clear_bindings!
+    stmt.close
   end
 
 
