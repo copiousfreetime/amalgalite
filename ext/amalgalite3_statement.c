@@ -263,30 +263,114 @@ VALUE am_sqlite3_statement_column_name(VALUE self, VALUE v_idx)
     return rb_str_new2( sqlite3_column_name( am_stmt->stmt, idx ) );
 }
 
+
 /**
  * :call-seq:
- *    stmt.column_value( index ) -> String
+ *    stmt.column_declared_type( index ) -> String
  *  
- * Return the column value at the ith column in the result set.  The left-most column
+ * Return the declared type of the ith column in the result set.  This is the
+ * value that was in the original CREATE TABLE statement.
+ *
+ */
+VALUE am_sqlite3_statement_column_decltype(VALUE self, VALUE v_idx)
+{
+    am_sqlite3_stmt   *am_stmt;
+    int                idx = FIX2INT( v_idx );
+    const char        *decltype; 
+
+    Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
+    decltype = sqlite3_column_decltype( am_stmt->stmt, idx ) ;
+    if ( NULL == decltype) {
+        return Qnil;
+    } else {
+        return rb_str_new2( decltype );
+    }
+}
+
+/**
+ * :call-seq:
+ *    stmt.column_type( index ) -> SQLite3::DataType constant
+ *  
+ * Return the column type at the ith column in the result set.  The left-most column
  * is number 0.
  *
  */
-VALUE am_sqlite3_statement_column_value(VALUE self, VALUE v_idx)
+VALUE am_sqlite3_statement_column_type(VALUE self, VALUE v_idx)
 {
     am_sqlite3_stmt   *am_stmt;
     int               idx = FIX2INT( v_idx );
-    const char*       value;
-    VALUE             returning;
 
     Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
-    value = sqlite3_column_text( am_stmt->stmt, idx );
-    if ( NULL == value ) {
-        returning = Qnil;
-    } else {
-        returning = rb_str_new2( value );
-    }
-    return returning;
+    return INT2FIX( sqlite3_column_type( am_stmt->stmt, idx ) );
 }
+
+/**
+ * :call-seq:
+ *    stmt.column_text( index ) -> String
+ *  
+ * Return the data in ith column of the result as a String.
+ *
+ */
+VALUE am_sqlite3_statement_column_text(VALUE self, VALUE v_idx)
+{
+    am_sqlite3_stmt   *am_stmt;
+    int               idx = FIX2INT( v_idx );
+
+    Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
+    return rb_str_new2( (const char*)sqlite3_column_text( am_stmt->stmt, idx ) );
+}
+
+/**
+ * :call-seq:
+ *    stmt.column_double( index ) -> Float
+ *  
+ * Return the data in ith column of the result as an Float
+ *
+ */
+VALUE am_sqlite3_statement_column_double(VALUE self, VALUE v_idx)
+{
+    am_sqlite3_stmt   *am_stmt;
+    int               idx = FIX2INT( v_idx );
+
+    Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
+    return rb_float_new( sqlite3_column_double( am_stmt->stmt, idx )) ;
+}
+
+
+/**
+ * :call-seq:
+ *    stmt.column_int( index ) -> Integer
+ *  
+ * Return the data in ith column of the result as an Integer
+ *
+ */
+VALUE am_sqlite3_statement_column_int(VALUE self, VALUE v_idx)
+{
+    am_sqlite3_stmt   *am_stmt;
+    int               idx = FIX2INT( v_idx );
+
+    Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
+    return INT2NUM( sqlite3_column_int( am_stmt->stmt, idx )) ;
+}
+
+
+/**
+ * :call-seq:
+ *    stmt.column_int64( index ) -> Integer
+ *  
+ * Return the data in ith column of the result as an Integer
+ *
+ */
+VALUE am_sqlite3_statement_column_int64(VALUE self, VALUE v_idx)
+{
+    am_sqlite3_stmt   *am_stmt;
+    int               idx = FIX2INT( v_idx );
+
+    Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
+    return SQLINT64_2NUM( sqlite3_column_int64( am_stmt->stmt, idx )) ;
+}
+
+
 
 /**
  * :call-seq:

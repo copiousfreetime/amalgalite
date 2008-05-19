@@ -61,10 +61,10 @@ module Amalgalite
     def load_columns( table )
       cols = {}
       @db.execute("PRAGMA table_info(#{table.name})") do |row|
-        col = Amalgalite::Column.new( row['name'], table )
+        col = Amalgalite::Column.new( "main", row['name'], table )
 
         col.default_value = row['dflt_value']
-        @db.api.column_metadata( table.name, col.name ).each_pair do |key, value|
+        @db.api.table_column_metadata( "main", table.name, col.name ).each_pair do |key, value|
           col.send("#{key}=", value)
         end
         cols[col.name] = col

@@ -112,7 +112,7 @@ Core 'Objects'
   sqlite3_column_decltype16(sqlite3_stmt*, int);
 
   // use this to find the type and then call the appropriate method afterwards.
-  sqlite3_column_type(sqlite3_stmt*, int iCol);
+  *done* sqlite3_column_type(sqlite3_stmt*, int iCol);
 
   # binding by name or index, if passed in an array to the bind() method then
   # bind by index, if passed in a hash, bind by name, using hte keys of the hash

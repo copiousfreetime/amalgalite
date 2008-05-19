@@ -325,7 +325,7 @@ VALUE am_sqlite3_database_register_profile_tap(VALUE self, VALUE tap)
 
 /**
  * :call-seq:
- *    datatabase.column_metadata( table_name, column_name) -> Hash
+ *    datatabase.table_column_metadata( db_name, table_name, column_name) -> Hash
  *
  * Returns a hash containing the meta information about the column.  The
  * available keys are:
@@ -337,13 +337,13 @@ VALUE am_sqlite3_database_register_profile_tap(VALUE self, VALUE tap)
  *  'auto_increment'          => True if the column is AUTO INCREMENT
  *
  */
-VALUE am_sqlite3_database_table_column_metadata(VALUE self, VALUE tbl_name, VALUE col_name)
+VALUE am_sqlite3_database_table_column_metadata(VALUE self, VALUE db_name, VALUE tbl_name, VALUE col_name)
 {
     am_sqlite3  *am_db;
     int         rc;
 
     /* input */
-    const char  *zDbName      = NULL;
+    const char  *zDbName      = StringValuePtr( db_name );
     const char  *zTableName   = StringValuePtr( tbl_name );
     const char  *zColumnName  = StringValuePtr( col_name ); 
 
@@ -357,7 +357,7 @@ VALUE am_sqlite3_database_table_column_metadata(VALUE self, VALUE tbl_name, VALU
     Data_Get_Struct(self, am_sqlite3, am_db);
 
     rc = sqlite3_table_column_metadata( am_db->db,
-                                        "main" , zTableName, zColumnName,
+                                        zDbName, zTableName, zColumnName,
                                         &pzDataType, &pzCollSeq,
                                         &pNotNull, &pPrimaryKey, &pAutoinc);
     if ( SQLITE_OK != rc ) {

@@ -42,7 +42,7 @@ extern VALUE am_sqlite3_database_close(VALUE self);
 extern VALUE am_sqlite3_database_open16(VALUE self, VALUE rFilename);
 extern VALUE am_sqlite3_database_last_insert_rowid(VALUE self);
 extern VALUE am_sqlite3_database_is_autocommit(VALUE self);
-extern VALUE am_sqlite3_database_table_column_metadata(VALUE self, VALUE tbl_name, VALUE col_name);
+extern VALUE am_sqlite3_database_table_column_metadata(VALUE self, VALUE db_name, VALUE tbl_name, VALUE col_name);
 
 extern VALUE am_sqlite3_database_prepare(VALUE self, VALUE rSQL);
 extern VALUE am_sqlite3_database_register_trace_tap(VALUE self, VALUE tap);
@@ -58,7 +58,13 @@ extern VALUE am_sqlite3_statement_close(VALUE self);
 extern VALUE am_sqlite3_statement_step(VALUE self);
 extern VALUE am_sqlite3_statement_column_count(VALUE self);
 extern VALUE am_sqlite3_statement_column_name(VALUE self, VALUE index);
-extern VALUE am_sqlite3_statement_column_value(VALUE self, VALUE index);
+extern VALUE am_sqlite3_statement_column_decltype(VALUE self, VALUE index);
+extern VALUE am_sqlite3_statement_column_type(VALUE self, VALUE index);
+extern VALUE am_sqlite3_statement_column_text(VALUE self, VALUE index);
+extern VALUE am_sqlite3_statement_column_int(VALUE self, VALUE index);
+extern VALUE am_sqlite3_statement_column_int64(VALUE self, VALUE index);
+extern VALUE am_sqlite3_statement_column_double(VALUE self, VALUE index);
+
 extern VALUE am_sqlite3_statement_column_database_name(VALUE self, VALUE position);
 extern VALUE am_sqlite3_statement_column_table_name(VALUE self, VALUE position);
 extern VALUE am_sqlite3_statement_column_origin_name(VALUE self, VALUE position);

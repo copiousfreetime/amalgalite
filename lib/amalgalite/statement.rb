@@ -5,6 +5,7 @@
 #
 require 'amalgalite3'
 require 'amalgalite/blob'
+require 'date'
 
 module Amalgalite
   class Statement
@@ -185,15 +186,40 @@ module Amalgalite
     end
 
     #
-    # TODO: make this into a Row type object with accessors by index, name and
-    # key
+    # Return the next row of data, with type conversion as best as possible into
+    # ruby types.
     #
     def next_row
       row = {}
       case rc = @stmt_api.step
       when ResultCode::ROW
-        column_names.each_with_index do |name, idx|
-          row[name] = @stmt_api.column_value( idx )
+        result_meta.each_with_index do |col, idx|
+          value = nil
+          type_label = col.schema.convert_type( @stmt_api.column_type( idx ) )
+
+          case type_label
+          when :date
+            value = Date.parse( @stmt.column_text( idx ) )
+          when :datetime
+            value = DateTime.parse( @stmt_api.column_text( idx ) )
+          when :time
+            value = Time.parse( @stmt_api.column_text( idx ) )
+          when :float
+            value = @stmt_api.column_double( idx )
+          when :integer
+            value = @stmt_api.column_int64( idx )
+          when :string
+            value = @stmt_api.column_text( idx )
+          when :nil
+            value = nil
+          when :boolean
+            value = ::Amalgalite::Boolean.to_bool( @stmt.column_text( idx ) )
+          when :blob
+            raise NotImplemented, "returning a blob is not supported yet"
+          else 
+            raise ::Amalgalite::Error, "BUG! : Unknown type type label of '#{type_label.to_s}' it fell through"
+          end
+          row[col.name] = value
         end
       when ResultCode::DONE
         row = nil
@@ -216,38 +242,33 @@ module Amalgalite
     end
 
     #
-    # Inspect the statement and gather all the meta information bout the
+    # Inspect the statement and gather all the meta information about the
     # results, include the name of the column result column and the origin
     # column.  The origin column is the original database.table.column the value
-    # comes from
+    # comes from.
+    #
+    # The full meta information from teh origin column is also obtained for help
+    # in doing type conversion.
     #
     def result_meta
       unless @result_meta
         meta = []
         column_count.times do |idx|
           column_meta = OpenStruct.new
-          column_meta.origin = OpenStruct.new
-          column_meta.origin.db_name    = @stmt_api.column_database_name( idx ) 
-          column_meta.origin.table_name = @stmt_api.column_table_name( idx ) 
-          column_meta.origin.colum_name = @stmt_api.column_origin_name( idx ) 
-
           column_meta.name = @stmt_api.column_name( idx )
+          
+          db_name  = @stmt_api.column_database_name( idx ) 
+          tbl_name = @stmt_api.column_table_name( idx ) 
+          col_name = @stmt_api.column_origin_name( idx ) 
+
+          column_meta.schema = ::Amalgalite::Column.new( db_name, tbl_name, col_name )
+          column_meta.schema.declared_data_type = @stmt_api.column_declared_type( idx )
+
           meta << column_meta 
         end
         @result_meta = meta
       end
       return @result_meta
-    end
-
-    #
-    # Return the names of the result columsn for the query.  These will be the
-    # keys in the hash returned by +each+.
-    #
-    def column_names
-      unless @column_names
-        @column_names = result_meta.collect { |m| m.name }
-      end
-      return @column_names
     end
 
     #
