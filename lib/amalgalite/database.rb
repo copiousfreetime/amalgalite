@@ -298,6 +298,17 @@ module Amalgalite
       @api.register_profile_tap( @profile_tap )
       @profile_tap.profile( 'registered as profile tap', 0.0 )
     end
+
+    ##
+    # :call-seq:
+    #   db.schema( dbname = "main" ) -> Schema
+    # 
+    # Returns a Schema object  containing the table and column structure of the
+    # database.
+    #
+    def schema( dbname = "main" ) 
+      @schema ||= ::Amalgalite::Schema.new( self, dbname )
+    end
   end
 end
 

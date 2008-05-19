@@ -55,9 +55,9 @@ Core 'Objects'
   TODO: int   sqlite3_busy_timeout(sqlite3*)
   TODO: void  sqlite3_progress_hander(sqlite3*, int, int(*)(void*), void*)
 
-  TODO : tracing should be an IO object, if it is true then send it to STDERR
-  TODO : tracing should also yield a block like a transaction so that during the block the db has tracing turned on.
-  sqlite3_trace
+  *done* tracing should be an IO object, if it is true then send it to STDERR
+  *done* tracing should also yield a block like a transaction so that during the block the db has tracing turned on.
+  *done* sqlite3_trace
 
   TODO: create Table and Column classes
   TODO: int sqlite3_table_column_metadata();

@@ -9,12 +9,14 @@ require 'amalgalite/taps/console'
 describe Amalgalite::Database do
   before(:each) do
     @schema = IO.read( SpecInfo.test_schema_file )
-    @iso_db = SpecInfo.make_iso_db
+    @iso_db_file = SpecInfo.make_iso_db
+    @iso_db = Amalgalite::Database.new( SpecInfo.make_iso_db )
   end
 
   after(:each) do
     File.unlink SpecInfo.test_db if File.exist?( SpecInfo.test_db )
-    File.unlink @iso_db if File.exist?( @iso_db )
+    @iso_db.close
+    File.unlink @iso_db_file if File.exist?( @iso_db_file )
   end
 
   it "can create a new database" do
