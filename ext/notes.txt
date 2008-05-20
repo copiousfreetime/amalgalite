@@ -103,12 +103,12 @@ Core 'Objects'
   *do not use* sqlite3_value* sqlite3_column_value(sqlite3_stmt*, int iCol);
 
   sqlite3_bind_text16(sqlite3_stmt*, int, constc char*, int, void(*)(void*));
-  sqlite3_column_database_name16(sqlite3_stmt*, int);
-  sqlite3_column_table_name16(sqlite3_stmt*, int);
-  sqlite3_column_origin_name16(sqlite3_stmt*, int);
+  * done *sqlite3_column_database_name16(sqlite3_stmt*, int);
+  * done *sqlite3_column_table_name16(sqlite3_stmt*, int);
+  * done *sqlite3_column_origin_name16(sqlite3_stmt*, int);
   sqlite3_column_name16(sqlite3_stmt*, int N);
 
-  sqlite3_column_decltype(sqlite3_stmt*, int);
+  *done* sqlite3_column_decltype(sqlite3_stmt*, int);
   sqlite3_column_decltype16(sqlite3_stmt*, int);
 
   // use this to find the type and then call the appropriate method afterwards.

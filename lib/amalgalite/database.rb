@@ -6,11 +6,27 @@ require 'amalgalite3'
 require 'amalgalite/statement'
 require 'amalgalite/trace_tap'
 require 'amalgalite/profile_tap'
+require 'amalgalite/type_maps/default_map'
 
 module Amalgalite
   class Database
 
     class InvalidModeError < ::Amalgalite::Error; end
+
+    ##
+    # container class for holding transaction behavior constants
+    #
+    class TrasactionBehavior
+      DEFERRED  = "DEFERRED"
+      IMMEDIATE = "IMMEDIATE"
+      EXCLUSIVE = "EXCLUSIVE"
+      VALID     = [ DEFERRED, IMMEDIATE, EXCLUSIVE ]
+
+      def self.valid?( mode )
+        VALID.include? mode
+      end
+    end
+    
     ##
     # Create a new Amalgalite database
     #
@@ -35,6 +51,9 @@ module Amalgalite
     #            encoding of utf8.  Setting this to true and opening an already
     #            existing database has no effect.
     #
+    #            Currently :utf16 is not supported by Amalgalite, it is planned 
+    #            for a later release
+    #
     #
     include Amalgalite::SQLite3::Constants
     VALID_MODES = {
@@ -43,24 +62,37 @@ module Amalgalite
       "w+" => Open::READWRITE | Open::CREATE,
     }
 
+    # the lower level SQLite3::Database
     attr_reader :api
+
+    # An instance of something that follows the TraceTap protocol.
+    # Be default this is nil
     attr_reader :trace_tap
+
+    # An instances of something that follows the ProfileTap protocol.  
+    # By default this is nil
     attr_reader :profile_tap
+
+    # An instances of something that follows the TypeMap protocol.
+    # By default this is an instances of TypeMaps::DefaultMap
+    attr_reader :type_map
 
     ##
     # Create a new database 
     #
     def initialize( filename, mode = "w+", opts = {})
-      @open        = false
-      @profile_tap = nil
-      @trace_tap   = nil
+      @open           = false
+      @profile_tap    = nil
+      @trace_tap      = nil
+      @type_map       = ::Amalgalite::TypeMaps::DefaultMap.new
+      @in_transaction = false
 
       unless VALID_MODES.keys.include?( mode ) 
         raise InvalidModeError, "#{mode} is invalid, must be one of #{VALID_MODES.keys.join(', ')}" 
       end
 
       if not File.exist?( filename ) and opts[:utf16] then
-        @api = Amalgalite::SQLite3::Database.open16( filename )
+        raise NotImplementedError, "Currently Amalgalite has not implemented utf16 support"
       else
         @api = Amalgalite::SQLite3::Database.open( filename, VALID_MODES[mode] )
       end
@@ -113,10 +145,16 @@ module Amalgalite
     #
     def encoding
       unless @encoding
-        @encoding = "UTF-8"
-        #@encoding = db.pragma( "encoding" )
+        @encoding = pragma( "encoding" ).first['encoding']
       end
       return @encoding
+    end
+
+    ## 
+    # return whether or not the database is currently in a transaction or not
+    # 
+    def in_transaction?
+      @in_transaction
     end
 
     ##
@@ -301,6 +339,24 @@ module Amalgalite
 
     ##
     # :call-seq:
+    #   db.type_map = DefaultMap.new
+    #
+    # Assign your own TypeMap instance to do type conversions.  The value
+    # assigned here must respond to +bind_type_of+ and +result_value_of+
+    # methods.  See the TypeMap class for more details.
+    #
+    #
+    def type_map=( type_map_obj )
+      %w[ bind_type_of result_value_of ].each do |method|
+        unless type_map_obj.respond_to?( method )
+          raise Amalgalite::Error, "#{type_map_obj.class.name} cannot be used to do type mapping.  It does not respond to '#{method}'"
+        end
+      end
+      @type_map = type_map_obj
+    end
+
+    ##
+    # :call-seq:
     #   db.schema( dbname = "main" ) -> Schema
     # 
     # Returns a Schema object  containing the table and column structure of the
@@ -328,6 +384,69 @@ module Amalgalite
     # Returns the result set of the pragma
     def pragma( cmd )
       execute("PRAGMA #{cmd}")
+    end
+
+    ##
+    # Begin a transaction.  The valid transaction types are:
+    #
+    #   DEFERRED  : no read or write locks are created until the first
+    #               statement is executed that requries a read or a write
+    #   IMMEDIATE : a readlock is obtained immediately so that no other process
+    #               can write to the database
+    #   EXCLUSIVE : a read+write lock is obtained, no other proces can read or
+    #               write to the database
+    #
+    # As a convenience, these are constants available in the
+    # Database::TransactionBehavior class.
+    #
+    # Amalgalite Transactions are database level transactions, just as SQLite's
+    # are.
+    #
+    # If a block is passed in, then when the block exits, it is guaranteed that
+    # either 'COMMIT' or 'ROLLBACK' has been executed.  
+    #
+    # If any exception happens during the transaction that is caught by Amalgalite, 
+    # then a 'ROLLBACK' is issued when the block closes.  
+    #
+    # If of no exception happens during the transaction then a 'COMMIT' is
+    # issued upon leaving the block.
+    #
+    # If no block is passed in then you are on your own.
+    # 
+    def transaction( mode = TransactionBehavior::DEFERRED )
+      raise Amalgalite::Error, "Invalid transaction behavior mode #{mode}" unless TransactionBehavior.valid?( mode )
+      execute( "BEGIN #{mode} TRANSACTION" )
+      @in_transaction = true
+      if block_given? then
+        begin
+          yield self
+        ensure
+          if $! then
+            rollback
+            raise $!
+          else
+            commit
+          end
+          @in_transaction = false
+        end
+      end
+      return @in_transaction
+    end
+
+    ##
+    # Commit a transaction
+    #
+    def commit
+      execute( "COMMIT" )
+      @in_transaction = false
+    end
+
+    ##
+    # Rollback a transaction
+    #
+    def rollback
+      execute( "ROLLBACK" )
+      @in_transaction = false
     end
   end
 end

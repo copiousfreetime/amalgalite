@@ -26,7 +26,13 @@ describe Amalgalite::Database do
     File.exist?( SpecInfo.test_db ).should == true
   end
 
-  it "creates a new UTF-8 database (need exec to check pragma encoding)"
+  it "creates a new UTF-8 database (need exec to check pragma encoding)" do
+    db = Amalgalite::Database.new( SpecInfo.test_db )
+    db.execute_batch( @schema );
+    db.should_not be_utf16
+    db.encoding.should == "UTF-8"
+  end
+
   it "creates a new UTF-16 database (need exec to check pragma encoding)" 
 
   it "raises an error if the file does not exist and the database is opened with a non-create mode" do

@@ -1,6 +1,6 @@
 require File.expand_path(File.join(File.dirname(__FILE__),%w[ .. spec_helper.rb ]))
 
-require 'amalgalite/sqlite3/result_code'
+require 'amalgalite/sqlite3/constants'
 
 describe Amalgalite::SQLite3::Constants do
 

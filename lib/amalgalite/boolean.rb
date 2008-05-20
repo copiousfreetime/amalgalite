@@ -3,9 +3,9 @@
 # All rights reserved.  See LICENSE and/or COPYING for details.
 #++
 module Amalgalite
-  
   ##
-  # Do type conversion on values that coule be boolen values into True or False 
+  # Do type conversion on values that could be boolen values into 
+  # real 'true' or 'false'
   #
   # This is pulled from the possible boolean values from PostgreSQL
   #

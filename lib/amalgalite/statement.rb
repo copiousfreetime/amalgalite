@@ -132,20 +132,21 @@ module Amalgalite
     # bind a single parameter to a particular position
     #
     def bind_parameter_to( position, value )
-        case value
-        when Float
-          @stmt_api.bind_double( position, value )
-        when Fixnum
-          @stmt_api.bind_int( position, value )
-        when Bignum
-          @stmt_api.bind_int64( position, value )
-        when NilClass
-          @stmt_api.bind_null( position )
-        when ::Amalgalite::Blob
-          raise NotImplemented, "Blob binding is not implemented yet"
-        else
-          @stmt_api.bind_text( position, value.to_s )
-        end
+      bind_type = db.type_map.bind_type_of( value ) 
+      case bind_type
+      when DataType::FLOAT
+        @stmt_api.bind_double( position, value )
+      when DataType::INTEGER
+        @stmt_api.bind_int64( position, value )
+      when DataType::NULL
+        @stmt_api.bind_null( position )
+      when DataType::TEXT
+        @stmt_api.bind_text( position, value.to_s )
+      when DataType::BLOB
+        raise NotImplemented, "Blob binding is not implemented yet"
+      else
+        raise ::Amalgalite::Error, "Unknown binding type of #{bind_type} from #{db.type_map.class.name}.bind_type_of"
+      end
     end
       
 
@@ -195,31 +196,23 @@ module Amalgalite
       when ResultCode::ROW
         result_meta.each_with_index do |col, idx|
           value = nil
-          type_label = col.schema.convert_type( @stmt_api.column_type( idx ) )
-
-          case type_label
-          when :date
-            value = Date.parse( @stmt.column_text( idx ) )
-          when :datetime
-            value = DateTime.parse( @stmt_api.column_text( idx ) )
-          when :time
-            value = Time.parse( @stmt_api.column_text( idx ) )
-          when :float
-            value = @stmt_api.column_double( idx )
-          when :integer
-            value = @stmt_api.column_int64( idx )
-          when :string
+          column_type = @stmt_api.column_type( idx )
+          case column_type
+          when DataType::TEXT
             value = @stmt_api.column_text( idx )
-          when :nil
+          when DataType::FLOAT
+            value = @stmt_api.column_double( idx )
+          when DataType::INTEGER
+            value = @stmt_api.column_int64( idx )
+          when DataType::NULL
             value = nil
-          when :boolean
-            value = ::Amalgalite::Boolean.to_bool( @stmt.column_text( idx ) )
-          when :blob
+          when DataType::BLOB
             raise NotImplemented, "returning a blob is not supported yet"
-          else 
-            raise ::Amalgalite::Error, "BUG! : Unknown type type label of '#{type_label.to_s}' it fell through"
+          else
+            raise ::Amalgalite::Error, "BUG! : Unknown SQLite column type of #{column_type}"
           end
-          row[col.name] = value
+
+          row[col.name] = db.type_map.result_value_of( col.schema.declared_data_type, value )
         end
       when ResultCode::DONE
         row = nil
