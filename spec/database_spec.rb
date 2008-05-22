@@ -132,5 +132,13 @@ describe Amalgalite::Database do
     s.string.should =~ /unregistered as profile tap/m
   end
 
+  it "raises an error if a transaction is attempted within a transaction" do
+    db = Amalgalite::Database.new( SpecInfo.test_db )
+    db.transaction do |db2|
+      lambda{ db2.transaction }.should raise_error(Amalgalite::Error)
+    end
+  end
+
+
 end
 

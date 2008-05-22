@@ -16,7 +16,7 @@ module Amalgalite
     ##
     # container class for holding transaction behavior constants
     #
-    class TrasactionBehavior
+    class TransactionBehavior
       DEFERRED  = "DEFERRED"
       IMMEDIATE = "IMMEDIATE"
       EXCLUSIVE = "EXCLUSIVE"
@@ -415,6 +415,7 @@ module Amalgalite
     # 
     def transaction( mode = TransactionBehavior::DEFERRED )
       raise Amalgalite::Error, "Invalid transaction behavior mode #{mode}" unless TransactionBehavior.valid?( mode )
+      raise Amalgalite::Error, "Nested Transactions are not supported" if @in_transaction
       execute( "BEGIN #{mode} TRANSACTION" )
       @in_transaction = true
       if block_given? then

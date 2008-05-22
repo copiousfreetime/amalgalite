@@ -2,7 +2,7 @@ For first release
 =================
 * Type conversion tests, lots of them, create databases with various sql types
   and make sure thet get converted correctly to ruby classes
-* Transactions ( deferred* , immediate, exclusive )
+* Tests on transactions
 * amalgalite command line tool
 
 For future releases
