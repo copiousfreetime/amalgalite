@@ -7,5 +7,6 @@ module Amalgalite
   class Error < ::StandardError; end
 end
 require 'amalgalite/version'
+require 'amalgalite/sqlite3'
 require 'amalgalite/paths'
 require 'amalgalite/database'

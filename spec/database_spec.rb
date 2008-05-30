@@ -44,8 +44,17 @@ describe Amalgalite::Database do
     lambda { Amalgalite::Database.new( SpecInfo.test_db, "b+" ) }.should raise_error(Amalgalite::Database::InvalidModeError)
   end
 
-  it "can be in autocommit mode"
-  it "can be in non-autocommit mode"
+  it "can be in autocommit mode, and is by default" do
+    @iso_db.autocommit?.should == true
+  end
+
+  it "reports false for autocommit? when inside a transaction" do
+    @iso_db.execute(" BEGIN ")
+    @iso_db.autocommit?.should == false
+    @iso_db.in_transaction?.should == true
+    @iso_db.execute(" COMMIT")
+    @iso_db.in_transaction?.should == false
+  end
 
   it "prepares a statment" do
     db = Amalgalite::Database.new( SpecInfo.test_db )

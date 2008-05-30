@@ -10,6 +10,7 @@ module Amalgalite::SQLite3::Constants
   # 
   module DataType
   end
+  DataType.freeze
 
   ##
   # Open defines the namespace for all possible flags to the Database.open
@@ -17,6 +18,7 @@ module Amalgalite::SQLite3::Constants
   #
   module Open
   end
+  Open.freeze
 
   ##
   # ResultCode defines the namespace for all possible result codes from an

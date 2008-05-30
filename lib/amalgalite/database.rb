@@ -85,7 +85,6 @@ module Amalgalite
       @profile_tap    = nil
       @trace_tap      = nil
       @type_map       = ::Amalgalite::TypeMaps::DefaultMap.new
-      @in_transaction = false
 
       unless VALID_MODES.keys.include?( mode ) 
         raise InvalidModeError, "#{mode} is invalid, must be one of #{VALID_MODES.keys.join(', ')}" 
@@ -154,7 +153,7 @@ module Amalgalite
     # return whether or not the database is currently in a transaction or not
     # 
     def in_transaction?
-      @in_transaction
+      not @api.autocommit?
     end
 
     ##
@@ -415,9 +414,8 @@ module Amalgalite
     # 
     def transaction( mode = TransactionBehavior::DEFERRED )
       raise Amalgalite::Error, "Invalid transaction behavior mode #{mode}" unless TransactionBehavior.valid?( mode )
-      raise Amalgalite::Error, "Nested Transactions are not supported" if @in_transaction
+      raise Amalgalite::Error, "Nested Transactions are not supported" if in_transaction?
       execute( "BEGIN #{mode} TRANSACTION" )
-      @in_transaction = true
       if block_given? then
         begin
           yield self
@@ -428,10 +426,9 @@ module Amalgalite
           else
             commit
           end
-          @in_transaction = false
         end
       end
-      return @in_transaction
+      return in_transaction?
     end
 
     ##
@@ -439,7 +436,6 @@ module Amalgalite
     #
     def commit
       execute( "COMMIT" )
-      @in_transaction = false
     end
 
     ##
@@ -447,7 +443,6 @@ module Amalgalite
     #
     def rollback
       execute( "ROLLBACK" )
-      @in_transaction = false
     end
   end
 end
