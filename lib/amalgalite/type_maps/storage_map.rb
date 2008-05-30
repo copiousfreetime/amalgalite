@@ -11,7 +11,7 @@ module Amalgalite::TypeMaps
   # An Amalagliate TypeMap that has a one-to-one conversion between SQLite types
   # and Ruby classes
   #
-  class StorageTypeMap < ::Amalgalite::TypeMap
+  class StorageMap < ::Amalgalite::TypeMap
     ##
     # A straight logical mapping (for me at least) of basic Ruby classes to SQLite types, if
     # nothing can be found then default to TEXT.

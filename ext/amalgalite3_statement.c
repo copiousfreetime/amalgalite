@@ -44,7 +44,7 @@ VALUE am_sqlite3_statement_bind_double(VALUE self, VALUE position, VALUE value)
     int               rc;
 
     Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
-    rc = sqlite3_bind_double( am_stmt->stmt, pos, value );
+    rc = sqlite3_bind_double( am_stmt->stmt, pos, v );
     if ( SQLITE_OK != rc ) {
         rb_raise(eAS_Error, "Error binding [%s] to double at position %d in statement: [SQLITE_ERROR %d] : %s\n",
                 value, pos,

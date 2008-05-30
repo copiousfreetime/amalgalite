@@ -83,7 +83,34 @@ describe Amalgalite::Database do
     db.should be_autocommit
   end
 
-  it "report the number of rows changed with an insert"
+  it "report the number of rows changed with an insert" do
+    db = Amalgalite::Database.new( SpecInfo.test_db )
+    db.execute_batch <<-sql
+      CREATE TABLE t1( x );
+      INSERT INTO t1( x ) values ( 1 );
+      INSERT INTO t1( x ) values ( 2 );
+      INSERT INTO t1( x ) values ( 3 );
+    sql
+
+    db.row_changes.should == 1
+    db.total_changes.should == 3
+    db.close
+  end
+
+  it "reports the number of rows deleted" do
+    db = Amalgalite::Database.new( SpecInfo.test_db )
+    db.execute_batch <<-sql
+      CREATE TABLE t1( x );
+      INSERT INTO t1( x ) values ( 1 );
+      INSERT INTO t1( x ) values ( 2 );
+      INSERT INTO t1( x ) values ( 3 );
+      DELETE FROM t1 where x < 3;
+    sql
+    db.row_changes.should == 2
+    db.close
+  end
+
+ 
 
   it "can immediately execute an sql statement " do
     db = Amalgalite::Database.new( SpecInfo.test_db )
@@ -124,6 +151,14 @@ describe Amalgalite::Database do
     s.string.should =~ /unregistered as profile tap/m
   end
 
+  it "#execute yields each row when called with a block" do
+    count = 0
+    @iso_db.execute( "SELECT * FROM country LIMIT 10") do |row|
+      count += 1
+    end
+    count.should == 10
+  end
+
   it "can use something that responds to 'write' as a tap" do
     db = Amalgalite::Database.new( SpecInfo.test_db )
     s2 = db.trace_tap   = StringIO.new
@@ -148,6 +183,40 @@ describe Amalgalite::Database do
     end
   end
 
+  it "#reload_schema!" do
+    @iso_db = Amalgalite::Database.new( SpecInfo.make_iso_db )
+    schema = @iso_db.schema
+    schema.instance_of?( Amalgalite::Schema ).should == true
+    s2 = @iso_db.reload_schema!
+    s2.object_id.should_not == schema.object_id
+  end
 
+  it "can rollback a transaction" do
+    @iso_db.transaction 
+    r = @iso_db.execute("SELECT count(1) as cnt FROM country");
+    r.first['cnt'].should == 242
+    @iso_db.execute("DELETE FROM country")
+    r = @iso_db.execute("SELECT count(1) as cnt FROM country");
+    r.first['cnt'].should == 0
+    @iso_db.rollback
+
+    r = @iso_db.execute("SELECT count(1) as cnt FROM country");
+    r.first['cnt'].should == 242
+  end
+
+  it "rolls back if an exception happens during a transaction block" do
+    begin
+      @iso_db.transaction do |db|
+        r = db.execute("SELECT count(1) as cnt FROM country");
+        r.first['cnt'].should == 242
+        db.execute("DELETE FROM country")
+        db.in_transaction?.should == true
+        raise "testing rollback"
+      end
+    rescue => e
+      @iso_db.in_transaction?.should == false
+      @iso_db.execute("SELECT count(1) as cnt FROM country").first['cnt'].should == 242
+    end
+  end
 end
 

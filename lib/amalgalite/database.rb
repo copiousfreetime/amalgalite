@@ -157,6 +157,20 @@ module Amalgalite
     end
 
     ##
+    # return how many rows have changed in the last insert, update or delete
+    # statement
+    def row_changes
+      @api.row_changes
+    end
+
+    ##
+    # return how many rows have changed since the connection to the database has
+    # been opend.
+    def total_changes
+      @api.total_changes
+    end
+
+    ##
     # Prepare a statement for execution
     #
     # If called with a block, the statement is yielded to the block and the
@@ -372,9 +386,9 @@ module Amalgalite
     # By default once the schema is obtained, it is cached.  This is here to
     # force the schema to be reloaded.
     #
-    def reload_schema!
+    def reload_schema!( dbname = "main" )
       @schema = nil
-      schema
+      schema( dbname )
     end
 
     ##

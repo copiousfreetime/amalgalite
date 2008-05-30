@@ -5,6 +5,8 @@
 
 require 'amalgalite/type_map'
 require 'amalgalite3'
+require 'time'
+require 'date'
 
 module Amalgalite::TypeMaps
   ##

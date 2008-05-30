@@ -190,6 +190,9 @@ module Amalgalite
     # Return the next row of data, with type conversion as best as possible into
     # ruby types.
     #
+    # TOOD: should the result set be a has or an array by default, and if it is
+    # a hash, should non-unique keys mean that there is an error?
+    #
     def next_row
       row = {}
       case rc = @stmt_api.step

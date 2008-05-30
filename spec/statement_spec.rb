@@ -36,6 +36,13 @@ describe Amalgalite::Statement do
     end
   end
 
+  it "can prepare a statement without a block" do
+    stmt = @iso_db.prepare("SELECT * FROM country WHERE two_letter = :two") 
+    rs = stmt.execute( ":two" => "JP" )
+    rs.size.should == 1
+    stmt.close
+  end
+
   it "knows how many parameters are in the statement" do
     @iso_db.prepare("SELECT * FROM country WHERE two_letter = :two") do |stmt|
       stmt.check_parameter_count!( 1 ).should == 1
