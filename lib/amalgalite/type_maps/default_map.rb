@@ -127,7 +127,7 @@ module Amalgalite::TypeMaps
     # convert an string to an Integer
     #
     def integer( str )
-      Integer( str )
+      Float( str ).to_i
     end
 
     ##
