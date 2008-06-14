@@ -55,22 +55,27 @@ module Amalgalite
       @default_value      = nil
     end
 
+    # true if the column has a default value
     def has_default_value?
       not default_value.nil?
     end
 
+    # true if the column may have a NULL value
     def nullable?
       not_null_constraint == false
     end
 
+    # true if the column as a NOT NULL constraint
     def not_null_constraint?
       not_null_constraint
     end
 
+    # true if the column is a primary key column
     def primary_key?
       primary_key
     end
 
+    # true if the column is auto increment
     def auto_increment?
       auto_increment
     end

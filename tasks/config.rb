@@ -15,7 +15,7 @@ Configuration.for('project') {
   description   Utils.section_of("README", "description")
   summary       description.split(".").first
   history       "HISTORY"
-  license       FileList["LICENSE", "COPYING"]
+  license       FileList["LICENSE"]
   readme        "README"
 }
 

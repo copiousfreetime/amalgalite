@@ -1,9 +1,7 @@
 For first release
 =================
-* convert type dependency to just use 'call'
 * amalgalite command line tool
 * documentation
-? if in a transaction, and you call transaction, then yield the block
 
 For future releases
 ===================
@@ -20,4 +18,5 @@ For future releases
 * full text search
 * virtual file system
 * encryption key support
-* call instead of 
+* convert type dependency to just use 'call'
+? if in a transaction, and you call transaction, then yield the block

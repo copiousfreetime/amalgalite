@@ -1,8 +1,8 @@
-== amalgalite
+== Amalgalite
 
-* Homepage
-* rubyforge project
-* email
+* Homepage[http://www.copiousfreetime.org/projects/amalgalite]
+* {Rubyforge Project}[http://rubyforge.org/projects/copiousfreetime/]
+* email jeremy at copiousfreetime dot org
 
 == DESCRIPTION
 
@@ -12,9 +12,11 @@
 
 == CREDITS
 
+* Jamis Buck for the first ruby sqlite implementation
+
 == LICENSE
 
-Copyright (c)  Jeremy Hinegardner
+Copyright (c) 2008 Jeremy Hinegardner
 
 All rights reserved.
 

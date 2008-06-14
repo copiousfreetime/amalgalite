@@ -162,7 +162,7 @@ module Amalgalite
       return pos
     end
 
-    #
+    ##
     # Check and make sure that the number of parameters aligns with the number
     # that sqlite expects
     #
@@ -175,7 +175,7 @@ module Amalgalite
     end
 
 
-    #
+    ##
     # Iterate over the results of the statement returning each row of results 
     # as a hash by +column_name+.  The column names are the value after an 
     # 'AS' in the query or default chosen by sqlite.  
@@ -187,12 +187,9 @@ module Amalgalite
       return self
     end
 
-    #
-    # Return the next row of data, with type conversion as best as possible into
-    # ruby types.
-    #
-    # TOOD: should the result set be a has or an array by default, and if it is
-    # a hash, should non-unique keys mean that there is an error?
+    ##
+    # Return the next row of data, with type conversion as indicated by the
+    # Database#type_map
     #
     def next_row
       row = []
@@ -228,7 +225,7 @@ module Amalgalite
       return row
     end
 
-    #
+    ##
     # Return all rows from the statement as one array
     #
     def all_rows
@@ -239,7 +236,7 @@ module Amalgalite
       return rows
     end
 
-    #
+    ##
     # Inspect the statement and gather all the meta information about the
     # results, include the name of the column result column and the origin
     # column.  The origin column is the original database.table.column the value
@@ -269,7 +266,7 @@ module Amalgalite
       return @result_meta
     end
 
-    #
+    ##
     # Return the array of field names for the result set, the field names are
     # all strings
     #
@@ -277,7 +274,7 @@ module Amalgalite
       @fields ||= result_meta.collect { |m| m.name }
     end
 
-    #
+    ##
     # Return any unsued SQL from the statement
     #
     def remaining_sql
@@ -285,21 +282,21 @@ module Amalgalite
     end
 
 
-    #
+    ##
     # return the number of columns in the result of this query
     #
     def column_count
       @stmt_api.column_count
     end
     
-    #
+    ##
     # return the raw sql that was originally used to prepare the statement
     #
     def sql
       @stmt_api.sql
     end
 
-    #
+    ##
     # Close the statement.  The statement is no longer valid for use after it
     # has been closed.
     #

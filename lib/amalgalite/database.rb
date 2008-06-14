@@ -9,6 +9,23 @@ require 'amalgalite/profile_tap'
 require 'amalgalite/type_maps/default_map'
 
 module Amalgalite
+  #
+  # The encapsulation of a connection to an SQLite3 database.  
+  #
+  # Example opening and possibly creating a new daabase
+  #
+  #   db = Amalgalite::Database.new( "mydb.db" )
+  #   db.execute( "SELECT * FROM table" ) do |row|
+  #     puts row
+  #   end
+  #
+  #   db.close
+  #
+  # Open a database read only:
+  #
+  #   db = Amalgalite::Database.new( "mydb.db", "r" )
+  #
+  #
   class Database
 
     class InvalidModeError < ::Amalgalite::Error; end
@@ -27,46 +44,18 @@ module Amalgalite
       end
     end
     
-    ##
-    # Create a new Amalgalite database
-    #
-    # :call-seq:
-    #   Amalgalite::Database.new( filename, "r", opts = {}) -> Database
-    #
-    # The first parameter is the filename of the sqlite database.  
-    # The second parameter is the standard file modes of how to open a file.
-    #
-    # The modes are:
-    #   * r  - Read-only
-    #   * r+ - Read/write, an error is thrown if the database does not already
-    #          exist.
-    #   * w+ - Read/write, create a new database if it doesn't exist
-    #          This is the default as this is how most databases will want
-    #          to be utilized.
-    #
-    # opts is a hash of available options for the database:
-    #
-    #   :utf16 : option to set the database to a utf16 encoding if creating 
-    #            a database. By default, databases are created with an 
-    #            encoding of utf8.  Setting this to true and opening an already
-    #            existing database has no effect.
-    #
-    #            Currently :utf16 is not supported by Amalgalite, it is planned 
-    #            for a later release
-    #
-    #
-    include Amalgalite::SQLite3::Constants
+   include Amalgalite::SQLite3::Constants
     VALID_MODES = {
       "r"  => Open::READONLY,
       "r+" => Open::READWRITE,
       "w+" => Open::READWRITE | Open::CREATE,
     }
 
-    # the lower level SQLite3::Database
+    # the low level Amalgalite::SQLite3::Database
     attr_reader :api
 
     # An instance of something that follows the TraceTap protocol.
-    # Be default this is nil
+    # By default this is nil
     attr_reader :trace_tap
 
     # An instances of something that follows the ProfileTap protocol.  
@@ -78,7 +67,32 @@ module Amalgalite
     attr_reader :type_map
 
     ##
-    # Create a new database 
+    # Create a new Amalgalite database
+    #
+    # :call-seq:
+    #   Amalgalite::Database.new( filename, "w+", opts = {}) -> Database
+    #
+    # The first parameter is the filename of the sqlite database.  
+    # The second parameter is the standard file modes of how to open a file.
+    #
+    # The modes are:
+    #
+    # * r  - Read-only
+    # * r+ - Read/write, an error is thrown if the database does not already exist
+    # * w+ - Read/write, create a new database if it doesn't exist
+    #
+    # <tt>w+</tt> is the default as this is how most databases will want to be utilized.
+    #
+    # opts is a hash of available options for the database:
+    #
+    # * :utf16  option to set the database to a utf16 encoding if creating a database. 
+    #
+    # By default, databases are created with an encoding of utf8.  Setting this to 
+    # true and opening an already existing database has no effect.
+    #
+    # *NOTE* Currently :utf16 is not supported by Amalgalite, it is planned 
+    # for a later release
+    #
     #
     def initialize( filename, mode = "w+", opts = {})
       @open           = false
@@ -158,14 +172,16 @@ module Amalgalite
 
     ##
     # return how many rows have changed in the last insert, update or delete
-    # statement
+    # statement.
+    #
     def row_changes
       @api.row_changes
     end
 
     ##
-    # return how many rows have changed since the connection to the database has
-    # been opend.
+    # return how many rows have changed since the connection to the database was
+    # opened.
+    #
     def total_changes
       @api.total_changes
     end
@@ -175,6 +191,18 @@ module Amalgalite
     #
     # If called with a block, the statement is yielded to the block and the
     # statement is closed when the block is done.
+    #
+    #  db.prepare( "SELECT * FROM table WHERE c = ?" ) do |stmt|
+    #    list_of_c_values.each do |c|
+    #      stmt.execute( c ) do |row|
+    #        puts "when c = #{c} : #{row.inspect}"
+    #      end
+    #    end
+    #  end
+    #
+    # Or without a block:
+    #
+    #   stmt = db.prepare( "INSERT INTO t1(x, y, z) VALUES ( :
     #
     def prepare( sql )
       stmt = Amalgalite::Statement.new( self, sql )
@@ -402,12 +430,12 @@ module Amalgalite
     ##
     # Begin a transaction.  The valid transaction types are:
     #
-    #   DEFERRED  : no read or write locks are created until the first
-    #               statement is executed that requries a read or a write
-    #   IMMEDIATE : a readlock is obtained immediately so that no other process
-    #               can write to the database
-    #   EXCLUSIVE : a read+write lock is obtained, no other proces can read or
-    #               write to the database
+    # DEFERRED:: no read or write locks are created until the first
+    #            statement is executed that requries a read or a write
+    # IMMEDIATE:: a readlock is obtained immediately so that no other process
+    #             can write to the database
+    # EXCLUSIVE:: a read+write lock is obtained, no other proces can read or
+    #             write to the database
     #
     # As a convenience, these are constants available in the
     # Database::TransactionBehavior class.
