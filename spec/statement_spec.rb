@@ -76,7 +76,6 @@ describe Amalgalite::Statement do
     end
   end
 
-
   it "binds a integer variable correctly" do
     @iso_db.prepare("SELECT * FROM country WHERE id = ? ORDER BY name ") do |stmt|
       all_rows = stmt.execute( 891 )
@@ -98,12 +97,20 @@ describe Amalgalite::Statement do
     stmt.close
   end
 
-
   it "can execute a single sql command and say if there is remaining sql to execute" do
     db = Amalgalite::Database.new( SpecInfo.test_db )
     stmt = @db.prepare( @schema_sql )
     stmt.execute
     stmt.remaining_sql.size.should > 0
     stmt.close
+  end
+
+  it "has index based access to the result set" do
+    @iso_db.prepare("SELECT * FROM country WHERE id = ? ORDER BY name ") do |stmt|
+      all_rows = stmt.execute( 891 )
+      all_rows.size.should == 2
+      all_rows.last.first.should == "Yugoslavia"
+      all_rows.first[1].should == "CS"
+    end
   end
 end

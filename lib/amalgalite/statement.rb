@@ -6,6 +6,7 @@
 require 'amalgalite3'
 require 'amalgalite/blob'
 require 'date'
+require 'arrayfields'
 
 module Amalgalite
   class Statement
@@ -194,7 +195,7 @@ module Amalgalite
     # a hash, should non-unique keys mean that there is an error?
     #
     def next_row
-      row = {}
+      row = []
       case rc = @stmt_api.step
       when ResultCode::ROW
         result_meta.each_with_index do |col, idx|
@@ -215,8 +216,9 @@ module Amalgalite
             raise ::Amalgalite::Error, "BUG! : Unknown SQLite column type of #{column_type}"
           end
 
-          row[col.name] = db.type_map.result_value_of( col.schema.declared_data_type, value )
+          row << db.type_map.result_value_of( col.schema.declared_data_type, value )
         end
+        row.fields = result_fields
       when ResultCode::DONE
         row = nil
       else
@@ -265,6 +267,14 @@ module Amalgalite
         @result_meta = meta
       end
       return @result_meta
+    end
+
+    #
+    # Return the array of field names for the result set, the field names are
+    # all strings
+    #
+    def result_fields
+      @fields ||= result_meta.collect { |m| m.name }
     end
 
     #
