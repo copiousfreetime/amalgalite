@@ -1,9 +1,9 @@
 For first release
 =================
-* if in a transaction, and you call transaction, then yield the block
 * convert type dependency to just use 'call'
 * amalgalite command line tool
 * documentation
+? if in a transaction, and you call transaction, then yield the block
 
 For future releases
 ===================

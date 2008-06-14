@@ -81,7 +81,7 @@ module Amalgalite
   #
   # A Profile Tap recives +profile+ events which involve the number of
   # nanoseconds in wall-clock time it took for a particular thing to happen. In
-  # general this is an SQL statement.
+  # general this +thing+ is an SQL statement.
   #
   # It has a well known +profile+ method which when invoked will write the event
   # to a delegate object.

@@ -9,13 +9,12 @@ require 'stringio'
 module Amalgalite
   module Taps
     #
-    # An IOTap to make it easy to send tap all tap  information to any IO based
+    # An IOTap is an easy way to send all top information to andy IO based
     # object.  Both profile and trace tap information can be captured
-    # This means you can do:
+    # This means you can send the events to STDOUT with:
     #
     #   db.profile_tap = db.trace_tap  = Amalgalite::Taps::Stdout.new
     #
-    # of if you want to separa
     #
     class IO
 
