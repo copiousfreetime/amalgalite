@@ -1,42 +1,21 @@
-#include "amalgalite3.h"
-/* 
+/**
+ * Copyright (c) 2008 Jeremy Hinegardner
+ * All rights reserved.  See LICENSE and/or COPYING for details.
+ *
  * vim: shiftwidth=4 
  */ 
 
-/***********************************************************************
- * Prototypes
- ***********************************************************************/
+#include "amalgalite3.h"
 
 /* Module and Classes */
-VALUE mA;
-VALUE mAS;
-VALUE mASV;
-VALUE cAS_Database;
-VALUE cAS_Statement;
-VALUE eAS_Error;
+VALUE mA;              /* module Amalgalite                     */
+VALUE mAS;             /* module Amalgalite::SQLite3            */
+VALUE mASV;            /* module Amalgalite::SQLite3::Version   */
+VALUE eAS_Error;       /* class  Amalgalite::SQLite3::Error     */
 
-/*
- * Return the sqlite3 version number as a string
- *
- * :call-seq:
- *    Amalgalite::SQLite3.version -> String
- */
-VALUE am_sqlite3_libversion(VALUE self)
-{
-    return rb_str_new2(sqlite3_libversion());
-}
-
-/*
- * Return the sqlite3 version number as an integer
- *
- * :call-seq:
- *    Amalgalite::SQLite3.version_number -> Fixnum
- *
- */
-VALUE am_sqlite3_libversion_number(VALUE self)
-{
-    return INT2FIX(sqlite3_libversion_number());
-}
+/*----------------------------------------------------------------------
+ * module methods for Amalgalite::SQLite3
+ *---------------------------------------------------------------------*/
 
 /*
  * Has the SQLite3 extension been compiled "threadsafe".  This is threadsafe? is
@@ -141,6 +120,33 @@ VALUE am_sqlite3_randomness(VALUE self, VALUE num_bytes)
     return rb_str_new( buf, n );
 }
 
+/*----------------------------------------------------------------------
+ * module methods for Amalgalite::SQLite3::Version
+ *---------------------------------------------------------------------*/
+
+/*
+ * Return the sqlite3 version number as a string
+ *
+ * :call-seq:
+ *    Amalgalite::SQLite3::Version.to_s -> String
+ */
+VALUE am_sqlite3_libversion(VALUE self)
+{
+    return rb_str_new2(sqlite3_libversion());
+}
+
+/*
+ * Return the sqlite3 version number as an integer
+ *
+ * :call-seq:
+ *    Amalgalite::SQLite3.Version.to_i -> Fixnum
+ *
+ */
+VALUE am_sqlite3_libversion_number(VALUE self)
+{
+    return INT2FIX(sqlite3_libversion_number());
+}
+
 
 /***********************************************************************
  * Extension initialization
@@ -173,58 +179,12 @@ void Init_amalgalite3()
     rb_define_module_function(mASV, "to_s", am_sqlite3_libversion, 0);
     rb_define_module_function(mASV, "to_i", am_sqlite3_libversion_number, 0);
 
-    /* module Amalgalite::Sqlite3::Constants
-     */
-    am_define_constants_under(mAS);
-
     /*
-     * class Database
+     * Initialize the rest of the module
      */
-    cAS_Database = rb_define_class_under(mAS, "Database", rb_cObject); 
-    rb_define_alloc_func(cAS_Database, am_sqlite3_database_alloc); /* in amalgalite3_database.c */
-    rb_define_singleton_method(cAS_Database, "open", am_sqlite3_database_open, -1); /* in amalgalite3_database.c */
-    rb_define_singleton_method(cAS_Database, "open16", am_sqlite3_database_open16, 1); /* in amalgalite3_database.c */
-    rb_define_method(cAS_Database, "prepare", am_sqlite3_database_prepare, 1); /* in amalgalite3_database.c */
-    rb_define_method(cAS_Database, "close", am_sqlite3_database_close, 0); /* in amalgalite3_database.c */
-    rb_define_method(cAS_Database, "last_insert_rowid", am_sqlite3_database_last_insert_rowid, 0); /* in amalgalite3_database.c */
-    rb_define_method(cAS_Database, "autocommit?", am_sqlite3_database_is_autocommit, 0); /* in amalgalite3_database.c */
-    rb_define_method(cAS_Database, "register_trace_tap", am_sqlite3_database_register_trace_tap, 1); /* in amalgalite3_database.c */
-    rb_define_method(cAS_Database, "register_profile_tap", am_sqlite3_database_register_profile_tap, 1); /* in amalgalite3_database.c */
-    rb_define_method(cAS_Database, "table_column_metadata", am_sqlite3_database_table_column_metadata, 3); /* in amalgalite3_database.c */
-    rb_define_method(cAS_Database, "row_changes", am_sqlite3_database_row_changes, 0); /* in amalgalite3_database.c */
-    rb_define_method(cAS_Database, "total_changes", am_sqlite3_database_total_changes, 0); /* in amalgalite3_database.c */
-
-    /*
-     * class Statement
-     */
-    cAS_Statement = rb_define_class_under(mAS, "Statement", rb_cObject); 
-    rb_define_alloc_func(cAS_Statement, am_sqlite3_statement_alloc); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "sql", am_sqlite3_statement_sql, 0); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "close", am_sqlite3_statement_close, 0); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "step", am_sqlite3_statement_step, 0); /* in amalgalite3_statement.c */
-
-    rb_define_method(cAS_Statement, "column_count", am_sqlite3_statement_column_count, 0); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "column_name", am_sqlite3_statement_column_name, 1); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "column_declared_type", am_sqlite3_statement_column_decltype, 1); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "column_type", am_sqlite3_statement_column_type, 1); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "column_text", am_sqlite3_statement_column_text, 1); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "column_int", am_sqlite3_statement_column_int, 1); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "column_int64", am_sqlite3_statement_column_int64, 1); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "column_double", am_sqlite3_statement_column_double, 1); /* in amalgalite3_statement.c */
-
-    rb_define_method(cAS_Statement, "column_database_name", am_sqlite3_statement_column_database_name, 1); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "column_table_name", am_sqlite3_statement_column_table_name, 1); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "column_origin_name", am_sqlite3_statement_column_origin_name, 1); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "reset!", am_sqlite3_statement_reset, 0); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "clear_bindings!", am_sqlite3_statement_clear_bindings, 0); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "parameter_count", am_sqlite3_statement_bind_parameter_count, 0); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "parameter_index", am_sqlite3_statement_bind_parameter_index, 1); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "remaining_sql", am_sqlite3_statement_remaining_sql, 0); /* in amalgalite_statement.c */
-    rb_define_method(cAS_Statement, "bind_text", am_sqlite3_statement_bind_text, 2); /* in amalgalite_statement.c */
-    rb_define_method(cAS_Statement, "bind_int", am_sqlite3_statement_bind_int, 2); /* in amalgalite_statement.c */
-    rb_define_method(cAS_Statement, "bind_int64", am_sqlite3_statement_bind_int64, 2); /* in amalgalite_statement.c */
-    rb_define_method(cAS_Statement, "bind_double", am_sqlite3_statement_bind_double, 2); /* in amalgalite_statement.c */
-    rb_define_method(cAS_Statement, "bind_null", am_sqlite3_statement_bind_null, 1); /* in amalgalite_statement.c */
+    Init_amalgalite3_constants( mAS );
+    Init_amalgalite3_database( mAS );
+    Init_amalgalite3_statement( mAS );
 
 }
 

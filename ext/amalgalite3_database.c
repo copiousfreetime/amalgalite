@@ -1,7 +1,12 @@
 #include "amalgalite3.h"
-/* 
+/**
+ * Copyright (c) 2008 Jeremy Hinegardner
+ * All rights reserved.  See LICENSE and/or COPYING for details.
+ *
  * vim: shiftwidth=4 
  */ 
+
+VALUE cAS_Database;    /* class  Amalgliate::SQLite3::Database  */
 
 /**
  * :call-seq:
@@ -418,3 +423,26 @@ VALUE am_sqlite3_database_alloc(VALUE klass)
     obj = Data_Wrap_Struct(klass, NULL, am_sqlite3_database_free, am_db);
     return obj;
 }
+
+void Init_amalgalite3_database( parent_module )
+{
+    /*
+     * class Database
+     */
+    cAS_Database = rb_define_class_under(parent_module, "Database", rb_cObject); 
+
+    rb_define_alloc_func(cAS_Database, am_sqlite3_database_alloc); /* in amalgalite3_database.c */
+    rb_define_singleton_method(cAS_Database, "open", am_sqlite3_database_open, -1); /* in amalgalite3_database.c */
+    rb_define_singleton_method(cAS_Database, "open16", am_sqlite3_database_open16, 1); /* in amalgalite3_database.c */
+    rb_define_method(cAS_Database, "prepare", am_sqlite3_database_prepare, 1); /* in amalgalite3_database.c */
+    rb_define_method(cAS_Database, "close", am_sqlite3_database_close, 0); /* in amalgalite3_database.c */
+    rb_define_method(cAS_Database, "last_insert_rowid", am_sqlite3_database_last_insert_rowid, 0); /* in amalgalite3_database.c */
+    rb_define_method(cAS_Database, "autocommit?", am_sqlite3_database_is_autocommit, 0); /* in amalgalite3_database.c */
+    rb_define_method(cAS_Database, "register_trace_tap", am_sqlite3_database_register_trace_tap, 1); /* in amalgalite3_database.c */
+    rb_define_method(cAS_Database, "register_profile_tap", am_sqlite3_database_register_profile_tap, 1); /* in amalgalite3_database.c */
+    rb_define_method(cAS_Database, "table_column_metadata", am_sqlite3_database_table_column_metadata, 3); /* in amalgalite3_database.c */
+    rb_define_method(cAS_Database, "row_changes", am_sqlite3_database_row_changes, 0); /* in amalgalite3_database.c */
+    rb_define_method(cAS_Database, "total_changes", am_sqlite3_database_total_changes, 0); /* in amalgalite3_database.c */
+
+}
+

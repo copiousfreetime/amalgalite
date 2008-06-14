@@ -1,16 +1,15 @@
+/**
+ * Copyright (c) 2008 Jeremy Hinegardner
+ * All rights reserved.  See LICENSE and/or COPYING for details.
+ *
+ * vim: shiftwidth=4 
+ */ 
+
 #ifndef __AMALGALITE_H__
 #define __AMALGALITE_H__
 
 #include "ruby.h"
 #include "sqlite3.h"
-
-/** module and classes **/
-extern VALUE mA;
-extern VALUE mAS;
-extern VALUE mASV;
-extern VALUE cAS_Database;
-extern VALUE cAS_Statement;
-extern VALUE eAS_Error;
 
 /* wrapper struct around the sqlite3 opaque pointer */
 typedef struct am_sqlite3 {
@@ -25,15 +24,18 @@ typedef struct am_sqlite3_stmt {
   VALUE         remaining_sql;
 } am_sqlite3_stmt;
 
-/* 
 
-/***********************************************************************
- * Prototypes
- **********************************************************************/
+/** module and classes **/
+extern VALUE mA;              /* module Amalgalite                     */
+extern VALUE mAS;             /* module Amalgalite::SQLite3            */
+extern VALUE mASV;            /* module Amalgalite::SQLite3::Version   */
+extern VALUE eAS_Error;       /* class  Amalgalite::SQLite3::Error     */
 
 /*----------------------------------------------------------------------
- * Database functions
+ * Prototype for Amalgalite::SQLite3::Database
  *---------------------------------------------------------------------*/
+extern VALUE cAS_Database;    /* class  Amalgliate::SQLite3::Database  */
+
 extern void  am_define_constants_under(VALUE);
 extern VALUE am_sqlite3_database_alloc(VALUE klass);
 extern void  am_sqlite3_database_free(am_sqlite3*);
@@ -51,8 +53,10 @@ extern VALUE am_sqlite3_database_register_trace_tap(VALUE self, VALUE tap);
 extern VALUE am_sqlite3_database_register_profile_tap(VALUE self, VALUE tap);
 
 /*----------------------------------------------------------------------
- * Statement functions
+ * Prototype for Amalgalite::SQLite3::Statement 
  *---------------------------------------------------------------------*/
+extern VALUE cAS_Statement;   /* class  Amalgliate::SQLite3::Statement */
+
 extern VALUE am_sqlite3_statement_alloc(VALUE klass);
 extern void  am_sqlite3_statement_free(am_sqlite3_stmt* );
 extern VALUE am_sqlite3_statement_sql(VALUE self);
@@ -83,7 +87,7 @@ extern VALUE am_sqlite3_statement_bind_double(VALUE self, VALUE position, VALUE 
 extern VALUE am_sqlite3_statement_bind_null(VALUE self, VALUE position);
 
 /***********************************************************************
- * Helpful macros
+ * Type conversion macros between sqlite data types and ruby types
  **********************************************************************/
 
 #define SQLINT64_2NUM(x)      ( LL2NUM( x ) )
