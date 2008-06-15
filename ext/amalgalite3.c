@@ -18,12 +18,12 @@ VALUE eAS_Error;       /* class  Amalgalite::SQLite3::Error     */
  *---------------------------------------------------------------------*/
 
 /*
- * Has the SQLite3 extension been compiled "threadsafe".  This is threadsafe? is
- * true then the internal SQLite mutexes are enabled and SQLite is threadsafe.
- * That is, 'C' level threadsafe.
- *
- * :call-seq:
+ * call-seq:
  *    Amalgalite::SQLite3.threadsafe? -> true or false
+ *
+ * Has the SQLite3 extension been compiled "threadsafe".  If threadsafe? is
+ * true then the internal SQLite mutexes are enabled and SQLite is threadsafe.
+ * That is threadsafe within the context of 'C' threads.
  *
  */
 VALUE am_sqlite3_threadsafe(VALUE self)
@@ -36,15 +36,15 @@ VALUE am_sqlite3_threadsafe(VALUE self)
 }
 
 /*
+ * call-seq:
+ *    Amalgalite::SQLite3.complete?( ... , opts = { :utf16 => false }) -> True, False
+ *
  * Is the text passed in as a parameter a complete SQL statement?  Or is
  * additional input required before sending the SQL to the extension.  If the
  * extra 'opts' parameter is used, you can send in a UTF-16 encoded string as
  * the SQL.
  *
  * A complete statement must end with a semicolon.
- *
- * :call-seq:
- *    Amalgalite::SQLite3.complete?( ... , opts = { :utf16 => false }) -> True, False
  *
  */
 VALUE am_sqlite3_complete(VALUE self, VALUE args)
@@ -68,11 +68,10 @@ VALUE am_sqlite3_complete(VALUE self, VALUE args)
 }
 
 /*
- * Return the number of bytes of memory outstanding in the SQLite extension
- *
- * :call-seq:
+ * call-seq:
  *    Amalgalite::SQLite3.memory_used -> Numeric
  *
+ * Return the number of bytes of memory outstanding in the SQLite extension
  */
 VALUE am_sqlite3_memory_used(VALUE self)
 {
@@ -80,11 +79,11 @@ VALUE am_sqlite3_memory_used(VALUE self)
 }
 
 /*
+ * call-seq:
+ *    Amalgalite::SQLite3.memory_highwater_mark -> Numeric
+ *
  * Return the maximum value of Amalgalite::SQLite3.memory_used since the last
  * time the highwater mark was reset.
- *
- * :call-seq:
- *    Amalgalite::SQLite3.memory_highwater_mark -> Numeric
  *
  */
 VALUE am_sqlite3_memory_highwater(VALUE self)
@@ -93,11 +92,11 @@ VALUE am_sqlite3_memory_highwater(VALUE self)
 }
 
 /*
- * Reset the memory highwater mark.  The highwater mark becomes the current
- * value of sqlite3_memory_used.
- *
- * :call-seq:
+ * call-seq:
  *    Amalgalite::SQLite3.memory_highwater_mark_reset! 
+ *
+ * Reset the memory highwater mark.  The highwater mark becomes the current
+ * value of memory_used.
  *
  */
 VALUE am_sqlite3_memory_highwater_reset(VALUE self)
@@ -106,10 +105,11 @@ VALUE am_sqlite3_memory_highwater_reset(VALUE self)
 }
 
 /*
+ * call-seq:
+ *    Amalgalite::SQLite3.randomness( N ) -> String of length N
+ *
  * Generate N bytes of random data.
  *
- * :call-seq:
- *    Amalgalite::SQLite3.randomness( 4 ) -> String of length 4
  */
 VALUE am_sqlite3_randomness(VALUE self, VALUE num_bytes)
 {
@@ -125,10 +125,11 @@ VALUE am_sqlite3_randomness(VALUE self, VALUE num_bytes)
  *---------------------------------------------------------------------*/
 
 /*
- * Return the sqlite3 version number as a string
- *
- * :call-seq:
+ * call-seq:
  *    Amalgalite::SQLite3::Version.to_s -> String
+ *
+ * Return the SQLite C library version number as a string
+ *
  */
 VALUE am_sqlite3_libversion(VALUE self)
 {
@@ -136,10 +137,10 @@ VALUE am_sqlite3_libversion(VALUE self)
 }
 
 /*
- * Return the sqlite3 version number as an integer
- *
- * :call-seq:
+ * call-seq:
  *    Amalgalite::SQLite3.Version.to_i -> Fixnum
+ *
+ * Return the SQLite C library version number as an integer
  *
  */
 VALUE am_sqlite3_libversion_number(VALUE self)
@@ -148,18 +149,15 @@ VALUE am_sqlite3_libversion_number(VALUE self)
 }
 
 
-/***********************************************************************
- * Extension initialization
- ***********************************************************************/
 void Init_amalgalite3()
 {
     /*
-     * module Amalgalite
+     * top level module encapsulating the entire Amalgalite library
      */
-    mA = rb_define_module("Amalgalite");
-    
+    mA   = rb_define_module("Amalgalite");
+
     /*
-     * Amalgalite::Sqlite3 methods/constantsn
+     * module encapsulating the SQLite C extension
      */
     mAS  = rb_define_module_under(mA, "SQLite3");
     rb_define_module_function(mAS, "threadsafe?", am_sqlite3_threadsafe, 0);
@@ -169,23 +167,25 @@ void Init_amalgalite3()
     rb_define_module_function(mAS, "memory_highwater_mark_reset!", am_sqlite3_memory_highwater_reset,0);
     rb_define_module_function(mAS, "randomness", am_sqlite3_randomness,1);
 
-    /* class Amalgalite::Sqlite3::Error 
+    /* 
+     * Base class of all SQLite3 errors
      */
     eAS_Error = rb_define_class_under(mAS, "Error", rb_eStandardError);
 
-    /* module Amalgalite::Sqlite3::Version and methods
+    /**
+     * Encapsulation of the SQLite C library version
      */
     mASV = rb_define_module_under(mAS, "Version");
-    rb_define_module_function(mASV, "to_s", am_sqlite3_libversion, 0);
-    rb_define_module_function(mASV, "to_i", am_sqlite3_libversion_number, 0);
+    rb_define_module_function(mASV, "to_s", am_sqlite3_libversion, 0); /* in amalgalite3.c */
+    rb_define_module_function(mASV, "to_i", am_sqlite3_libversion_number, 0); /* in amalgalite3.c */
 
     /*
      * Initialize the rest of the module
      */
-    Init_amalgalite3_constants( mAS );
-    Init_amalgalite3_database( mAS );
-    Init_amalgalite3_statement( mAS );
+    Init_amalgalite3_constants( );
+    Init_amalgalite3_database( );
+    Init_amalgalite3_statement( );
 
-}
+ }
 
 

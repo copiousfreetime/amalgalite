@@ -49,11 +49,12 @@ module Amalgalite
   # The TypeMaps module holds all typemaps that ship with Amagalite.  They
   # currently are:
   #
-  #   DefaultMap      - does a 'best-guess' mapping to convert as many types as
-  #                     possible to known ruby classes from known SQL types.
-  #   StorageTypeMap  - converts to a limited set of classes directly based 
-  #                     upon the SQLite storage types
-  #   TextMap         - Everything is Text ... everything everything everything
+  # DefaultMap:: does a 'best-guess' mapping to convert as many types as
+  #              possible to known ruby classes from known SQL types.
+  # StorageMap:: converts to a limited set of classes directly based 
+  #              upon the SQLite storage types
+  # TextMap::    Everything is Text ... everything everything everything
+  #
   module TypeMaps
   end
 end

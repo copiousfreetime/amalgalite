@@ -7,11 +7,11 @@ require 'tasks/utils'
 # General project configuration
 #-----------------------------------------------------------------------
 Configuration.for('project') {
-  name          "FIXME: NAME"
-  version       "FIXME: 0.0.0"
-  author        "FIXME: The Author"
-  email         "FIXME: author@example.com"
-  homepage      "FIXME: http://project.example.com"
+  name          "amalgalite"
+  version       Amalgalite::Version.to_s
+  author        "Jeremy Hinegardner"
+  email         "jeremy at copiousfreetime dot org"
+  homepage      "http://www.copiousfreetime.org/projects/amalgalite/"
   description   Utils.section_of("README", "description")
   summary       description.split(".").first
   history       "HISTORY"
@@ -33,7 +33,7 @@ Configuration.for('packaging') {
     data      FileList["data/**/*"]
     tasks     FileList["tasks/**/*.r{ake,b}"]
     rdoc      FileList[proj_conf.readme, proj_conf.history,
-                       proj_conf.license] + lib
+                       proj_conf.license] + lib + FileList["ext/amalgalite3*.c"]
     all       bin + lib + test + data + rdoc + tasks 
   }
 
@@ -97,10 +97,10 @@ Configuration.for('extension') {
 # Rubyforge 
 #-----------------------------------------------------------------------
 Configuration.for('rubyforge') {
-  project       "FIXME: rubyforge project"
-  user          "FIXME: username"
+  project       "copiousfreetime"
+  user          "jjh"
   host          "rubyforge.org"
-  rdoc_location "#{user}@#{host}:/var/www/gforge-projects/#{project}"
+  rdoc_location "#{user}@#{host}:/var/www/gforge-projects/#{project}/amalgalite/"
 }
 
 

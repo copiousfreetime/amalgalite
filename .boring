@@ -50,3 +50,4 @@
 ext/Rakefile
 ext/mkrf.log
 (^|/|\.)coverage($|/)
+(^|/|\.)doc($|/)

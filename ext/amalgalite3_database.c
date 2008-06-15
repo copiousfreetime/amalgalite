@@ -9,7 +9,9 @@
 VALUE cAS_Database;    /* class  Amalgliate::SQLite3::Database  */
 
 /**
- * :call-seq:
+ * Document-method: open
+ *
+ * call-seq:
  *    Amalagliate::SQLite3::Database.open( filename, flags = READWRITE | CREATE ) -> Database
  *
  * Create a new SQLite3 database with a UTF-8 encoding.
@@ -54,7 +56,7 @@ VALUE am_sqlite3_database_open(int argc, VALUE *argv, VALUE class)
 }
 
 /**
- * :call-seq:
+ * call-seq:
  *    Amalgalite::SQLite3::Database.open16( filename ) -> SQLite3::Database
  *
  * Create a new SQLite3 database with a UTF-16 encoding
@@ -85,7 +87,7 @@ VALUE am_sqlite3_database_open16(VALUE class, VALUE rFilename)
 }
 
 /**
- * :call-seq:
+ * call-seq:
  *    database.close 
  *
  * Close the database
@@ -107,7 +109,7 @@ VALUE am_sqlite3_database_close(VALUE self)
 }
 
 /**
- * :call-seq:
+ * call-seq:
  *    database.last_insert_rowid -> Integer
  *
  * Return the rowid of the last row inserted into the database from this
@@ -125,7 +127,7 @@ VALUE am_sqlite3_database_last_insert_rowid(VALUE self)
 }
 
 /**
- * :call-seq:
+ * call-seq:
  *    database.autocommit? -> true or false
  *
  * return true if the database is in autocommit mode, otherwise return false
@@ -143,7 +145,7 @@ VALUE am_sqlite3_database_is_autocommit(VALUE self)
 }
 
 /**
- * :call-seq:
+ * call-seq:
  *    database.row_changes -> Integer
  *
  * return the number of rows changed with the most recent INSERT, UPDATE or 
@@ -162,7 +164,7 @@ VALUE am_sqlite3_database_row_changes(VALUE self)
 }
 
 /**
- * :call-seq:
+ * call-seq:
  *    database.total_changes -> Integer
  *
  * return the number of rows changed by INSERT, UPDATE or DELETE statements 
@@ -182,7 +184,7 @@ VALUE am_sqlite3_database_total_changes(VALUE self)
 
 
 /**
- * :call-seq:
+ * call-seq:
  *    database.prepare( sql ) -> SQLite3::Statement
  *
  * Create a new SQLite3 statement.
@@ -237,7 +239,7 @@ void amalgalite_xTrace(void* tap, const char* msg)
     
 
 /**
- * :call-seq:
+ * call-seq:
  *   database.register_trace_tap( tap_obj )
  *
  * This registers an object to be called with every trace event in SQLite.
@@ -292,7 +294,7 @@ void amalgalite_xProfile(void* tap, const char* msg, sqlite3_uint64 time)
 }
 
 /**
- * :call-seq:
+ * call-seq:
  *   database.register_profile_tap( tap_obj )
  *
  * This registers an object to be called with every profile event in SQLite.
@@ -329,17 +331,17 @@ VALUE am_sqlite3_database_register_profile_tap(VALUE self, VALUE tap)
 }    
 
 /**
- * :call-seq:
+ * call-seq:
  *    datatabase.table_column_metadata( db_name, table_name, column_name) -> Hash
  *
  * Returns a hash containing the meta information about the column.  The
  * available keys are:
  *
- *  'declared_data_type'      => the declared data type of the column
- *  'collation_sequence_name' => the name of the collation sequence for the column
- *  'not_null_constraint'     => True if the column has a NOT NULL constraint
- *  'primary_key'             => True if the column is part of a primary key
- *  'auto_increment'          => True if the column is AUTO INCREMENT
+ * declared_data_type::       the declared data type of the column
+ * collation_sequence_name::  the name of the collation sequence for the column
+ * not_null_constraint::      True if the column has a NOT NULL constraint
+ * primary_key::              True if the column is part of a primary key
+ * auto_increment::           True if the column is AUTO INCREMENT
  *
  */
 VALUE am_sqlite3_database_table_column_metadata(VALUE self, VALUE db_name, VALUE tbl_name, VALUE col_name)
@@ -424,17 +426,25 @@ VALUE am_sqlite3_database_alloc(VALUE klass)
     return obj;
 }
 
-void Init_amalgalite3_database( parent_module )
+void Init_amalgalite3_database( )
 {
-    /*
-     * class Database
+    
+    /** :stopdoc:
+     * These calls are here just to allow for rdoc generation
+     * :startdoc:
      */
-    cAS_Database = rb_define_class_under(parent_module, "Database", rb_cObject); 
+    VALUE ma  = rb_define_module("Amalgalite");
+    VALUE mas = rb_define_module_under(ma, "SQLite3");
+  
+    /* 
+     * Encapsulate an SQLite3 database
+     */
+    cAS_Database = rb_define_class_under( mas, "Database", rb_cObject); 
 
-    rb_define_alloc_func(cAS_Database, am_sqlite3_database_alloc); /* in amalgalite3_database.c */
-    rb_define_singleton_method(cAS_Database, "open", am_sqlite3_database_open, -1); /* in amalgalite3_database.c */
-    rb_define_singleton_method(cAS_Database, "open16", am_sqlite3_database_open16, 1); /* in amalgalite3_database.c */
-    rb_define_method(cAS_Database, "prepare", am_sqlite3_database_prepare, 1); /* in amalgalite3_database.c */
+    rb_define_alloc_func(cAS_Database, am_sqlite3_database_alloc); 
+    rb_define_singleton_method(cAS_Database, "open", am_sqlite3_database_open, -1); 
+    rb_define_singleton_method(cAS_Database, "open16", am_sqlite3_database_open16, 1); 
+    rb_define_method(cAS_Database, "prepare", am_sqlite3_database_prepare, 1); 
     rb_define_method(cAS_Database, "close", am_sqlite3_database_close, 0); /* in amalgalite3_database.c */
     rb_define_method(cAS_Database, "last_insert_rowid", am_sqlite3_database_last_insert_rowid, 0); /* in amalgalite3_database.c */
     rb_define_method(cAS_Database, "autocommit?", am_sqlite3_database_is_autocommit, 0); /* in amalgalite3_database.c */

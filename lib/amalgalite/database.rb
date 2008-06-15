@@ -28,24 +28,41 @@ module Amalgalite
   #
   class Database
 
+    # Error thrown if a database is opened with an invalid mode
     class InvalidModeError < ::Amalgalite::Error; end
 
     ##
-    # container class for holding transaction behavior constants
+    # container class for holding transaction behavior constants.  These are the
+    # SQLite values passed to a START TRANSACTION SQL statement.
     #
     class TransactionBehavior
+      # no read or write locks are created until the first statement is executed
+      # that requries a read or a write
       DEFERRED  = "DEFERRED"
+
+      # a readlock is obtained immediately so that no other process can write to
+      # the database
       IMMEDIATE = "IMMEDIATE"
+      
+      # a read+write lock is obtained, no other proces can read or write to the
+      # database
       EXCLUSIVE = "EXCLUSIVE"
+
+      # list of valid transaction behavior constants
       VALID     = [ DEFERRED, IMMEDIATE, EXCLUSIVE ]
 
+      # 
+      # is the given mode a valid transaction mode
+      #
       def self.valid?( mode )
         VALID.include? mode
       end
     end
     
    include Amalgalite::SQLite3::Constants
-    VALID_MODES = {
+
+   # list of valid modes for opening an Amalgalite::Database
+   VALID_MODES = {
       "r"  => Open::READONLY,
       "r+" => Open::READWRITE,
       "w+" => Open::READWRITE | Open::CREATE,
@@ -54,15 +71,13 @@ module Amalgalite
     # the low level Amalgalite::SQLite3::Database
     attr_reader :api
 
-    # An instance of something that follows the TraceTap protocol.
-    # By default this is nil
+    # An object that follows the TraceTap protocol, or nil.  By default this is nil
     attr_reader :trace_tap
 
-    # An instances of something that follows the ProfileTap protocol.  
-    # By default this is nil
+    # An object that follows the ProfileTap protocol, or nil.  By default this is nil
     attr_reader :profile_tap
 
-    # An instances of something that follows the TypeMap protocol.
+    # An object that follows the TypeMap protocol, or nil.  
     # By default this is an instances of TypeMaps::DefaultMap
     attr_reader :type_map
 
@@ -171,15 +186,14 @@ module Amalgalite
     end
 
     ##
-    # return how many rows have changed in the last insert, update or delete
-    # statement.
+    # return how many rows changed in the last insert, update or delete statement.
     #
     def row_changes
       @api.row_changes
     end
 
     ##
-    # return how many rows have changed since the connection to the database was
+    # return how many rows have changed since this connection to the database was
     # opened.
     #
     def total_changes
@@ -273,7 +287,7 @@ module Amalgalite
     end
 
     ##
-    # :call-seq:
+    # call-seq:
     #   db.trace_tap = obj 
     #
     # Register a trace tap.  
@@ -289,12 +303,12 @@ module Amalgalite
     # 
     # This will register an instance of TraceTap, which wraps an logger object.
     # On each +trace+ event the TraceTap#trace method will be called, which in
-    # turn will call the +logger.debug+ method
+    # turn will call the <tt>logger.debug</tt> method
     #
     #   db.trace_tap = $stderr 
     #
-    # This will register the $stderr io stream as a trace tap.  Every time a
-    # +trace+ event happens then +$stderr.write( msg )+ will be called.
+    # This will register the <tt>$stderr</tt> io stream as a trace tap.  Every time a
+    # +trace+ event happens then <tt>$stderr.write( msg )</tt> will be called.
     #
     #   db.trace_tap = nil
     #
@@ -331,7 +345,7 @@ module Amalgalite
 
 
     ##
-    # :call-seq:
+    # call-seq:
     #   db.profile_tap = obj 
     #
     # Register a profile tap.
@@ -341,7 +355,7 @@ module Amalgalite
     # a profile event happens.  The Integer is the number of nanoseconds it took
     # for the String (SQL) to execute in wall-clock time.
     #
-    # That is, ever time a profile event happens in SQLite the following is
+    # That is, every time a profile event happens in SQLite the following is
     # invoked:
     #
     #   obj.profile( str, int ) 
@@ -351,8 +365,8 @@ module Amalgalite
     #   db.profile_tap = Amalgalite::ProfileTap.new( logger, 'debug' )
     # 
     # This will register an instance of ProfileTap, which wraps an logger object.
-    # On each +profile+ eventn the ProfileTap#profile method will be called
-    # which in turn will call +logger.debug+ with a formatted string containing
+    # On each +profile+ event the ProfileTap#profile method will be called
+    # which in turn will call <tt>logger.debug<tt> with a formatted string containing
     # the String and Integer from the profile event.
     #
     #   db.profile_tap = nil
@@ -379,7 +393,7 @@ module Amalgalite
     end
 
     ##
-    # :call-seq:
+    # call-seq:
     #   db.type_map = DefaultMap.new
     #
     # Assign your own TypeMap instance to do type conversions.  The value
@@ -449,7 +463,7 @@ module Amalgalite
     # If any exception happens during the transaction that is caught by Amalgalite, 
     # then a 'ROLLBACK' is issued when the block closes.  
     #
-    # If of no exception happens during the transaction then a 'COMMIT' is
+    # If no exception happens during the transaction then a 'COMMIT' is
     # issued upon leaving the block.
     #
     # If no block is passed in then you are on your own.

@@ -18,7 +18,7 @@ module Amalgalite::TypeMaps
   #
   class DefaultMap
     class << self
-      def methods_handling_sql_types
+      def methods_handling_sql_types # :nodoc:
         @methods_handling_sql_types ||= {
           'date'      => %w[ date ],
           'datetime'  => %w[ datetime ],
@@ -31,10 +31,9 @@ module Amalgalite::TypeMaps
         }
       end
 
-      #
       # say what method to call to convert an sql type to a ruby type
       #
-      def sql_to_method( sql_type  )
+      def sql_to_method( sql_type  ) # :nodoc:
         unless @sql_to_method
           @sql_to_method = {}
           methods_handling_sql_types.each_pair do |method, sql_types|

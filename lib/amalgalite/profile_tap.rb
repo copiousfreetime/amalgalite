@@ -6,9 +6,13 @@
 module Amalgalite
   # 
   # A ProfileSampler is a sampler of profile times.  It aggregates up profile
-  # events that happen for the same source.  It is based upon the RFuzz::Sampler class 
+  # events that happen for the same source.  It is based upon the RFuzz::Sampler 
+  # class from the rfuzz gem
   #
   class ProfileSampler
+    #
+    # create a new sampler with the given name
+    #
     def initialize( name )
       @name = name
       reset!
@@ -16,6 +20,7 @@ module Amalgalite
 
     ##
     # reset the internal state so it may be used again
+    #
     def reset!
       @sum   = 0.0
       @sumsq = 0.0
@@ -39,12 +44,16 @@ module Amalgalite
       @n += 1
     end
 
+    ##
     # return the mean of the data 
+    #
     def mean
       @sum / @n
     end
 
+    ##
     # returns the standard deviation of the data
+    #
     def stddev
       begin
         Math.sqrt( (@sumsq - ( @sum * @sum / @n)) / (@n-1) )
@@ -61,7 +70,7 @@ module Amalgalite
     end
 
     ##
-    # return all the avlues as a hash
+    # return all the values as a hash
     #
     def to_h
       { 'name'    => @name,  'n' => @n,
@@ -91,6 +100,10 @@ module Amalgalite
 
     attr_reader :samplers
 
+    #
+    # Create a new ProfileTap object that wraps the given object and calls the
+    # method named in +send_to+ ever time a profile event happens.
+    #
     def initialize( wrapped_obj, send_to = 'profile' )
       unless wrapped_obj.respond_to?( send_to ) 
         raise Amalgalite::Error, "#{wrapped_obj.class.name} does not respond to #{send_to.to_s} "
@@ -101,6 +114,10 @@ module Amalgalite
       @samplers        = {}
     end
 
+    #
+    # Record the profile information and send the delegate object the msg and
+    # time information.
+    #
     def profile( msg, time )
       unless sampler = @samplers[msg] 
         msg = msg.gsub(/\s+/,' ')

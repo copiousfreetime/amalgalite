@@ -11,14 +11,23 @@ module Amalgalite
   #
   class Boolean
     class << self
+      #
+      # list of downcased strings are potential true values
+      # 
       def true_values
         @true_values ||= %w[ true t yes y 1 ]
       end
 
+      #
+      # list of downcased strings are potential false values
+      #
       def false_values
         @false_values ||= %w[ false f no n 0 ]
       end
 
+      # 
+      # Convert +val+ to a string and attempt to convert it to +true+ or +false+
+      #
       def to_bool( val )
         return false if val.nil?
         unless @to_bool

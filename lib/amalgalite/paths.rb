@@ -3,7 +3,12 @@
 # All rights reserved.  See LICENSE and/or COPYING for details.
 #++
 module Amalgalite
+  #
+  # Paths contains helpful methods to determine paths of files inside the
+  # Amalgalite library
+  #
   module Paths
+    #
     # The root directory of the project is considered to be the parent directory
     # of the 'lib' directory.
     #   

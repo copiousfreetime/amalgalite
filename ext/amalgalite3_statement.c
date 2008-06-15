@@ -9,7 +9,7 @@
 VALUE cAS_Statement;   /* class  Amalgliate::SQLite3::Statement */
 
 /**
- * :call-seq:
+ * call-seq:
  *     stmt.bind_null( position ) -> nil
  * 
  * bind a null value to the variable at postion.
@@ -32,7 +32,7 @@ VALUE am_sqlite3_statement_bind_null(VALUE self, VALUE position )
     return INT2FIX(rc);
 }
 /**
- * :call-seq:
+ * call-seq:
  *     stmt.bind_double( position, value ) -> nil
  * 
  * bind a double value to the variable at postion.
@@ -57,7 +57,7 @@ VALUE am_sqlite3_statement_bind_double(VALUE self, VALUE position, VALUE value)
 }
  
 /**
- * :call-seq:
+ * call-seq:
  *     stmt.bind_int( position, value ) -> nil
  * 
  * bind a int value to the variable at postion.
@@ -82,7 +82,7 @@ VALUE am_sqlite3_statement_bind_int(VALUE self, VALUE position, VALUE value)
 }
  
 /**
- * :call-seq:
+ * call-seq:
  *     stmt.bind_int64( position, value ) -> nil
  * 
  * bind a int64 value to the variable at postion.
@@ -107,7 +107,7 @@ VALUE am_sqlite3_statement_bind_int64(VALUE self, VALUE position, VALUE value)
 }
  
 /**
- * :call-seq:
+ * call-seq:
  *     stmt.bind_text( position, value ) -> nil
  * 
  * bind a string value to the variable at postion.
@@ -131,7 +131,7 @@ VALUE am_sqlite3_statement_bind_text(VALUE self, VALUE position, VALUE value)
     return INT2FIX(rc);
 }
 /**
- * :call-seq:
+ * call-seq:
  *    stmt.remaining_sql -> String
  *
  * returns the remainging SQL leftover from the initialization sql, or nil if
@@ -145,7 +145,7 @@ VALUE am_sqlite3_statement_remaining_sql(VALUE self)
     return am_stmt->remaining_sql;
 }
 /**
- * :call-seq:
+ * call-seq:
  *    stmt.parameter_index( name ) -> Integer
  *
  * returns the index of the named parameter from the statement.  Used to help
@@ -162,7 +162,7 @@ VALUE am_sqlite3_statement_bind_parameter_index(VALUE self, VALUE parameter_name
 }
 
 /**
- * :call-seq:
+ * call-seq:
  *    stmt.parameter_count -> Integer
  *
  * return the index of the largest parameter in the in the statement.  For all
@@ -179,7 +179,7 @@ VALUE am_sqlite3_statement_bind_parameter_count(VALUE self)
 }
 
 /**
- * :call-seq:
+ * call-seq:
  *    stmt.reset! -> nil
  *
  * reset the SQLite3 statement back to its initial state.
@@ -199,7 +199,7 @@ VALUE am_sqlite3_statement_reset(VALUE self)
 }
 
 /**
- * :call-seq:
+ * call-seq:
  *    stmt.clear_bindings! -> nil
  *
  * reset the SQLite3 statement back to its initial state.
@@ -220,8 +220,10 @@ VALUE am_sqlite3_statement_clear_bindings(VALUE self)
 
 
 /**
- * :call-seq:
+ * call-seq:
  *    stmt.step -> int
+ *
+ * Step through the next piece of the SQLite3 statement
  *
  */
 VALUE am_sqlite3_statement_step(VALUE self)
@@ -233,7 +235,7 @@ VALUE am_sqlite3_statement_step(VALUE self)
 }
 
 /**
- * :call-seq:
+ * call-seq:
  *    stmt.column_count -> Fixnum
  *
  * return the number of columns in the result set.
@@ -248,7 +250,7 @@ VALUE am_sqlite3_statement_column_count(VALUE self)
 }
 
 /**
- * :call-seq:
+ * call-seq:
  *    stmt.column_name( index ) -> String
  *  
  * Return the column name at the ith column in the result set.  The left-most column
@@ -267,7 +269,7 @@ VALUE am_sqlite3_statement_column_name(VALUE self, VALUE v_idx)
 
 
 /**
- * :call-seq:
+ * call-seq:
  *    stmt.column_declared_type( index ) -> String
  *  
  * Return the declared type of the ith column in the result set.  This is the
@@ -290,7 +292,7 @@ VALUE am_sqlite3_statement_column_decltype(VALUE self, VALUE v_idx)
 }
 
 /**
- * :call-seq:
+ * call-seq:
  *    stmt.column_type( index ) -> SQLite3::DataType constant
  *  
  * Return the column type at the ith column in the result set.  The left-most column
@@ -307,7 +309,7 @@ VALUE am_sqlite3_statement_column_type(VALUE self, VALUE v_idx)
 }
 
 /**
- * :call-seq:
+ * call-seq:
  *    stmt.column_text( index ) -> String
  *  
  * Return the data in ith column of the result as a String.
@@ -323,7 +325,7 @@ VALUE am_sqlite3_statement_column_text(VALUE self, VALUE v_idx)
 }
 
 /**
- * :call-seq:
+ * call-seq:
  *    stmt.column_double( index ) -> Float
  *  
  * Return the data in ith column of the result as an Float
@@ -340,7 +342,7 @@ VALUE am_sqlite3_statement_column_double(VALUE self, VALUE v_idx)
 
 
 /**
- * :call-seq:
+ * call-seq:
  *    stmt.column_int( index ) -> Integer
  *  
  * Return the data in ith column of the result as an Integer
@@ -357,7 +359,7 @@ VALUE am_sqlite3_statement_column_int(VALUE self, VALUE v_idx)
 
 
 /**
- * :call-seq:
+ * call-seq:
  *    stmt.column_int64( index ) -> Integer
  *  
  * Return the data in ith column of the result as an Integer
@@ -375,7 +377,7 @@ VALUE am_sqlite3_statement_column_int64(VALUE self, VALUE v_idx)
 
 
 /**
- * :call-seq:
+ * call-seq:
  *    stmt.column_database_name( index ) -> String
  *  
  * Return the database name where the data in the ith column of the result set
@@ -394,7 +396,7 @@ VALUE am_sqlite3_statement_column_database_name(VALUE self, VALUE v_idx)
 }
 
 /**
- * :call-seq:
+ * call-seq:
  *    stmt.column_table_name( index ) -> String
  *  
  * Return the table name where the data in the ith column of the result set
@@ -414,7 +416,7 @@ VALUE am_sqlite3_statement_column_table_name(VALUE self, VALUE v_idx)
 
 
 /**
- * :call-seq:
+ * call-seq:
  *    stmt.column_origin_name( index ) -> String
  *  
  * Return the column name where the data in the ith column of the result set
@@ -434,7 +436,7 @@ VALUE am_sqlite3_statement_column_origin_name(VALUE self, VALUE v_idx)
 
 
 /**
- * :call-seq:
+ * call-seq:
  *    stmt.sql -> String
  *
  * Return a copy of the original string used to create the prepared statement.
@@ -450,7 +452,7 @@ VALUE am_sqlite3_statement_sql(VALUE self)
 }
 
 /**
- * :call-seq:
+ * call-seq:
  *    stmt.close -> nil
  *
  * Closes the statement.  If there is a problem closing the statement then an
@@ -498,36 +500,47 @@ VALUE am_sqlite3_statement_alloc(VALUE klass)
 }
 
 
-void Init_amalgalite3_statement( parent_module )
+void Init_amalgalite3_statement( )
 {
-    cAS_Statement = rb_define_class_under( parent_module, "Statement", rb_cObject ); 
-    rb_define_alloc_func(cAS_Statement, am_sqlite3_statement_alloc); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "sql", am_sqlite3_statement_sql, 0); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "close", am_sqlite3_statement_close, 0); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "step", am_sqlite3_statement_step, 0); /* in amalgalite3_statement.c */
 
-    rb_define_method(cAS_Statement, "column_count", am_sqlite3_statement_column_count, 0); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "column_name", am_sqlite3_statement_column_name, 1); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "column_declared_type", am_sqlite3_statement_column_decltype, 1); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "column_type", am_sqlite3_statement_column_type, 1); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "column_text", am_sqlite3_statement_column_text, 1); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "column_int", am_sqlite3_statement_column_int, 1); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "column_int64", am_sqlite3_statement_column_int64, 1); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "column_double", am_sqlite3_statement_column_double, 1); /* in amalgalite3_statement.c */
+    /** :stopdoc:
+     * These calls are here just to allow for rdoc generation
+     * :startdoc:
+     */
+    VALUE ma  = rb_define_module("Amalgalite");
+    VALUE mas = rb_define_module_under(ma, "SQLite3");
 
-    rb_define_method(cAS_Statement, "column_database_name", am_sqlite3_statement_column_database_name, 1); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "column_table_name", am_sqlite3_statement_column_table_name, 1); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "column_origin_name", am_sqlite3_statement_column_origin_name, 1); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "reset!", am_sqlite3_statement_reset, 0); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "clear_bindings!", am_sqlite3_statement_clear_bindings, 0); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "parameter_count", am_sqlite3_statement_bind_parameter_count, 0); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "parameter_index", am_sqlite3_statement_bind_parameter_index, 1); /* in amalgalite3_statement.c */
-    rb_define_method(cAS_Statement, "remaining_sql", am_sqlite3_statement_remaining_sql, 0); /* in amalgalite_statement.c */
-    rb_define_method(cAS_Statement, "bind_text", am_sqlite3_statement_bind_text, 2); /* in amalgalite_statement.c */
-    rb_define_method(cAS_Statement, "bind_int", am_sqlite3_statement_bind_int, 2); /* in amalgalite_statement.c */
-    rb_define_method(cAS_Statement, "bind_int64", am_sqlite3_statement_bind_int64, 2); /* in amalgalite_statement.c */
-    rb_define_method(cAS_Statement, "bind_double", am_sqlite3_statement_bind_double, 2); /* in amalgalite_statement.c */
-    rb_define_method(cAS_Statement, "bind_null", am_sqlite3_statement_bind_null, 1); /* in amalgalite_statement.c */
+    /*
+     * Encapsulate the SQLite3 Statement handle in a class
+     */
+    cAS_Statement = rb_define_class_under( mas, "Statement", rb_cObject ); 
+    rb_define_alloc_func(cAS_Statement, am_sqlite3_statement_alloc); 
+    rb_define_method(cAS_Statement, "sql", am_sqlite3_statement_sql, 0); 
+    rb_define_method(cAS_Statement, "close", am_sqlite3_statement_close, 0); 
+    rb_define_method(cAS_Statement, "step", am_sqlite3_statement_step, 0); 
+
+    rb_define_method(cAS_Statement, "column_count", am_sqlite3_statement_column_count, 0); 
+    rb_define_method(cAS_Statement, "column_name", am_sqlite3_statement_column_name, 1); 
+    rb_define_method(cAS_Statement, "column_declared_type", am_sqlite3_statement_column_decltype, 1); 
+    rb_define_method(cAS_Statement, "column_type", am_sqlite3_statement_column_type, 1); 
+    rb_define_method(cAS_Statement, "column_text", am_sqlite3_statement_column_text, 1); 
+    rb_define_method(cAS_Statement, "column_int", am_sqlite3_statement_column_int, 1); 
+    rb_define_method(cAS_Statement, "column_int64", am_sqlite3_statement_column_int64, 1); 
+    rb_define_method(cAS_Statement, "column_double", am_sqlite3_statement_column_double, 1); 
+
+    rb_define_method(cAS_Statement, "column_database_name", am_sqlite3_statement_column_database_name, 1); 
+    rb_define_method(cAS_Statement, "column_table_name", am_sqlite3_statement_column_table_name, 1); 
+    rb_define_method(cAS_Statement, "column_origin_name", am_sqlite3_statement_column_origin_name, 1); 
+    rb_define_method(cAS_Statement, "reset!", am_sqlite3_statement_reset, 0); 
+    rb_define_method(cAS_Statement, "clear_bindings!", am_sqlite3_statement_clear_bindings, 0); 
+    rb_define_method(cAS_Statement, "parameter_count", am_sqlite3_statement_bind_parameter_count, 0); 
+    rb_define_method(cAS_Statement, "parameter_index", am_sqlite3_statement_bind_parameter_index, 1); 
+    rb_define_method(cAS_Statement, "remaining_sql", am_sqlite3_statement_remaining_sql, 0); 
+    rb_define_method(cAS_Statement, "bind_text", am_sqlite3_statement_bind_text, 2); 
+    rb_define_method(cAS_Statement, "bind_int", am_sqlite3_statement_bind_int, 2); 
+    rb_define_method(cAS_Statement, "bind_int64", am_sqlite3_statement_bind_int64, 2); 
+    rb_define_method(cAS_Statement, "bind_double", am_sqlite3_statement_bind_double, 2); 
+    rb_define_method(cAS_Statement, "bind_null", am_sqlite3_statement_bind_null, 1); 
 }
 
 

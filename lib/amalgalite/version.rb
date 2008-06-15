@@ -6,22 +6,27 @@
 module Amalgalite
   # Version information for Amagalite
   module Version
+
     MAJOR   = 0
     MINOR   = 0
     BUILD   = 1
 
-    def to_a 
+    #
+    # return the Version as an array of MAJOR, MINOR, BUILD
+    #
+    def self.to_a 
       [MAJOR, MINOR, BUILD]
     end
 
-    def to_s
+    # return the Version as a dotted String MAJOR.MINOR.BUILD
+    def self.to_s
       to_a.join(".")
     end
 
-    module_function :to_a
-    module_function :to_s
-
-    STRING = Version.to_s
+    # Version string constant
+    STRING = Version.to_s.freeze
   end
-  VERSION = Version.to_s
+
+  # Version string constant
+  VERSION = Version.to_s.freeze
 end 

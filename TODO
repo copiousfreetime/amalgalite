@@ -1,11 +1,9 @@
 For first release
 =================
-* amalgalite command line tool
-* documentation
 
 For future releases
 ===================
-
+* amalgalite command line tool
 * Blob interface
 * authorizers
 * busy timeouts

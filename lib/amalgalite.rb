@@ -4,6 +4,9 @@
 #++
 
 module Amalgalite
+  # 
+  # Base class of all errors in Amalgalite
+  #
   class Error < ::StandardError; end
 end
 require 'amalgalite/version'

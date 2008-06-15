@@ -20,6 +20,9 @@ module Amalgalite
     attr_reader :tables
     attr_reader :views
 
+    #
+    # Create a new instance of Schema
+    #
     def initialize( db, catalog = 'main', schema = 'sqlite')
       @db = db
       @catalog = catalog
