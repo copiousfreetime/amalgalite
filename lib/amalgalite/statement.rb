@@ -4,9 +4,9 @@
 #++
 #
 require 'amalgalite3'
-require 'amalgalite/blob'
 require 'date'
 require 'arrayfields'
+require 'ostruct'
 
 module Amalgalite
   class Statement
@@ -249,7 +249,7 @@ module Amalgalite
       unless @result_meta
         meta = []
         column_count.times do |idx|
-          column_meta = OpenStruct.new
+          column_meta = ::OpenStruct.new
           column_meta.name = @stmt_api.column_name( idx )
           
           db_name  = @stmt_api.column_database_name( idx ) 

@@ -6,6 +6,8 @@
 
 == DESCRIPTION
 
+Amalgalite is an SQLite ruby extension that includes the SQLite database engine.
+
 == FEATURES
 
 == SYNOPSIS
