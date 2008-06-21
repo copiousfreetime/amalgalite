@@ -17,7 +17,7 @@ if rf_conf = Configuration.for_if_exist?("rubyforge") then
 
       # make sure this release doesn't already exist
       releases = rubyforge.autoconfig['release_ids']
-      if releases.has_key?(Amalgalite::SPEC.name) and releases[Amalgalite::SPEC.name][Amalgalite::VERSION] then
+      if releases.has_key?(Amalgalite::GEM_SPEC.name) and releases[Amalgalite::GEM_SPEC.name][Amalgalite::VERSION] then
         abort("Release #{Amalgalite::VERSION} already exists! Unable to release.")
       end
 
@@ -27,9 +27,10 @@ if rf_conf = Configuration.for_if_exist?("rubyforge") then
       config["Prefomatted"]       = true
 
       puts "Uploading to rubyforge..."
-      files = FileList[File.join("pkg","#{Amalgalite::SPEC.name}-#{Amalgalite::VERSION}*.*")].to_a
+      puts config.inspect
+      files = FileList[File.join("pkg","#{Amalgalite::GEM_SPEC.name}-#{Amalgalite::VERSION}*.*")].to_a
       rubyforge.login
-      rubyforge.add_release(Amalgalite::SPEC.rubyforge_project, Amalgalite::SPEC.name, Amalgalite::VERSION, *files)
+      rubyforge.add_release(Amalgalite::GEM_SPEC.rubyforge_project, Amalgalite::GEM_SPEC.name, Amalgalite::VERSION, *files)
       puts "done."
     end
   end
