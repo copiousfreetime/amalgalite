@@ -6,15 +6,14 @@
 
 == DESCRIPTION
 
-Amalgalite is an SQLite ruby extension that includes the SQLite database engine.
+Amalgalite embeds the SQLite database engine in a ruby extension.
 
-== FEATURES
-
-== SYNOPSIS
+Scroll through Amalgalite::Database for a quick example, and a general overview
+of the API.
 
 == CREDITS
 
-* Jamis Buck for the first ruby sqlite implementation
+* Jamis Buck for the first {ruby sqlite implementation}:http://www.rubyforge.org/projects/ruby-sqlite
 
 == LICENSE
 
