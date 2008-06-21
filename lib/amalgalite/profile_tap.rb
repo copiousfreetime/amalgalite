@@ -88,7 +88,7 @@ module Amalgalite
   end
 
   #
-  # A Profile Tap recives +profile+ events which involve the number of
+  # A Profile Tap recives +profile+ events from SQLite  which involve the number of
   # nanoseconds in wall-clock time it took for a particular thing to happen. In
   # general this +thing+ is an SQL statement.
   #

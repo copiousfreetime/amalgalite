@@ -5,6 +5,10 @@
 
 module Amalgalite
   #
+  # A TraceTap receives tracing information from SQLite3. It receives the SQL
+  # statement being executed as a +msg+ just before the statement first begins
+  # executing.
+  #
   # A TraceTap is a wrapper around another object and a method.  The Tap object
   # will receive the call to +trace+ and redirect that call to another object
   # and method.
