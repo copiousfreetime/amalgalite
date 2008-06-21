@@ -27,7 +27,6 @@ if rf_conf = Configuration.for_if_exist?("rubyforge") then
       config["Prefomatted"]       = true
 
       puts "Uploading to rubyforge..."
-      puts config.inspect
       files = FileList[File.join("pkg","#{Amalgalite::GEM_SPEC.name}-#{Amalgalite::VERSION}*.*")].to_a
       rubyforge.login
       rubyforge.add_release(Amalgalite::GEM_SPEC.rubyforge_project, Amalgalite::GEM_SPEC.name, Amalgalite::VERSION, *files)
