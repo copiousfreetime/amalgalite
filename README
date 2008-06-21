@@ -4,6 +4,10 @@
 * {Rubyforge Project}[http://rubyforge.org/projects/copiousfreetime/]
 * email jeremy at copiousfreetime dot org
 
+== INSTALL
+
+* gem install amalgalite
+
 == DESCRIPTION
 
 Amalgalite embeds the SQLite database engine in a ruby extension.
@@ -13,7 +17,7 @@ of the API.
 
 == CREDITS
 
-* Jamis Buck for the first {ruby sqlite implementation}:http://www.rubyforge.org/projects/ruby-sqlite
+* Jamis Buck for the first {ruby sqlite implementation}[http://www.rubyforge.org/projects/sqlite-ruby]
 
 == LICENSE
 

@@ -31,7 +31,7 @@ Configuration.for("project") {
   version   Amalgalite::VERSION
   author    "Jeremy Hinegardner"
   email     "jeremy@hinegardner.org"
-  homepage  "http://amalgalite.rubyforge.org/"
+  homepage  "http://copiousfreetime.rubyforge.org/amalgalite/"
 }
 
 #-------------------------------------------------------------------------------
