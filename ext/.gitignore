@@ -1,0 +1,5 @@
+Rakefile
+*.log
+*.o
+*.bundle
+*.so
