@@ -59,6 +59,7 @@ module Amalgalite
         while row = next_row
           yield row
         end
+        @stmt_api.reset!
       else
         all_rows
       end

@@ -20,6 +20,7 @@ end
     sqlite3 
     statement 
     table 
+    taps
     trace_tap 
     type_map 
     version 
