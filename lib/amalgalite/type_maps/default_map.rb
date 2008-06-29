@@ -40,7 +40,10 @@ module Amalgalite::TypeMaps
             sql_types.each { |t| @sql_to_method[t] = method }
           end
         end
-        return @sql_to_method[sql_type]
+        @sql_to_method.each_pair do |key, type|
+          return type if sql_type.index(key)
+        end
+        return nil
       end
     end
 

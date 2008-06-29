@@ -76,6 +76,24 @@ describe Amalgalite::Statement do
     end
   end
 
+  it "can execute the same prepared statement multiple times" do
+    @db.execute(" CREATE TABLE t(x,y); ")
+    values = {}
+    @db.prepare("INSERT INTO t( x, y ) VALUES( $x, $y )" ) do |stmt|
+      20.times do |x|
+        y = rand( x )
+        stmt.execute( { "$x" => x, "$y" => y } )
+        values[x] = y
+      end
+    end
+    c = 0
+    @db.execute("SELECT * from t") do |row|
+      c += 1
+      values[ row['x'] ].should == row['y']
+    end
+    c.should == 20
+  end
+
   it "binds a integer variable correctly" do
     @iso_db.prepare("SELECT * FROM country WHERE id = ? ORDER BY name ") do |stmt|
       all_rows = stmt.execute( 891 )

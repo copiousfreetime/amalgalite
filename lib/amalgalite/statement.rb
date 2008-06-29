@@ -34,7 +34,6 @@ module Amalgalite
     #
     def reset!
       @stmt_api.reset!
-      @column_names = nil
       @param_positions = {}
     end
 
@@ -48,20 +47,32 @@ module Amalgalite
     end
 
     ##
+    # reset the statment in preparation for executing it again
+    #
+    def reset_for_next_execute!
+      @stmt_api.reset!
+      @stmt_api.clear_bindings!
+    end
+
+    ##
     # Execute the statement with the given parameters
     #
     # If a block is given, then yield each returned row to the block.  If no
-    # block is given then return all rows from the result
+    # block is given then return all rows from the result.  No matter what the
+    # prepared statement should be reset before returning the final time.
     #
     def execute( *params )
       bind( *params )
-      if block_given? then
-        while row = next_row
-          yield row
+      begin
+        if block_given? then
+          while row = next_row
+            yield row
+          end
+        else
+          all_rows
         end
-        @stmt_api.reset!
-      else
-        all_rows
+      ensure
+        reset_for_next_execute!
       end
     end
 

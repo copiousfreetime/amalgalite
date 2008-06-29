@@ -1,4 +1,13 @@
 = Changelog
+== Version 0.1.1 - 2008-06-27
+
+* Minor Enhancements
+  * added example script showing a variety of uses
+
+* Bugfixes
+  * added taps.rb for requiring
+  * fixed prepared statement reset
+
 == Version 0.1.0 - 2008-06-21
 
 * Initial public release
