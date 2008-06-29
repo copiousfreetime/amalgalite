@@ -75,7 +75,8 @@ describe Amalgalite::TypeMaps::DefaultMap do
     end
 
     it "raises and error if an unknown sql type is returned" do
-      lambda{ @map.result_value_of( "footype", "foo" ) }.should raise_error( ::Amalgalite::Error )
+      x = nil
+      lambda{ x = @map.result_value_of( "footype", "foo" ) }.should raise_error( ::Amalgalite::Error )
     end
     
     it "raises and error if an ruby class is attempted to be mapped" do
