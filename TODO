@@ -1,10 +1,14 @@
+For next release
+================
+* Blob interface
+* check on reloading of schema if it changes
+
 For future releases
 ===================
 * amalgalite command line tool
 * active record driver
 * data mapper driver
 * sequel driver
-* Blob interface
 * authorizers
 * busy timeouts
 * progress handler

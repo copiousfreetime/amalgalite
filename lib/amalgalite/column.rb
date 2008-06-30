@@ -50,7 +50,7 @@ module Amalgalite
     ## 
     # Create a column with its name and associated table
     #
-    def initialize( db, name, table )
+    def initialize( db, table, name)
       @db                 = db
       @name               = name
       @table              = table

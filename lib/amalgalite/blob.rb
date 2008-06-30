@@ -102,8 +102,8 @@ module Amalgalite
         @source = File.open( params[:file], "r" )
         @length = File.size( params[:file] )
         @close_source_after_read = true
-      elsif params.has_key?( :buffer ) then
-        @source = params[:buffer]
+      elsif params.has_key?( :io ) then
+        @source = params[:io]
         @length = @source.length
       elsif params.has_key?( :db_blob ) then
         @source = params[:db_blob]
@@ -171,7 +171,7 @@ module Amalgalite
     #
     def write_to_column!
       last_rowid = column.schema.db.last_insert_rowid
-      SQLite3::Blob.new( column.schema.db.api, column.db, column.table.name, column.name, last_rowid, "w" ) do |sqlite_blob|
+      SQLite3::Blob.new( column.schema.db.api, column.db, column.table, column.name, last_rowid, "w" ) do |sqlite_blob|
         write_to_io( sqlite_blob )
       end
     end

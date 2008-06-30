@@ -28,6 +28,7 @@ typedef struct am_sqlite3_stmt {
 typedef struct am_sqlite3_blob {
   sqlite3_blob *blob;
   sqlite3      *db;
+  int           length;
   int           current_offset;
 } am_sqlite3_blob;
 

@@ -51,9 +51,10 @@ VALUE am_sqlite3_blob_initialize( VALUE self, VALUE db, VALUE db_name, VALUE tab
     /* open the blob and associate the db to it */
     rc = sqlite3_blob_open(am_db->db, zDb, zTable, zColumn, iRow, flags, &(am_blob->blob) );
     if ( rc != SQLITE_OK ) {
-        rb_raise(eAS_Error, "Error opening blob: [SQLITE_ERROR %d] %s\n",
-                rc, sqlite3_errmsg( am_db->db ));
+        rb_raise( eAS_Error, "Error opening Blob in db = %s, table = %s, column = %s, rowid = %ld  : [SQLITE_ERROR %d] %s\n", 
+                  zDb, zTable, zColumn, iRow, rc, sqlite3_errmsg( am_db->db ));
     }
+    am_blob->length = sqlite3_blob_bytes( am_blob->blob );
     am_blob->db = am_db->db;
 
     /* if a block is given then yield self and close the blob when done */
@@ -101,14 +102,13 @@ VALUE am_sqlite3_blob_length( VALUE self )
     int              n;
 
     Data_Get_Struct(self, am_sqlite3_blob, am_blob);
-    n = sqlite3_blob_bytes( am_blob->blob );
     
-    return INT2FIX( n );
+    return INT2FIX( am_blob->length );
 }
 
 /**
  * call-seq:
- *   blob.read( int ) -> String containting int number byte or nil if eof.
+ *   blob.read( int ) -> String containting int number of  bytes or nil if eof.
  *
  * returns int number of bytes as a String from the database
  */
@@ -117,19 +117,33 @@ VALUE am_sqlite3_blob_read( VALUE self, VALUE length )
     am_sqlite3_blob *am_blob;
     int             rc;
     int              n = NUM2INT( length );
-    void           *buf = (void *)malloc( n );
+    void           *buf = NULL;
     VALUE          result;
 
     Data_Get_Struct(self, am_sqlite3_blob, am_blob);
+
+    /* we have to be exact on the number of bytes to read.  n + current_offset
+     * cannot be larger than the blob's length
+     */
+    if ( (n + am_blob->current_offset > am_blob->length)) {
+        n = am_blob->length - am_blob->current_offset;
+    }
+
+    if ( am_blob->current_offset == am_blob->length ) {
+        return Qnil;
+    }
+
+    buf = (void *)malloc( n );
     rc = sqlite3_blob_read( am_blob->blob, buf, n, am_blob->current_offset); 
-    if ( rc  != SQLITE_OK ) {
+
+    if ( rc != SQLITE_OK ) {
         rb_raise(eAS_Error, "Error reading %d bytes blob at offset %d: [SQLITE_ERROR %d] %s\n",
                 n, am_blob->current_offset, rc, sqlite3_errmsg( am_blob->db ));
     }
 
     am_blob->current_offset += n;
 
-    result = rb_str_new2( (char*)buf );
+    result = rb_str_new( (char*)buf, n );
     free( buf );
     return result;
 
@@ -149,6 +163,7 @@ VALUE am_sqlite3_blob_write( VALUE self, VALUE buf )
     int              rc;
     VALUE            str = StringValue( buf );
     int              n   = RSTRING( str )->len;
+    char            *chk_buf = NULL;
 
     Data_Get_Struct(self, am_sqlite3_blob, am_blob);
 
@@ -158,6 +173,10 @@ VALUE am_sqlite3_blob_write( VALUE self, VALUE buf )
         rb_raise(eAS_Error, "Error writing %d bytes blob at offset %d: [SQLITE_ERROR %d] %s\n",
                 n, am_blob->current_offset, rc, sqlite3_errmsg( am_blob->db ));
     }
+
+    chk_buf = (char *) malloc( n  + 1);
+    chk_buf[n] = '\0';
+    sqlite3_blob_read( am_blob->blob, chk_buf, n, 0);
 
     am_blob->current_offset += n;
 

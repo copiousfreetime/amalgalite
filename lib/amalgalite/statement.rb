@@ -17,6 +17,13 @@ module Amalgalite
     attr_reader :sql
     attr_reader :api
 
+    class << self
+      # special column names that indicate that indicate the column is a rowid
+      def rowid_column_names
+        @rowid_column_names ||= %w[ ROWID OID _ROWID_ ]
+      end
+    end
+
     ##
     # Initialize a new statement on the database.  
     #
@@ -25,7 +32,15 @@ module Amalgalite
       prepare_method   =  @db.utf16? ? :prepare16 : :prepare
       @param_positions = {}
       @stmt_api        = @db.api.send( prepare_method, sql )
-      @blobs_to_write = []
+      @blobs_to_write  = []
+      @rowid_index     = nil
+    end
+
+    ##
+    # Is the special column "ROWID", "OID", or "_ROWID_" used?
+    #
+    def using_rowid_column?
+      not @rowid_index.nil?
     end
 
     ##
@@ -37,6 +52,7 @@ module Amalgalite
       @stmt_api.reset!
       @param_positions = {}
       @blobs_to_write.clear
+      @rowid_index = nil
     end
 
     ##
@@ -239,7 +255,19 @@ module Amalgalite
           when DataType::NULL
             value = nil
           when DataType::BLOB
-            value = Amalgalite::Blob.new( :string => @stmt_api.column_blob( idx ), :column => col.schame )
+            # if the rowid column is encountered, then we can use an incremental
+            # blob api, otherwise we have to use the all at once version.
+            if using_rowid_column? then
+              value = Amalgalite::Blob.new( :db_blob => SQLite3::Blob.new( db.api,
+                                                                           col.schema.db,
+                                                                           col.schema.table,
+                                                                           col.schema.name,
+                                                                           @stmt_api.column_int64( @rowid_index ),
+                                                                          "r"),
+                                            :column => col.schema)
+            else
+              value = Amalgalite::Blob.new( :string => @stmt_api.column_blob( idx ), :column => col.schema )
+            end
           else
             raise ::Amalgalite::Error, "BUG! : Unknown SQLite column type of #{column_type}"
           end
@@ -277,6 +305,10 @@ module Amalgalite
     # The full meta information from teh origin column is also obtained for help
     # in doing type conversion.
     #
+    # As iteration over the row meta informatio happens, record if the special
+    # "ROWID", "OID", or "_ROWID_" column is encountered.  If that column is
+    # encountered then we make note of it.
+    #
     def result_meta
       unless @result_meta
         meta = []
@@ -291,12 +323,29 @@ module Amalgalite
           column_meta.schema = ::Amalgalite::Column.new( db_name, tbl_name, col_name )
           column_meta.schema.declared_data_type = @stmt_api.column_declared_type( idx )
 
+          # only check for rowid if we have a table name and it is not the
+          # sqlite_master table.  We could get recursion in those cases.
+          if not using_rowid_column? and tbl_name and tbl_name != 'sqlite_master' and is_column_rowid?( tbl_name, col_name ) then
+            @rowid_index = idx
+          end
+
           meta << column_meta 
         end
 
         @result_meta = meta
       end
       return @result_meta
+    end
+
+    ##
+    # is the column indicated by the Column a 'rowid' column
+    #
+    def is_column_rowid?( table_name, column_name )
+      column_schema  = @db.schema.tables[table_name].columns[column_name]
+      if column_schema.primary_key? and column_schema.declared_data_type.upcase == "INTEGER" then
+        return true
+      end
+      return false
     end
 
     ##
