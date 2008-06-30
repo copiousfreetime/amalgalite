@@ -211,6 +211,7 @@ VALUE am_sqlite3_database_prepare(VALUE self, VALUE rSQL)
 
     if ( tail != NULL ) {
         am_stmt->remaining_sql = rb_str_new2( tail );
+        rb_gc_register_address( &(am_stmt->remaining_sql) );
     } else {
         am_stmt->remaining_sql = Qnil;
     }

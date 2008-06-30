@@ -8,6 +8,8 @@ module Amalgalite
   # a class representing the meta information about an SQLite view
   #
   class View
+    # the schame this view is assciated with
+    attr_accessor :schema
 
     # the table name
     attr_reader   :name

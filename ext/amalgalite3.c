@@ -185,6 +185,7 @@ void Init_amalgalite3()
     Init_amalgalite3_constants( );
     Init_amalgalite3_database( );
     Init_amalgalite3_statement( );
+    Init_amalgalite3_blob( );
 
  }
 

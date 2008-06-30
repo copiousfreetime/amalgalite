@@ -19,6 +19,7 @@ module Amalgalite
     attr_reader :schema 
     attr_reader :tables
     attr_reader :views
+    attr_reader :db
 
     #
     # Create a new instance of Schema
@@ -46,6 +47,7 @@ module Amalgalite
       @db.execute("SELECT tbl_name, sql FROM sqlite_master WHERE type = 'table'") do |table_info|
         table = Amalgalite::Table.new( table_info['tbl_name'], table_info['sql'] )
         table.columns = load_columns( table )
+        table.schema = self
 
         @db.prepare("SELECT name, sql FROM sqlite_master WHERE type ='index' and tbl_name = @name") do |idx_stmt|
           idx_stmt.execute( "@name" => table.name) do |idx_info|
@@ -70,6 +72,7 @@ module Amalgalite
         @db.api.table_column_metadata( "main", table.name, col.name ).each_pair do |key, value|
           col.send("#{key}=", value)
         end
+        col.schema = self
         cols[col.name] = col
       end
       cols
@@ -82,6 +85,7 @@ module Amalgalite
       @views = {}
       @db.execute("SELECT name, sql FROM sqlite_master WHERE type = 'view'") do |view_info|
         view = Amalgalite::View.new( view_info['name'], view_info['sql'] )
+        view.schema = self
         @views[view.name] = view
       end
       @views

@@ -24,7 +24,7 @@ describe Amalgalite::TypeMaps::DefaultMap do
     end
 
     it "::Amalgalite::Blob is bound to DataType::BLOB" do
-      @map.bind_type_of( ::Amalgalite::Blob.new ).should == ::Amalgalite::SQLite3::Constants::DataType::BLOB
+      @map.bind_type_of( ::Amalgalite::Blob.new( :column => true, :string => "just a test" ) ).should == ::Amalgalite::SQLite3::Constants::DataType::BLOB
     end
 
     it "everything else is bound to DataType::TEXT" do

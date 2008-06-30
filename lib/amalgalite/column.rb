@@ -13,7 +13,10 @@ module Amalgalite
   # information from a SELECT query.
   #
   class Column
-    # the database this column belongs to
+    # the schema object this column is associated with
+    attr_accessor :schema
+
+    # the database name this column belongs to
     attr_accessor :db
 
     # the column name

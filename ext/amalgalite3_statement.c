@@ -10,7 +10,7 @@ VALUE cAS_Statement;   /* class  Amalgliate::SQLite3::Statement */
 
 /**
  * call-seq:
- *     stmt.bind_null( position ) -> nil
+ *     stmt.bind_null( position ) -> int
  * 
  * bind a null value to the variable at postion.
  *
@@ -31,6 +31,58 @@ VALUE am_sqlite3_statement_bind_null(VALUE self, VALUE position )
 
     return INT2FIX(rc);
 }
+
+/**
+ * call-seq:
+ *    stmt.bind_zeroblob( position, length ) -> int
+ *
+ * bind a blob with +length+ filled with zeros to the position.  This is a Blob
+ * that will later filled in with incremental IO routines.
+ */
+VALUE am_sqlite3_statement_bind_zeroblob( VALUE self, VALUE position, VALUE length)
+{
+    am_sqlite3_stmt  *am_stmt;
+    int               pos = FIX2INT( position );
+    int               n = FIX2INT( length );
+    int               rc;
+
+    Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
+    rc = sqlite3_bind_zeroblob( am_stmt->stmt, pos, n );
+    if ( SQLITE_OK != rc ) {
+        rb_raise(eAS_Error, "Error binding zeroblob of length %d at position %d in statement: [SQLITE_ERROR %d] : %s\n",
+                n, pos,
+                rc, sqlite3_errmsg( sqlite3_db_handle( am_stmt->stmt) ));
+    }
+
+    return INT2FIX(rc);
+}
+
+
+/**
+ * call-seq:
+ *    stmt.bind_blob( position, blob ) -> int
+ *
+ * bind a blob to the variable at position.  This is a blob that is fully held
+ * in memory
+ */
+VALUE am_sqlite3_statement_bind_blob( VALUE self, VALUE position, VALUE blob )
+{
+    am_sqlite3_stmt  *am_stmt;
+    int               pos = FIX2INT( position );
+    VALUE             str = StringValue( blob );
+    int               rc;
+
+    Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
+    rc = sqlite3_bind_blob( am_stmt->stmt, pos, RSTRING( str )->ptr, RSTRING( str )->len, SQLITE_TRANSIENT);
+    if ( SQLITE_OK != rc ) {
+        rb_raise(eAS_Error, "Error binding blob at position %d in statement: [SQLITE_ERROR %d] : %s\n",
+                pos,
+                rc, sqlite3_errmsg( sqlite3_db_handle( am_stmt->stmt) ));
+    }
+
+    return INT2FIX(rc);
+}
+
 /**
  * call-seq:
  *     stmt.bind_double( position, value ) -> nil
@@ -121,7 +173,7 @@ VALUE am_sqlite3_statement_bind_text(VALUE self, VALUE position, VALUE value)
     int               rc;
 
     Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
-    rc = sqlite3_bind_text( am_stmt->stmt, pos, RSTRING(str)->ptr, RSTRING(str)->len, NULL );
+    rc = sqlite3_bind_text( am_stmt->stmt, pos, RSTRING(str)->ptr, RSTRING(str)->len, SQLITE_TRANSIENT);
     if ( SQLITE_OK != rc ) {
         rb_raise(eAS_Error, "Error binding [%s] to text at position %d in statement: [SQLITE_ERROR %d] : %s\n",
                 RSTRING(str)->ptr, pos,
@@ -326,6 +378,28 @@ VALUE am_sqlite3_statement_column_text(VALUE self, VALUE v_idx)
 
 /**
  * call-seq:
+ *    stmt.column_blob( index ) -> String
+ *  
+ * Return the data in ith column of the result as a String.
+ *
+ */
+VALUE am_sqlite3_statement_column_blob(VALUE self, VALUE v_idx)
+{
+    am_sqlite3_stmt *am_stmt;
+    int              idx    = FIX2INT( v_idx );
+    const char      *data; 
+    long             length;
+
+    Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
+    data = sqlite3_column_blob( am_stmt->stmt, idx );
+    length = sqlite3_column_bytes( am_stmt->stmt, idx );
+    return rb_str_new( data, length );
+
+}
+
+
+/**
+ * call-seq:
  *    stmt.column_double( index ) -> Float
  *  
  * Return the data in ith column of the result as an Float
@@ -470,6 +544,8 @@ VALUE am_sqlite3_statement_close( VALUE self )
         rb_raise(eAS_Error, "Failure to close statment : [SQLITE_ERROR %d] : %s\n",
                 rc, sqlite3_errmsg( sqlite3_db_handle( am_stmt->stmt) ));
     }
+
+    return Qnil;
 }
 
 /***********************************************************************
@@ -483,6 +559,10 @@ VALUE am_sqlite3_statement_close( VALUE self )
 void am_sqlite3_statement_free(am_sqlite3_stmt* wrapper)
 {
 
+    if ( Qnil != wrapper->remaining_sql ) {
+        rb_gc_unregister_address( &(wrapper->remaining_sql) );
+        wrapper->remaining_sql = Qnil;
+    }
     free(wrapper);
     return;
 }
@@ -524,6 +604,7 @@ void Init_amalgalite3_statement( )
     rb_define_method(cAS_Statement, "column_declared_type", am_sqlite3_statement_column_decltype, 1); 
     rb_define_method(cAS_Statement, "column_type", am_sqlite3_statement_column_type, 1); 
     rb_define_method(cAS_Statement, "column_text", am_sqlite3_statement_column_text, 1); 
+    rb_define_method(cAS_Statement, "column_blob", am_sqlite3_statement_column_blob, 1); 
     rb_define_method(cAS_Statement, "column_int", am_sqlite3_statement_column_int, 1); 
     rb_define_method(cAS_Statement, "column_int64", am_sqlite3_statement_column_int64, 1); 
     rb_define_method(cAS_Statement, "column_double", am_sqlite3_statement_column_double, 1); 
@@ -541,6 +622,8 @@ void Init_amalgalite3_statement( )
     rb_define_method(cAS_Statement, "bind_int64", am_sqlite3_statement_bind_int64, 2); 
     rb_define_method(cAS_Statement, "bind_double", am_sqlite3_statement_bind_double, 2); 
     rb_define_method(cAS_Statement, "bind_null", am_sqlite3_statement_bind_null, 1); 
+    rb_define_method(cAS_Statement, "bind_blob", am_sqlite3_statement_bind_blob, 2); 
+    rb_define_method(cAS_Statement, "bind_zeroblob", am_sqlite3_statement_bind_zeroblob, 2); 
 }
 
 

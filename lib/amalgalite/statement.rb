@@ -22,9 +22,10 @@ module Amalgalite
     #
     def initialize( db, sql )
       @db = db
-      prepare_method =  @db.utf16? ? :prepare16 : :prepare
+      prepare_method   =  @db.utf16? ? :prepare16 : :prepare
       @param_positions = {}
-      @stmt_api = @db.api.send( prepare_method, sql )
+      @stmt_api        = @db.api.send( prepare_method, sql )
+      @blobs_to_write = []
     end
 
     ##
@@ -35,6 +36,7 @@ module Amalgalite
     def reset!
       @stmt_api.reset!
       @param_positions = {}
+      @blobs_to_write.clear
     end
 
     ##
@@ -52,6 +54,7 @@ module Amalgalite
     def reset_for_next_execute!
       @stmt_api.reset!
       @stmt_api.clear_bindings!
+      @blobs_to_write.clear
     end
 
     ##
@@ -122,11 +125,11 @@ module Amalgalite
       check_parameter_count!( params.size )
       params.each_pair do | param, value |
         position = param_position_of( param )
-        if position > 0 then
-          bind_parameter_to( position, value )
-        else
-          raise Amalgalite::Error, "Unable to find parameter '#{param}' in SQL statement [#{sql}]"
-        end
+      if position > 0 then
+        bind_parameter_to( position, value )
+      else
+        raise Amalgalite::Error, "Unable to find parameter '#{param}' in SQL statement [#{sql}]"
+      end
       end
     end
 
@@ -156,12 +159,17 @@ module Amalgalite
       when DataType::TEXT
         @stmt_api.bind_text( position, value.to_s )
       when DataType::BLOB
-        raise NotImplemented, "Blob binding is not implemented yet"
+        if value.incremental? then
+          @stmt_api.bind_zeroblob( position, value.length )
+          @blobs_to_write << value
+        else
+          @stmt_api.bind_blob( position, value.source )
+        end
       else
         raise ::Amalgalite::Error, "Unknown binding type of #{bind_type} from #{db.type_map.class.name}.bind_type_of"
       end
     end
-      
+
 
     ##
     # Find and cache the binding parameter indexes
@@ -186,6 +194,17 @@ module Amalgalite
       return expected
     end
 
+    ##
+    # Write any blobs that have been bound to parameters to the database.  This
+    # assumes that the blobs go into the last inserted row
+    #
+    def write_blobs
+      unless @blobs_to_write.empty?
+        @blobs_to_write.each do |blob|
+          blob.write_to_column!
+        end
+      end
+    end
 
     ##
     # Iterate over the results of the statement returning each row of results 
@@ -220,7 +239,7 @@ module Amalgalite
           when DataType::NULL
             value = nil
           when DataType::BLOB
-            raise NotImplemented, "returning a blob is not supported yet"
+            value = Amalgalite::Blob.new( :string => @stmt_api.column_blob( idx ), :column => col.schame )
           else
             raise ::Amalgalite::Error, "BUG! : Unknown SQLite column type of #{column_type}"
           end
@@ -230,6 +249,7 @@ module Amalgalite
         row.fields = result_fields
       when ResultCode::DONE
         row = nil
+        write_blobs
       else
         raise Amalgalite::SQLite3::Error, 
               "Received unexepcted result code #{rc} : #{Amalgalite::SQLite3::Constants::ResultCode.from_int( rc )}"
@@ -263,7 +283,7 @@ module Amalgalite
         column_count.times do |idx|
           column_meta = ::OpenStruct.new
           column_meta.name = @stmt_api.column_name( idx )
-          
+
           db_name  = @stmt_api.column_database_name( idx ) 
           tbl_name = @stmt_api.column_table_name( idx ) 
           col_name = @stmt_api.column_origin_name( idx ) 
@@ -273,6 +293,7 @@ module Amalgalite
 
           meta << column_meta 
         end
+
         @result_meta = meta
       end
       return @result_meta
@@ -300,7 +321,7 @@ module Amalgalite
     def column_count
       @stmt_api.column_count
     end
-    
+
     ##
     # return the raw sql that was originally used to prepare the statement
     #

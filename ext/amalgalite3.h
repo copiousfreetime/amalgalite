@@ -24,6 +24,13 @@ typedef struct am_sqlite3_stmt {
   VALUE         remaining_sql;
 } am_sqlite3_stmt;
 
+/* wrapper struct around the sqlite3_blob opaque ponter */
+typedef struct am_sqlite3_blob {
+  sqlite3_blob *blob;
+  sqlite3      *db;
+  int           current_offset;
+} am_sqlite3_blob;
+
 
 /** module and classes **/
 extern VALUE mA;              /* module Amalgalite                     */
@@ -55,7 +62,7 @@ extern VALUE am_sqlite3_database_register_profile_tap(VALUE self, VALUE tap);
 /*----------------------------------------------------------------------
  * Prototype for Amalgalite::SQLite3::Statement 
  *---------------------------------------------------------------------*/
-extern VALUE cAS_Statement;   /* class  Amalgliate::SQLite3::Statement */
+extern VALUE cAS_Statement;   /* class  Amalgalite::SQLite3::Statement */
 
 extern VALUE am_sqlite3_statement_alloc(VALUE klass);
 extern void  am_sqlite3_statement_free(am_sqlite3_stmt* );
@@ -66,6 +73,7 @@ extern VALUE am_sqlite3_statement_column_count(VALUE self);
 extern VALUE am_sqlite3_statement_column_name(VALUE self, VALUE index);
 extern VALUE am_sqlite3_statement_column_decltype(VALUE self, VALUE index);
 extern VALUE am_sqlite3_statement_column_type(VALUE self, VALUE index);
+extern VALUE am_sqlite3_statement_column_blob(VALUE self, VALUE index);
 extern VALUE am_sqlite3_statement_column_text(VALUE self, VALUE index);
 extern VALUE am_sqlite3_statement_column_int(VALUE self, VALUE index);
 extern VALUE am_sqlite3_statement_column_int64(VALUE self, VALUE index);
@@ -81,10 +89,25 @@ extern VALUE am_sqlite3_statement_bind_parameter_count(VALUE self);
 extern VALUE am_sqlite3_statement_bind_parameter_index(VALUE self, VALUE parameter_name);
 extern VALUE am_sqlite3_statement_remaining_sql(VALUE self);
 extern VALUE am_sqlite3_statement_bind_text(VALUE self, VALUE position, VALUE value);
+extern VALUE am_sqlite3_statement_bind_blob(VALUE self, VALUE position, VALUE value);
+extern VALUE am_sqlite3_statement_bind_zeroblob(VALUE self, VALUE position, VALUE value);
 extern VALUE am_sqlite3_statement_bind_int(VALUE self, VALUE position, VALUE value);
 extern VALUE am_sqlite3_statement_bind_int64(VALUE self, VALUE position, VALUE value);
 extern VALUE am_sqlite3_statement_bind_double(VALUE self, VALUE position, VALUE value);
 extern VALUE am_sqlite3_statement_bind_null(VALUE self, VALUE position);
+
+/*----------------------------------------------------------------------
+ * Prototype for Amalgalite::SQLite3::Blob
+ *---------------------------------------------------------------------*/
+extern VALUE cAS_Blob; /* class Amalgalite::SQLite3::Blob */
+
+extern VALUE am_sqlite3_blob_alloc(VALUE klass);
+extern VALUE am_sqlite3_blob_initialize( VALUE self, VALUE db, VALUE db_name, VALUE table_name, VALUE column_name, VALUE rowid, VALUE flag) ;
+extern void  am_sqlite3_blob_free(am_sqlite3_blob* );
+extern VALUE am_sqlite3_blob_read(VALUE self, VALUE length);
+extern VALUE am_sqlite3_blob_write(VALUE self, VALUE buffer);
+extern VALUE am_sqlite3_blob_close(VALUE self);
+extern VALUE am_sqlite3_blob_length(VALUE self);
 
 /***********************************************************************
  * Type conversion macros between sqlite data types and ruby types

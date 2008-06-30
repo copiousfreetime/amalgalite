@@ -89,6 +89,8 @@ module Amalgalite::TypeMaps
         return value
       when NilClass
         return value
+      when Amalgalite::Blob
+        return value
       when String
         if declared_type then
           conversion_method = DefaultMap.sql_to_method( declared_type.downcase )
