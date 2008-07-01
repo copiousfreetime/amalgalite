@@ -1,8 +1,3 @@
-For next release
-================
-* Blob interface
-* check on reloading of schema if it changes
-
 For future releases
 ===================
 * amalgalite command line tool
@@ -21,4 +16,5 @@ For future releases
 * virtual file system
 * encryption key support
 * convert type dependency to just use 'call'
+* check on reloading of schema if it changes
 ? if in a transaction, and you call transaction, then yield the block

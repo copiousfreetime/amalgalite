@@ -1,8 +1,8 @@
 = Changelog
-== Version 0.2.0 - 2008-06-28
+== Version 0.2.0 - 2008-07-01
 
 * Major Enhancements
-  * incremental blob support
+  * blob support, both incremental access and normal access
 
 * Minor Enhancements
   * added example script showing a variety of uses
