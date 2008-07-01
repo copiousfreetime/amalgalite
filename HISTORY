@@ -5,7 +5,8 @@
   * blob support, both incremental access and normal access
 
 * Minor Enhancements
-  * added example script showing a variety of uses
+  * added examples/gem_db.rb script demonstrating taps and prepared statements
+  * added examples/schema-info.rb script demonstrating meta information
   
 * Bugfixes
   * added taps.rb for requiring
