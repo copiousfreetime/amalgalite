@@ -16,25 +16,21 @@
 #   ruby blob.rb retrieve a.rb        # => dumps a.rb to stdout
 #
 
-$: << "../lib"
-$: << "../ext"
 require 'rubygems'
-require 'arrayfields'
 require 'amalgalite'
-
+VALID_ACTIONS = %w[ list retrieve store ]
 def usage 
-  STDERR.puts "Usage: #{File.basename($0)} ( store | retrieve )  file(s)"
+  STDERR.puts "Usage: #{File.basename($0)} ( #{VALID_ACTIONS.join(' | ')} )  file(s)"
   exit 1
 end
 
 #
 # This does the basic command line parsing
 #
-usage if ARGV.size < 2
+usage if ARGV.size < 1
 action    = ARGV.shift
-usage unless %w[ store retrieve ].include? action
+usage unless VALID_ACTIONS.include? action 
 file_list = ARGV
-usage unless file_list.size > 0
 
 #
 # create the database if it doesn't exist
@@ -55,6 +51,14 @@ end
 
 case action
   #
+  # list all the files that are stored in the database
+  #
+when 'list'
+  db.execute("SELECT path FROM files") do |row|
+    puts row['path']
+  end
+
+  #
   # if we are doing the store action, then loop over the files and store them in
   # the database.  This will use incremental IO to store the files directly from
   # the file names. 
@@ -67,6 +71,7 @@ case action
   # prepared statement.
   #
 when 'store'
+  usage if file_list.empty?
   db.transaction do |db_in_trans|
     db_in_trans.prepare("INSERT INTO files(path, data) VALUES( $path, $data )") do |stmt|
       file_list.each do |file_path|
@@ -91,6 +96,7 @@ when 'store'
   # positional sql varible binding using the '?' syntax.
   #
 when 'retrieve'
+  usage if file_list.empty?
   db.execute("SELECT id, path, data FROM files WHERE path = ?", file_list.first) do |row|
   STDERR.puts "Dumping #{row['path']} to stdout"
   row['data'].write_to_io( STDOUT )
