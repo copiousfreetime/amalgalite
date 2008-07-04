@@ -12,11 +12,13 @@
 == DESCRIPTION
 
 Amalgalite embeds the SQLite database engine in a ruby extension.  There is no
-need to install SQLite separately.  Look in the examples/ directory to see
+need to install SQLite separately.  
+
+Look in the examples/ directory to see
 
 * general usage
 * blob io
-* schemea information
+* schema information
 
 Also Scroll through Amalgalite::Database for a quick example, and a general
 overview of the API.
