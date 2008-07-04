@@ -1,5 +1,5 @@
 = Changelog
-== Version 0.2.0 - 2008-07-01
+== Version 0.2.0 - 2008-07-04
 
 * Major Enhancements
   * blob support, both incremental access and normal access
@@ -7,10 +7,14 @@
 * Minor Enhancements
   * added examples/gem_db.rb script demonstrating taps and prepared statements
   * added examples/schema-info.rb script demonstrating meta information
+  * added examples/blob.rb demonstrating incremental blob IO
+  * added acces to the SQLite3 errcode and errmsg api
   
 * Bugfixes
   * added taps.rb for requiring
   * fixed prepared statement reset
+  * caught an error in executing prepared statements earlier in the process so
+    the correct error is reported
 
 == Version 0.1.0 - 2008-06-21
 

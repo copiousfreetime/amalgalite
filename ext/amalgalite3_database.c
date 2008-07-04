@@ -165,6 +165,42 @@ VALUE am_sqlite3_database_row_changes(VALUE self)
 
 /**
  * call-seq:
+ *    database.last_error_code -> Integer
+ *
+ * return the last error code that happened in the database
+ *
+ */
+VALUE am_sqlite3_database_last_error_code(VALUE self)
+{
+    am_sqlite3   *am_db;
+    int           code;
+
+    Data_Get_Struct(self, am_sqlite3, am_db);
+    code = sqlite3_errcode( am_db->db );
+    
+    return INT2FIX( code );
+}
+
+/**
+ * call-seq:
+ *    database.last_error_message -> String
+ *
+ * return the last error message that happened in the database
+ *
+ */
+VALUE am_sqlite3_database_last_error_message(VALUE self)
+{
+    am_sqlite3   *am_db;
+    const char   *message;
+
+    Data_Get_Struct(self, am_sqlite3, am_db);
+    message = sqlite3_errmsg( am_db->db );
+    
+    return rb_str_new2( message );
+}
+
+/**
+ * call-seq:
  *    database.total_changes -> Integer
  *
  * return the number of rows changed by INSERT, UPDATE or DELETE statements 
@@ -454,6 +490,8 @@ void Init_amalgalite3_database( )
     rb_define_method(cAS_Database, "table_column_metadata", am_sqlite3_database_table_column_metadata, 3); /* in amalgalite3_database.c */
     rb_define_method(cAS_Database, "row_changes", am_sqlite3_database_row_changes, 0); /* in amalgalite3_database.c */
     rb_define_method(cAS_Database, "total_changes", am_sqlite3_database_total_changes, 0); /* in amalgalite3_database.c */
+    rb_define_method(cAS_Database, "last_error_code", am_sqlite3_database_last_error_code, 0); /* in amalgalite3_database.c */
+    rb_define_method(cAS_Database, "last_error_message", am_sqlite3_database_last_error_message, 0); /* in amalgalite3_database.c */
 
 }
 

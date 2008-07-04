@@ -91,7 +91,12 @@ module Amalgalite
           all_rows
         end
       ensure
-        reset_for_next_execute!
+        s = $!
+        begin 
+          reset_for_next_execute!
+        rescue => e
+        end
+        raise s if s
       end
     end
 
@@ -280,7 +285,7 @@ module Amalgalite
         write_blobs
       else
         raise Amalgalite::SQLite3::Error, 
-              "Received unexepcted result code #{rc} : #{Amalgalite::SQLite3::Constants::ResultCode.from_int( rc )}"
+              "SQLITE ERROR #{rc} (#{Amalgalite::SQLite3::Constants::ResultCode.from_int( rc )}) : #{@db.api.last_error_message}"
       end
       return row
     end
