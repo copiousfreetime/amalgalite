@@ -10,7 +10,7 @@ For future releases
 * loading of extensions
 * utf-16 integration
 * create_collation 
-* global temp directory
+* global temp directory setting
 * create_function
 * full text search
 * virtual file system
