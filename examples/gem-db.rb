@@ -37,6 +37,7 @@ unless schema.tables['gems']
     author  VARCHAR(128)
   );
   SQL
+  db.reload_schema!
 end
 
 #

@@ -1,4 +1,9 @@
 = Changelog
+== Version next
+
+* Bugfixes
+  * fix schema reloading in the example scripts
+
 == Version 0.2.0 - 2008-07-04
 
 * Major Enhancements
