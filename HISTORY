@@ -1,8 +1,8 @@
 = Changelog
-== Version next
+== Version 0.2.1 - 2008-07-05
 
 * Bugfixes
-  * turn off pthread support in sqlite3 if it is not enabled in ruby 
+  * make sure that the pthread support in sqlite3 matches that of ruby
   * fix schema reloading in the example scripts
 
 == Version 0.2.0 - 2008-07-04
