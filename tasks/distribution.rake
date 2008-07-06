@@ -18,7 +18,7 @@ if pkg_config = Configuration.for_if_exist?("packaging") then
 
     desc "Install as a gem"
     task :install => [:clobber, :package] do
-      sh "sudo gem install -y pkg/#{Amalgalite::GEM_SPEC.full_name}.gem"
+      sh "sudo gem install --local pkg/#{Amalgalite::GEM_SPEC.full_name}.gem"
     end
 
     desc "Uninstall gem"
