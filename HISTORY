@@ -2,6 +2,7 @@
 == Version next
 
 * Bugfixes
+  * turn off pthread support in sqlite3 if it is not enabled in ruby 
   * fix schema reloading in the example scripts
 
 == Version 0.2.0 - 2008-07-04
