@@ -158,10 +158,10 @@ module Amalgalite::TypeMaps
     end
 
     ##
-    # convert a string to a blog
+    # convert a string to a blob
     #
     def blob( str )
-      raise NotImplementedError, "Blob type conversion is not implemented"
+      ::Amalgalite::Blob.new( :string => str )
     end
   end
 end

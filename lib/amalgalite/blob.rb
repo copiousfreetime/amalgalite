@@ -78,7 +78,7 @@ module Amalgalite
     #              and +length+.  +read+ should have the behavior of IO#read
     #   :db_blob : not normally used by an end user, used to initialize a blob
     #              object that is returned from an SQL query.
-    #   :string  : used when a Blob is part of a WHERE clause
+    #   :string  : used when a Blob is part of a WHERE clause or result
     #
     # And additional key of :block_size may be used to indicate the maximum size
     # of a single block of data to move from the source to the destination, this
@@ -96,7 +96,7 @@ module Amalgalite
       @block_size              = params[:block_size] || Blob.default_block_size
       @column                  = params[:column]     
 
-      raise Blob::Error, "A :column parameter is required for a Blob" unless @column
+      raise Blob::Error, "A :column parameter is required for a Blob" unless @column or params.has_key?( :string )
 
       if params.has_key?( :file ) then
         @source = File.open( params[:file], "r" )
@@ -145,6 +145,13 @@ module Amalgalite
       if close_source_after_read? then
         source.close
       end
+    end
+
+    ##
+    # conver the blob to a string
+    #
+    def to_s
+      to_string_io.string
     end
 
     ##

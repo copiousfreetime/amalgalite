@@ -70,8 +70,9 @@ describe Amalgalite::TypeMaps::DefaultMap do
       @map.result_value_of( "bool", "True" ).should == true
     end
 
-    it "raises NotImplemeted for blob conversion" do
-      lambda{ @map.result_value_of( "Blob", "some blob" ) }.should raise_error( NotImplementedError )
+    it "Blob is returned for declated types of 'blob'" do
+      blob = @map.result_value_of( "blob", "stuff")
+      blob.to_s.should == "stuff"
     end
 
     it "raises and error if an unknown sql type is returned" do
