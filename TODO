@@ -1,7 +1,6 @@
 For next release
 ================
 * query the index_info pragma to populate information for Database#Index
-* Database#pragma should accept a block and pass it on to execute
 
 For future releases
 ===================
