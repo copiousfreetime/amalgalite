@@ -437,8 +437,8 @@ module Amalgalite
     # Run a pragma command against the database
     # 
     # Returns the result set of the pragma
-    def pragma( cmd )
-      execute("PRAGMA #{cmd}")
+    def pragma( cmd, &block )
+      execute("PRAGMA #{cmd}", &block)
     end
 
     ##

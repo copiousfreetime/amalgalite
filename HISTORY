@@ -1,4 +1,9 @@
 = Changelog
+== Version next
+
+* Bugfixes
+  * Database#pragma should accept a block just like Database#execute does
+
 == Version 0.2.1 - 2008-07-05
 
 * Bugfixes

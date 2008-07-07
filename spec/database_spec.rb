@@ -159,6 +159,14 @@ describe Amalgalite::Database do
     count.should == 10
   end
 
+  it "#pragma yields each row when called with a block" do
+    count = 0
+    @iso_db.pragma( "index_info( subcountry_country )" ) do |row|
+      count += 1
+    end
+    count.should == 1
+  end
+
   it "can use something that responds to 'write' as a tap" do
     db = Amalgalite::Database.new( SpecInfo.test_db )
     s2 = db.trace_tap   = StringIO.new
