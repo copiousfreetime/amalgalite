@@ -21,7 +21,7 @@ db.execute(<<-create)
 CREATE TABLE rubylibs(
   id        INTEGER PRIMARY KEY AUTOINCREMENT,
   filename  VARCHAR UNIQUE,
-  contents  BLOB
+  contents  TEXT
 )
 create
 
