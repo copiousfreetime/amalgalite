@@ -3,3 +3,4 @@ Rakefile
 *.o
 *.bundle
 *.so
+Makefile

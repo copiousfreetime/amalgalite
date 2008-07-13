@@ -15,7 +15,8 @@ if ext_config = Configuration.for_if_exist?('extension') then
         conf  = parts.last
         Dir.chdir(path.dirname) do |d| 
           ruby conf.to_s
-          sh "rake default"
+          #sh "rake default"
+          sh "make"
         end
       end
     end
@@ -26,7 +27,8 @@ if ext_config = Configuration.for_if_exist?('extension') then
         parts = path.split
         conf  = parts.last
         Dir.chdir(path.dirname) do |d| 
-          sh "rake clean"
+          #sh "rake clean"
+          sh "make clean"
         end
       end
     end
@@ -37,7 +39,8 @@ if ext_config = Configuration.for_if_exist?('extension') then
         parts = path.split
         conf  = parts.last
         Dir.chdir(path.dirname) do |d| 
-          sh "rake clobber"
+          #sh "rake clobber"
+          sh "make distclean"
         end
       end
     end

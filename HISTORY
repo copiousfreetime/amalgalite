@@ -1,8 +1,11 @@
 = Changelog
-== Version next
+== Version 0.2.2
 
 * Bugfixes
   * Database#pragma should accept a block just like Database#execute does
+
+* compatibility fix
+  * convert to using extconf.rb instead of mkrf for muster integration
 
 == Version 0.2.1 - 2008-07-05
 
