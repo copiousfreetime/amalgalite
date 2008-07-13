@@ -8,6 +8,6 @@ $CFLAGS += " -DSQLITE_ENABLE_COLUMN_METADATA=1"
 if Config::CONFIG['configure_args'].include?( "--enable-pthread" ) then
   $CFLAGS += " -DSQLITE_THREADSAFE=1"
 else
-  $CFLAGS += "-DSQLITE_THREADSAFE=0"
+  $CFLAGS += " -DSQLITE_THREADSAFE=0"
 end
 create_makefile('amalgalite3')

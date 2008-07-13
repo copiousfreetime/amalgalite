@@ -1,4 +1,9 @@
 = Changelog
+== Version 0.2.4
+
+* Bugfixes
+  * fix compilation when ruby is compiled without pthreads using 
+
 == Version 0.2.3
 
 * Bugfixes
