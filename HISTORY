@@ -1,4 +1,9 @@
 = Changelog
+== Version 0.2.3
+
+* Bugfixes
+  * make sure file permissions are all read before shipping gem
+
 == Version 0.2.2
 
 * Bugfixes
