@@ -9,6 +9,10 @@
   * new method Amalgalite::load_table_contents is available as a compile time
     option.  See the RDoc in amalgalite_boot.c
 
+* Bugfixes
+  * fix nil exception when using a declared_data_type on primary key column that
+    has no declared_data_type
+
 == Version 0.2.4 2008-07-13
 
 * Bugfixes
