@@ -13,7 +13,7 @@
  * call-seq:
  *   Amalgalite.load_table_contents( filename = "lib.db", table_name = "bootload", rowid_column_name = "id", filename_column_name = "filename",  content_column_name = "contents" )
  *
- * *WARNING* 
+ * *WARNING* *WARNING* *WARNING* *WARNING* *WARNING* *WARNING* *WARNING*
  *
  * This is a boostrap mechanism to eval all the code in a particular column in a
  * specially formatted table in an sqlite database.  It should only be used for
@@ -73,6 +73,7 @@ VALUE am_load_table_contents( VALUE self, VALUE db_file_name, VALUE table_name,
     VALUE     require_name = Qnil;  /* ruby string of the file name for use in eval */
     VALUE   eval_this_code = Qnil;  /* ruby string of the code to eval from the db  */
     VALUE toplevel_binding = rb_const_get( rb_cObject, rb_intern("TOPLEVEL_BINDING") ) ;
+    VALUE    sqlite_errmsg = Qnil;
 
     ID             eval_id = rb_intern("eval");
 
@@ -86,10 +87,10 @@ VALUE am_load_table_contents( VALUE self, VALUE db_file_name, VALUE table_name,
     sql_bytes = asprintf( &sql, "SELECT %s, %s FROM %s ORDER BY %s", fname_col, content_col, tbl_name, pk_col );
     rc = sqlite3_prepare_v2( db, sql, sql_bytes, &stmt, &sql_tail ) ;
     if ( SQLITE_OK != rc) {
-        /* sqlite3_close( db ); */
-        /* free( sql ); */
+        sqlite3_close( db ); 
+        free( sql );
         rb_raise(eAS_Error, "Failure to prepare bootload select statement table = '%s', rowid col = '%s', filename col ='%s', contents col = '%s' : [SQLITE_ERROR %d] %s\n",
-                tbl_name, pk_col, fname_col, content_col, rc, sqlite3_errmsg( db ));
+                tbl_name, pk_col, fname_col, content_col, rc);
     }
     free(sql);
 
@@ -99,18 +100,17 @@ VALUE am_load_table_contents( VALUE self, VALUE db_file_name, VALUE table_name,
         /* file name */
         result_text   = sqlite3_column_text( stmt, 0 );
         result_length = sqlite3_column_bytes( stmt, 0 );
-        printf("got filename of %s\n", result_text);
         require_name  = rb_str_new( (const char*)result_text, result_length );
 
         /* ruby code */
         result_text    = sqlite3_column_text( stmt, 1 );
         result_length  = sqlite3_column_bytes( stmt, 1 );
-        printf("got code of %s\n", result_text);
         eval_this_code = rb_str_new( (const char*)result_text, result_length );
 
         /* Kernel.eval( code, TOPLEVEL_BINDING, filename, 1 ) */ 
         rb_funcall(rb_mKernel, eval_id, 4, eval_this_code, toplevel_binding, require_name, INT2FIX(1) );
 
+        /* TODO: for ruby 1.9 -- put in ? sqlite3://path/to/database?tablename=tbl_name#require_name */
         /* update $" */
         rb_ary_push( rb_gv_get( "$\"" ), require_name );
     }
@@ -137,7 +137,6 @@ VALUE am_load_table_contents( VALUE self, VALUE db_file_name, VALUE table_name,
     }
 
     return Qnil;
-
 }
 
 void Init_amalgalite3_boot()

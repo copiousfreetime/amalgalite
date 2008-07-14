@@ -26,3 +26,4 @@ For future releases
 * virtual file system
 * encryption key support
 * convert type dependency to just use 'call'
+* use ruby's ALLOC_N and hook into sqlite3_meme_methods
