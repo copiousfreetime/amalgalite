@@ -3,10 +3,7 @@
 #include "amalgalite3.h";
 void Init_amalgalite3_constants( )
 {
-    /** :stopdoc:
-     * These calls are here just to allow for rdoc generation
-     * :startdoc:
-     */
+
     VALUE ma  = rb_define_module("Amalgalite");
     VALUE mas = rb_define_module_under(ma, "SQLite3");
 

@@ -1,21 +1,32 @@
 = Changelog
-== Version 0.2.4
+== Version Future
+
+* Major Enhancements
+  * update to SQLite3 version 3.6.0
+  * The SQLite RTree table type is enabled by default
+
+* Minor Enhancements
+  * new method Amalgalite::load_table_contents is available as a compile time
+    option.  See the RDoc in amalgalite_boot.c
+
+== Version 0.2.4 2008-07-13
 
 * Bugfixes
   * fix compilation when ruby is compiled without pthreads using 
 
-== Version 0.2.3
+== Version 0.2.3 2008-07-12
 
 * Bugfixes
   * make sure file permissions are all read before shipping gem
 
-== Version 0.2.2
+== Version 0.2.2 2008-07-12
 
 * Bugfixes
   * Database#pragma should accept a block just like Database#execute does
 
 * compatibility fix
-  * convert to using extconf.rb instead of mkrf for muster integration
+  * convert to using extconf.rb instead of mkrf to enable compilation as a
+    direct ruby extension in the ruby source tree
 
 == Version 0.2.1 - 2008-07-05
 

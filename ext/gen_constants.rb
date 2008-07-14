@@ -69,10 +69,7 @@ File.open(fname, "w+") do |f|
   f.puts '#include "amalgalite3.h";'
   f.puts "void Init_amalgalite3_constants( )"
   f.puts "{"
-  f.puts "    /** :stopdoc:"
-  f.puts "     * These calls are here just to allow for rdoc generation"
-  f.puts "     * :startdoc:"
-  f.puts "     */"
+  f.puts
   f.puts '    VALUE ma  = rb_define_module("Amalgalite");'
   f.puts '    VALUE mas = rb_define_module_under(ma, "SQLite3");'
   f.puts

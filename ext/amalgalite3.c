@@ -148,6 +148,9 @@ VALUE am_sqlite3_libversion_number(VALUE self)
     return INT2FIX(sqlite3_libversion_number());
 }
 
+/**
+ * The Amalgalite ruby extension
+ */
 
 void Init_amalgalite3()
 {
@@ -186,6 +189,10 @@ void Init_amalgalite3()
     Init_amalgalite3_database( );
     Init_amalgalite3_statement( );
     Init_amalgalite3_blob( );
+
+#ifdef AMALGALITE_ENABLE_LOAD_TABLE_CONTENTS
+    Init_amalgalite3_boot( );
+#endif
 
  }
 

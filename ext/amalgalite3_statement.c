@@ -579,14 +579,13 @@ VALUE am_sqlite3_statement_alloc(VALUE klass)
     return obj;
 }
 
+/**
+ * Amagalite Database extension
+ */
 
 void Init_amalgalite3_statement( )
 {
 
-    /** :stopdoc:
-     * These calls are here just to allow for rdoc generation
-     * :startdoc:
-     */
     VALUE ma  = rb_define_module("Amalgalite");
     VALUE mas = rb_define_module_under(ma, "SQLite3");
 

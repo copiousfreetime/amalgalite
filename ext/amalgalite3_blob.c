@@ -216,10 +216,6 @@ VALUE am_sqlite3_blob_alloc(VALUE klass)
 void Init_amalgalite3_blob( )
 {
 
-    /** :stopdoc:
-     * These calls are here just to allow for rdoc generation
-     * :startdoc:
-     */
     VALUE ma  = rb_define_module("Amalgalite");
     VALUE mas = rb_define_module_under(ma, "SQLite3");
 
