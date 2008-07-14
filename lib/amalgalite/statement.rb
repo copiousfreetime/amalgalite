@@ -347,7 +347,7 @@ module Amalgalite
     #
     def is_column_rowid?( table_name, column_name )
       column_schema  = @db.schema.tables[table_name].columns[column_name]
-      if column_schema.primary_key? and column_schema.declared_data_type.upcase == "INTEGER" then
+      if column_schema.primary_key? and column_schema.declared_data_type and column_schema.declared_data_type.upcase == "INTEGER" then
         return true
       end
       return false
