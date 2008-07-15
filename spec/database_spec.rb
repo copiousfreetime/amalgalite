@@ -184,11 +184,19 @@ describe Amalgalite::Database do
     s.string.should =~ /unregistered as profile tap/m
   end
 
-  it "raises an error if a transaction is attempted within a transaction" do
+  it "allows nested transactions even if SQLite under the covers does not" do
     db = Amalgalite::Database.new( SpecInfo.test_db )
-    db.transaction do |db2|
-      lambda{ db2.transaction }.should raise_error(Amalgalite::Error)
+    r = db.transaction do |db2|
+      r2 = db.transaction { 42 }
+      r2.should == 42
+      r2
     end
+    r.should == 42
+  end
+
+  it "returns the result of the transaction when a block is yielded" do
+    db = Amalgalite::Database.new( SpecInfo.test_db )
+    (db.transaction { 42 }).should == 42
   end
 
   it "#reload_schema!" do

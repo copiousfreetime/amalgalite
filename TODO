@@ -2,11 +2,6 @@ For next release
 ================
 * method to tell amalgalite to pack itself into an sqlite database
 * query the index_info pragma to populate information for Database#Index
-* transactions
-  * if in a transaction, and you call transaction, then do that as a noop and
-    yield the block.  That is, fake a nested transaction
-  * the return value from a transaction where a block is given should be the
-    return value of the block
 
 For future releases
 ===================

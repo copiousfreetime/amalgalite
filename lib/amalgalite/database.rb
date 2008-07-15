@@ -467,14 +467,22 @@ module Amalgalite
     # issued upon leaving the block.
     #
     # If no block is passed in then you are on your own.
+    #
+    # Nested transactions are not supported by SQLite, but they are faked here.
+    # If you call transaction within a transaction, no new transaction is
+    # started, the current one is just continued.
     # 
     def transaction( mode = TransactionBehavior::DEFERRED )
       raise Amalgalite::Error, "Invalid transaction behavior mode #{mode}" unless TransactionBehavior.valid?( mode )
-      raise Amalgalite::Error, "Nested Transactions are not supported" if in_transaction?
-      execute( "BEGIN #{mode} TRANSACTION" )
+
+      # if already in a transaction, no need to start a new one.
+      if not in_transaction? then
+        execute( "BEGIN #{mode} TRANSACTION" )
+      end
+
       if block_given? then
         begin
-          yield self
+          return ( yield self )
         ensure
           if $! then
             rollback
@@ -483,22 +491,23 @@ module Amalgalite
             commit
           end
         end
+      else
+        return in_transaction?
       end
-      return in_transaction?
     end
 
     ##
     # Commit a transaction
     #
     def commit
-      execute( "COMMIT" )
+      execute( "COMMIT" ) if in_transaction?
     end
 
     ##
     # Rollback a transaction
     #
     def rollback
-      execute( "ROLLBACK" )
+      execute( "ROLLBACK" ) if in_transaction?
     end
   end
 end

@@ -12,6 +12,11 @@
 * Bugfixes
   * fix nil exception when using a declared_data_type on primary key column that
     has no declared_data_type
+  * when Database#transaction is passed a block, the return value is the return
+    value of the block
+  * nested transactions are 'faked'.  Calling Database#transaction while
+    Databased#in_transaction? is true does not result in an exception, but
+    continues on in the current transaction.  
 
 == Version 0.2.4 2008-07-13
 
