@@ -190,8 +190,8 @@ void Init_amalgalite3()
     Init_amalgalite3_statement( );
     Init_amalgalite3_blob( );
 
-#ifdef AMALGALITE_ENABLE_LOAD_TABLE_CONTENTS
-    Init_amalgalite3_boot( );
+#ifdef AMALGALITE_ENABLE_REQUIRES_BOOTSTRAP
+    Init_amalgalite3_requires_bootstrap( );
 #endif
 
  }
