@@ -31,7 +31,7 @@ void am_bootstrap_cleanup_and_raise( char* msg, sqlite3* db, sqlite3_stmt* stmt 
 
 /**
  * call-seq:
- *   Amalgalite::Requires::Bootstrap.lift( filename = "lib.db", table_name = "bootload", rowid_column_name = "id", filename_column_name = "filename",  content_column_name = "contents" )
+ *   Amalgalite::Requires::Bootstrap.lift( 'db_name' => "lib.db", 'table_name' => "bootload", 'rowid_column' => "id", 'filename_column' => "filename",  'content_column' => "contents" )
  *
  * *WARNING* *WARNING* *WARNING* *WARNING* *WARNING* *WARNING* *WARNING*
  *
@@ -60,9 +60,7 @@ void am_bootstrap_cleanup_and_raise( char* msg, sqlite3* db, sqlite3_stmt* stmt 
  * The database to be opened by _lift_ *must* ba an sqlite3 UTF-8 database.
  *
  */
-VALUE am_bootstrap_lift( VALUE self, VALUE db_file_name, VALUE table_name,
-                         VALUE rowid_col_name, VALUE filename_col_name, 
-                         VALUE content_col_name)
+VALUE am_bootstrap_lift( VALUE self, VALUE args )
 {
     sqlite3*        db = NULL;
     sqlite3_stmt* stmt = NULL;
@@ -76,11 +74,11 @@ VALUE am_bootstrap_lift( VALUE self, VALUE db_file_name, VALUE table_name,
     VALUE  am_fname_c  = rb_const_get( cARB, rb_intern("DEFAULT_FILENAME_COLUMN") );
     VALUE am_content_c = rb_const_get( cARB, rb_intern("DEFAULT_CONTENTS_COLUMN") );
 
-    char*     db_name = ( Qnil == db_file_name      ) ? StringValuePtr( am_db_c )      : StringValuePtr( db_file_name      );
-    char*    tbl_name = ( Qnil == table_name        ) ? StringValuePtr( am_tbl_c )     : StringValuePtr( table_name        );
-    char*      pk_col = ( Qnil == rowid_col_name    ) ? StringValuePtr( am_pk_c )      : StringValuePtr( rowid_col_name    );
-    char*   fname_col = ( Qnil == filename_col_name ) ? StringValuePtr( am_fname_c )   : StringValuePtr( filename_col_name );
-    char* content_col = ( Qnil == content_col_name  ) ? StringValuePtr( am_content_c ) : StringValuePtr( content_col_name  );
+    char*     db_name = NULL;
+    char*    tbl_name = NULL;
+    char*      pk_col = NULL;
+    char*   fname_col = NULL;
+    char* content_col = NULL;
 
     char*            sql = NULL;
     const char* sql_tail = NULL;
@@ -93,8 +91,23 @@ VALUE am_bootstrap_lift( VALUE self, VALUE db_file_name, VALUE table_name,
     VALUE   eval_this_code = Qnil;  /* ruby string of the code to eval from the db  */
     VALUE toplevel_binding = rb_const_get( rb_cObject, rb_intern("TOPLEVEL_BINDING") ) ;
     VALUE    sqlite_errmsg = Qnil;
+    VALUE              tmp = Qnil;
 
     ID             eval_id = rb_intern("eval");
+
+
+    args = rb_ary_shift( args );
+    if (  Qnil == args ) {
+        args = rb_hash_new();
+    }
+    
+    /* get the arguments */
+    db_name     = ( Qnil == (tmp = rb_hash_aref( args, rb_str_new2( "db_name"         ) ) ) ) ? StringValuePtr( am_db_c )      : StringValuePtr( tmp );
+    tbl_name    = ( Qnil == (tmp = rb_hash_aref( args, rb_str_new2( "table_name"      ) ) ) ) ? StringValuePtr( am_tbl_c )     : StringValuePtr( tmp );
+    pk_col      = ( Qnil == (tmp = rb_hash_aref( args, rb_str_new2( "rowid_column"    ) ) ) ) ? StringValuePtr( am_pk_c )      : StringValuePtr( tmp );
+    fname_col   = ( Qnil == (tmp = rb_hash_aref( args, rb_str_new2( "filename_column" ) ) ) ) ? StringValuePtr( am_fname_c )   : StringValuePtr( tmp );
+    content_col = ( Qnil == (tmp = rb_hash_aref( args, rb_str_new2( "contents_column" ) ) ) ) ? StringValuePtr( am_content_c ) : StringValuePtr( tmp );
+
 
     /* open the database */
     rc = sqlite3_open_v2( db_name, &db, SQLITE_OPEN_READONLY, NULL);
@@ -174,7 +187,7 @@ void Init_amalgalite3_requires_bootstrap()
 
     eARB_Error = rb_define_class_under(cARB, "Error", rb_eStandardError);
 
-    rb_define_module_function(cARB, "lift", am_bootstrap_lift, 5); 
+    rb_define_module_function(cARB, "lift", am_bootstrap_lift, -1); 
 
     /* constants for default db, table, column, rowid, contents */ 
     rb_define_const(cARB,              "DEFAULT_DB", rb_str_new2( "lib.db" ));
