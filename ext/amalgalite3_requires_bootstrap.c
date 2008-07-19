@@ -7,8 +7,8 @@
 
 #include "amalgalite3.h"
 extern VALUE mA;
-static VALUE mAR;
-static VALUE mARB;
+static VALUE cAR;
+static VALUE cARB;
 static VALUE eARB_Error;
 
 /* 
@@ -70,11 +70,11 @@ VALUE am_bootstrap_lift( VALUE self, VALUE db_file_name, VALUE table_name,
     int  last_row_good; 
     char*    raise_msg = NULL;
 
-    VALUE     am_db_c  = rb_const_get( mARB, rb_intern("DEFAULT_DB") );
-    VALUE    am_tbl_c  = rb_const_get( mARB, rb_intern("DEFAULT_TABLE") );
-    VALUE     am_pk_c  = rb_const_get( mARB, rb_intern("DEFAULT_ROWID_COLUMN") );
-    VALUE  am_fname_c  = rb_const_get( mARB, rb_intern("DEFAULT_FILENAME_COLUMN") );
-    VALUE am_content_c = rb_const_get( mARB, rb_intern("DEFAULT_CONTENTS_COLUMN") );
+    VALUE     am_db_c  = rb_const_get( cARB, rb_intern("DEFAULT_DB") );
+    VALUE    am_tbl_c  = rb_const_get( cARB, rb_intern("DEFAULT_TABLE") );
+    VALUE     am_pk_c  = rb_const_get( cARB, rb_intern("DEFAULT_ROWID_COLUMN") );
+    VALUE  am_fname_c  = rb_const_get( cARB, rb_intern("DEFAULT_FILENAME_COLUMN") );
+    VALUE am_content_c = rb_const_get( cARB, rb_intern("DEFAULT_CONTENTS_COLUMN") );
 
     char*     db_name = ( Qnil == db_file_name      ) ? StringValuePtr( am_db_c )      : StringValuePtr( db_file_name      );
     char*    tbl_name = ( Qnil == table_name        ) ? StringValuePtr( am_tbl_c )     : StringValuePtr( table_name        );
@@ -169,19 +169,19 @@ void Init_amalgalite3_requires_bootstrap()
 {
 
     mA   = rb_define_module("Amalgalite");
-    mAR  = rb_define_module_under(mA, "Requires");
-    mARB = rb_define_module_under(mAR, "Bootstrap");
+    cAR  = rb_define_class_under(mA, "Requires", rb_cObject);
+    cARB = rb_define_class_under(cAR, "Bootstrap", rb_cObject);
 
-    eARB_Error = rb_define_class_under(mARB, "Error", rb_eStandardError);
+    eARB_Error = rb_define_class_under(cARB, "Error", rb_eStandardError);
 
-    rb_define_module_function(mARB, "lift", am_bootstrap_lift, 5); 
+    rb_define_module_function(cARB, "lift", am_bootstrap_lift, 5); 
 
     /* constants for default db, table, column, rowid, contents */ 
-    rb_define_const(mARB,              "DEFAULT_DB", rb_str_new2( "lib.db" ));
-    rb_define_const(mARB,           "DEFAULT_TABLE", rb_str_new2( "bootstrap" ));
-    rb_define_const(mARB,    "DEFAULT_ROWID_COLUMN", rb_str_new2( "id" ));
-    rb_define_const(mARB, "DEFAULT_FILENAME_COLUMN", rb_str_new2( "filename" ));
-    rb_define_const(mARB, "DEFAULT_CONTENTS_COLUMN", rb_str_new2( "contents" ));
+    rb_define_const(cARB,              "DEFAULT_DB", rb_str_new2( "lib.db" ));
+    rb_define_const(cARB,           "DEFAULT_TABLE", rb_str_new2( "bootstrap" ));
+    rb_define_const(cARB,    "DEFAULT_ROWID_COLUMN", rb_str_new2( "id" ));
+    rb_define_const(cARB, "DEFAULT_FILENAME_COLUMN", rb_str_new2( "filename" ));
+    rb_define_const(cARB, "DEFAULT_CONTENTS_COLUMN", rb_str_new2( "contents" ));
 
     return;
 }

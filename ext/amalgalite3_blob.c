@@ -39,8 +39,8 @@ VALUE am_sqlite3_blob_initialize( VALUE self, VALUE db, VALUE db_name, VALUE tab
     if ( ( RSTRING( flag_str )->len != 1) || 
          ( ( 'r' != RSTRING( flag_str )->ptr[0] ) && 
            ( 'w' != RSTRING( flag_str )->ptr[0] ))) {
-        rb_raise( eAS_Error, "Error opening Blob in db = %s, table = %s, column = %s, rowid = %d.  Invalid flag '%s'.  Must be either 'w' or 'r'\n",
-                             zDb, zTable, zColumn, iRow, RSTRING( flag_str )->ptr);
+        rb_raise( eAS_Error, "Error opening Blob in db = %s, table = %s, column = %s, rowid = %lu.  Invalid flag '%s'.  Must be either 'w' or 'r'\n",
+                             zDb, zTable, zColumn, (unsigned long)iRow, RSTRING( flag_str )->ptr);
     }
 
     /* switch to write mode */
@@ -49,10 +49,9 @@ VALUE am_sqlite3_blob_initialize( VALUE self, VALUE db, VALUE db_name, VALUE tab
     }
 
     /* open the blob and associate the db to it */
-    rc = sqlite3_blob_open(am_db->db, zDb, zTable, zColumn, iRow, flags, &(am_blob->blob) );
-    if ( rc != SQLITE_OK ) {
-        rb_raise( eAS_Error, "Error opening Blob in db = %s, table = %s, column = %s, rowid = %ld  : [SQLITE_ERROR %d] %s\n", 
-                  zDb, zTable, zColumn, iRow, rc, sqlite3_errmsg( am_db->db ));
+    rc = sqlite3_blob_open( am_db->db, zDb, zTable, zColumn, iRow, flags, &( am_blob->blob ) );
+    if ( SQLITE_OK != rc ) {
+        rb_raise( eAS_Error, "Error opening Blob in db = %s, table = %s, column = %s, rowid = %lu : [SQLITE_ERROR %d] %s\n", zDb, zTable, zColumn, (unsigned long)iRow, rc, sqlite3_errmsg( am_db->db) );  
     }
     am_blob->length = sqlite3_blob_bytes( am_blob->blob );
     am_blob->db = am_db->db;
@@ -203,8 +202,8 @@ void am_sqlite3_blob_free(am_sqlite3_blob* wrapper)
  */
 VALUE am_sqlite3_blob_alloc(VALUE klass)
 {
-    am_sqlite3_blob  *wrapper = ALLOC(am_sqlite3_blob);
-    VALUE             obj     = (VALUE)NULL;
+    am_sqlite3_blob  *wrapper = ALLOC( am_sqlite3_blob );
+    VALUE             obj     ; 
 
     wrapper->current_offset = 0;
     wrapper->db             = NULL;

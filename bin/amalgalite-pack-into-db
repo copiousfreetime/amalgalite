@@ -1,0 +1,81 @@
+#!/usr/bin/env ruby
+
+#
+# A commandline utility to pack all of amalgalite into a database so that it can
+# be loaded with the C extension only.
+#
+
+def usage
+  STDERR.puts "Usage: #{File.basename($0)} [dbfile]"
+  exit 1
+end
+
+def full_path_of( rb_file )
+  $:.each do |load_path|
+    guess = File.join( load_path, rb_file )
+    return guess if File.exist?( guess )
+  end
+  return nil
+end
+
+# 
+# capture before and after snapshots of the loaded features to see what changed
+# when we required amalgalite
+#
+require 'rubygems'
+$: << "lib"
+$: << "ext"
+loaded_features_before = $".dup
+require 'amalgalite/requires'
+loaded_features_after = $".dup
+amalgalite_needs = loaded_features_after - loaded_features_before
+max_width = amalgalite_needs.sort_by { |l| l.length }.last.length
+
+
+#
+# Get the filename, and do not overwrite if the file already exists
+#
+dbfile = ARGV.shift || Amalgalite::Requires::Bootstrap::DEFAULT_DB
+if File.exist?( dbfile ) then
+  STDERR.puts "ERROR: #{dbfile} already exists, erase manually if you want to overwrite."
+  usage
+end
+
+
+puts "Creating database #{dbfile}"
+db = Amalgalite::Database.new( dbfile )
+table_name   = Amalgalite::Requires::Bootstrap::DEFAULT_TABLE
+rowid_col    = Amalgalite::Requires::Bootstrap::DEFAULT_ROWID_COLUMN
+filename_col = Amalgalite::Requires::Bootstrap::DEFAULT_FILENAME_COLUMN
+contents_col = Amalgalite::Requires::Bootstrap::DEFAULT_CONTENTS_COLUMN
+db.execute(<<-create)
+    CREATE TABLE #{table_name} (
+      #{rowid_col}    INTEGER PRIMARY KEY AUTOINCREMENT,
+      #{filename_col} TEXT UNIQUE,
+      #{contents_col} TEXT
+    )
+    create
+db.reload_schema!
+
+db.transaction do |dbt|
+  db.prepare( "INSERT INTO #{table_name}(#{filename_col}, #{contents_col}) VALUES ( $filename, $contents )" ) do |stmt|
+    amalgalite_needs.each do |am_requires|
+      msg = " skipped, probably a binary extension"
+      if File.extname( am_requires ) == ".rb" then
+        full_path = File.expand_path( full_path_of( am_requires ) )
+        if full_path and File.readable?( full_path ) then
+          # strip off the .rb
+          rq = am_requires[ /\A(.*)\.rb\Z/, 1]
+          stmt.execute( { "$filename" => rq,
+                          "$contents" => Amalgalite::Blob.new( :file   => full_path, 
+                                                               :column => dbt.schema.tables[table_name].columns[contents_col] )  } )
+          msg = "stored #{full_path}" 
+        end
+      end
+      puts "#{am_requires.ljust( max_width )} : #{msg}"
+    end
+  end
+end
+
+db.close
+

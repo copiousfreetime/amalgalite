@@ -1,3 +1,4 @@
+require 'amalgalite'
 module Amalgalite
   #
   # Requires encapsulates requiring itesm from the database

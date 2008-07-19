@@ -14,7 +14,7 @@ describe Amalgalite::Blob do
       CREATE TABLE blobs(
         id      INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
         name    VARCHAR(128) NOT NULL UNIQUE,
-        data    BLOB ); 
+        data    TEXT ); 
     SQL
     @db.execute( @schema_sql )
     @junk_file = File.join( File.dirname(__FILE__), "test_output")
