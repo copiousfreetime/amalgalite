@@ -189,10 +189,7 @@ void Init_amalgalite3()
     Init_amalgalite3_database( );
     Init_amalgalite3_statement( );
     Init_amalgalite3_blob( );
-
-#ifdef AMALGALITE_ENABLE_REQUIRES_BOOTSTRAP
     Init_amalgalite3_requires_bootstrap( );
-#endif
 
  }
 

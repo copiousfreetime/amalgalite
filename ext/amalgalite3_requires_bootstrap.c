@@ -5,8 +5,6 @@
  * vim: shiftwidth=4 
  */ 
 
-#ifdef AMALGALITE_ENABLE_REQUIRES_BOOTSTRAP
-
 #include "amalgalite3.h"
 extern VALUE mA;
 static VALUE mAR;
@@ -59,15 +57,7 @@ void am_bootstrap_cleanup_and_raise( char* msg, sqlite3* db, sqlite3_stmt* stmt 
  * *content_column_name* and then updates _$"_ directly with the value from
  * *filename_column_name*.
  *
- * Some caveats
- *
- * 1. This method is not made available by default.  It must specifically be
- *    enabled when the extension is built.  To enable it build the extension
- *    with:
- *
- *    <tt>ruby extconf.rb --enable-load-table-contents</tt>
- *
- * 2. The database to be opened *must* be an sqlite UTF-8 database.
+ * The database to be opened by _lift_ *must* ba an sqlite3 UTF-8 database.
  *
  */
 VALUE am_bootstrap_lift( VALUE self, VALUE db_file_name, VALUE table_name,
@@ -171,6 +161,10 @@ VALUE am_bootstrap_lift( VALUE self, VALUE db_file_name, VALUE table_name,
     return Qnil;
 }
 
+/**
+ * Bootstrapping module to help _require_ when Amalgalite::Requires is not
+ * availble in files.
+ */
 void Init_amalgalite3_requires_bootstrap()
 {
 
@@ -192,4 +186,3 @@ void Init_amalgalite3_requires_bootstrap()
     return;
 }
 
-#endif
