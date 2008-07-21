@@ -1,6 +1,5 @@
 For next release
 ================
-* method to tell amalgalite to pack itself into an sqlite database
 * query the index_info pragma to populate information for Database#Index
 
 For future releases
