@@ -21,7 +21,11 @@ puts "Before $\" : #{$".inspect}"
 # tell the binary extension to "require" every file in the filestore.db in the
 # table 'files' orderd by column 'id'.  The 'path' column is added to $" and the
 # code in 'data' is evaled.
-Amalgalite::Requires::Bootstrap.lift( "filestore.db", "files", "id", "path", "data" )
+Amalgalite::Requires::Bootstrap.lift( "dbfile"          => "filestore.db", 
+                                      "table_name"      => "files", 
+                                      "rowid_column"    => "id", 
+                                      "filename_column" => "path", 
+                                      "contents_column" => "data" )
 
 # Notice that a.rb is in the list of files that has been required
 puts "After $\" : #{$".inspect}"

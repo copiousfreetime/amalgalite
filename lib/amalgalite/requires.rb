@@ -1,4 +1,5 @@
 require 'amalgalite'
+
 module Amalgalite
   #
   # Requires encapsulates requiring itesm from the database
@@ -23,6 +24,41 @@ module Amalgalite
       def require( filename )
         load_path.each { |lp| lp.require( filename ) }
       end
+
+      #
+      # return the files in their dependency order for use for packing into a
+      # database
+      #
+      def require_order
+        @require_roder ||= %w[
+          amalgalite.rb
+          amalgalite/blob.rb
+          amalgalite/boolean.rb
+          amalgalite/column.rb
+          amalgalite/statement.rb
+          amalgalite/trace_tap.rb
+          amalgalite/profile_tap.rb
+          amalgalite/type_map.rb
+          amalgalite/type_maps/storage_map.rb
+          amalgalite/type_maps/text_map.rb
+          amalgalite/type_maps/default_map.rb
+          amalgalite/database.rb
+          amalgalite/index.rb
+          amalgalite/paths.rb
+          amalgalite/table.rb
+          amalgalite/view.rb
+          amalgalite/schema.rb
+          amalgalite/version.rb
+          amalgalite/sqlite3/version.rb
+          amalgalite/sqlite3/constants.rb
+          amalgalite/sqlite3.rb
+          amalgalite/taps/io.rb
+          amalgalite/taps/console.rb
+          amalgalite/taps.rb
+          amalgalite/core_ext/kernel/require.rb
+          amalgalite/requires.rb
+       ]
+     end
     end
 
     attr_reader :dbfile_name

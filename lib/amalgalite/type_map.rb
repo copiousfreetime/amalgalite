@@ -58,4 +58,6 @@ module Amalgalite
   module TypeMaps
   end
 end
-%w[ default_map storage_map text_map ].each { |i| require "amalgalite/type_maps/#{i}" }
+require 'amalgalite/type_maps/default_map'
+require 'amalgalite/type_maps/storage_map'
+require 'amalgalite/type_maps/text_map'

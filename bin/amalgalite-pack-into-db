@@ -1,15 +1,16 @@
 #!/usr/bin/env ruby
 
+require 'optparse'
+
 #
 # A commandline utility to pack all of amalgalite into a database so that it can
 # be loaded with the C extension only.
 #
 
-def usage
-  STDERR.puts "Usage: #{File.basename($0)} [dbfile]"
-  exit 1
-end
-
+#
+# given a file, see if it can be found in the ruby load path, if so, return that
+# full path
+#
 def full_path_of( rb_file )
   $:.each do |load_path|
     guess = File.join( load_path, rb_file )
@@ -18,7 +19,27 @@ def full_path_of( rb_file )
   return nil
 end
 
-# 
+OPTIONS = { :force => false }
+
+parser = OptionParser.new do |op|
+  op.banner  = "Usage: #{op.program_name} [options] <dbfile>"
+  op.separator ""
+  
+  op.on("-f", "--force", "Force overwriting of an existing database") do |f|
+    OPTIONS[:force]= true
+  end
+
+end
+
+begin
+  parser.parse!
+rescue OptionParser::ParseError => pe
+  STDERR.puts "ERROR : #{pe}"
+  STDERR.puts parser
+  exit 1
+end
+
+#
 # capture before and after snapshots of the loaded features to see what changed
 # when we required amalgalite
 #
@@ -28,20 +49,49 @@ $: << "ext"
 loaded_features_before = $".dup
 require 'amalgalite/requires'
 loaded_features_after = $".dup
+
+#
+# reorder the items that should be required, putting the system level .rb files
+# first in the list
+#
 amalgalite_needs = loaded_features_after - loaded_features_before
+core_libs = (amalgalite_needs - Amalgalite::Requires.require_order).delete_if { |l| l.index(".rb").nil? }
+
+#
+# check and make sure nothing is missed
+#
+core_libs.each do |l| 
+  if l.index("malgalite") then
+    STDERR.puts "ERROR!  require_order needs an update #{l}" 
+    STDERR.puts "run rake test:check_requries and fix"
+    exit 2
+  end
+end
+amalgalite_needs = core_libs.concat( Amalgalite::Requires.require_order )
+
+
+# width value for tidy output
 max_width = amalgalite_needs.sort_by { |l| l.length }.last.length
 
-
 #
-# Get the filename, and do not overwrite if the file already exists
+# Get the filename, and do not overwrite if the file already exists, unless of
+# course, --force is used
 #
 dbfile = ARGV.shift || Amalgalite::Requires::Bootstrap::DEFAULT_DB
+if OPTIONS[:force] then
+  File.unlink( dbfile ) if File.exist?( dbfile )
+end
+
 if File.exist?( dbfile ) then
-  STDERR.puts "ERROR: #{dbfile} already exists, erase manually if you want to overwrite."
-  usage
+  STDERR.puts "ERROR: #{dbfile} already exists, erase manually or use '--force' option"
+  STDERR.puts parser
+  exit 1
 end
 
 
+#
+# Create the datbase
+#
 puts "Creating database #{dbfile}"
 db = Amalgalite::Database.new( dbfile )
 table_name   = Amalgalite::Requires::Bootstrap::DEFAULT_TABLE
@@ -52,30 +102,54 @@ db.execute(<<-create)
     CREATE TABLE #{table_name} (
       #{rowid_col}    INTEGER PRIMARY KEY AUTOINCREMENT,
       #{filename_col} TEXT UNIQUE,
-      #{contents_col} TEXT
+      #{contents_col} BLOB
     )
     create
 db.reload_schema!
 
+# 
+# for every file in the list, insert it into the database
+#
 db.transaction do |dbt|
   db.prepare( "INSERT INTO #{table_name}(#{filename_col}, #{contents_col}) VALUES ( $filename, $contents )" ) do |stmt|
     amalgalite_needs.each do |am_requires|
+
       msg = " skipped, probably a binary extension"
+
       if File.extname( am_requires ) == ".rb" then
         full_path = File.expand_path( full_path_of( am_requires ) )
+
         if full_path and File.readable?( full_path ) then
+          contents = IO.readlines( full_path )
+          contents.each { |l| l.gsub!( /^(\s*require .*)$/m, "# commented out by #{parser.program_name} \\1") }
           # strip off the .rb
           rq = am_requires[ /\A(.*)\.rb\Z/, 1]
           stmt.execute( { "$filename" => rq,
-                          "$contents" => Amalgalite::Blob.new( :file   => full_path, 
+                          "$contents" => Amalgalite::Blob.new( :string => contents.join,
                                                                :column => dbt.schema.tables[table_name].columns[contents_col] )  } )
           msg = "stored #{full_path}" 
         end
+
+        puts "  -> #{am_requires.ljust( max_width )} : #{msg}"
+      else
+        STDERR.puts "ERROR : #{am_requires} is an invalid file to pack"
       end
-      puts "#{am_requires.ljust( max_width )} : #{msg}"
     end
   end
 end
-
 db.close
 
+puts <<-text
+
+Packing complete.  To utilize the bootstrapping in #{dbfile} you must do
+one of the following:
+
+  * statically compile the amalgalite C extension into your application
+  * require 'amalgalite3'
+
+Once one of those is working you can boostrap the Amalgalite library with
+this line in your code:
+ 
+  Amalgalite::Requries::Boostrap.lift( 'dbfile' => '#{dbfile}' )
+
+text

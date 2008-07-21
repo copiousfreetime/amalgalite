@@ -9,21 +9,19 @@ module Amalgalite
   #
   class Error < ::StandardError; end
 end
-%w[ blob 
-    boolean 
-    column 
-    database 
-    index 
-    paths 
-    profile_tap 
-    schema 
-    sqlite3 
-    statement 
-    table 
-    taps
-    trace_tap 
-    type_map 
-    version 
-    view].each do |lib|
-  require "amalgalite/#{lib}"
-end
+require 'amalgalite/blob'
+require 'amalgalite/boolean'
+require 'amalgalite/column'
+require 'amalgalite/database'
+require 'amalgalite/index'
+require 'amalgalite/paths'
+require 'amalgalite/profile_tap'
+require 'amalgalite/schema'
+require 'amalgalite/sqlite3'
+require 'amalgalite/statement'
+require 'amalgalite/table'
+require 'amalgalite/taps'
+require 'amalgalite/trace_tap'
+require 'amalgalite/type_map'
+require 'amalgalite/version'
+require 'amalgalite/view'

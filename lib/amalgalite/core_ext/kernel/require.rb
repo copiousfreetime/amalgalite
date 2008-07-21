@@ -1,5 +1,5 @@
 module Kernel
-  alias :original_require :require
+  alias :amalgalite_original_require :require
   #
   # hook into the system 'require' to allow for required text or blobs from an
   # amalgalite database.  
@@ -7,7 +7,7 @@ module Kernel
   def require( filename )
     found = Amalgalite::Requires.require( filename )
     unless found
-      found = original_require( filename )
+      found = amalgalite_original_require( filename )
     end
     return found
   end
