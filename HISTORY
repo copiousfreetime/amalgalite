@@ -2,12 +2,14 @@
 == Version Future
 
 * Major Enhancements
-  * update to SQLite3 version 3.6.0
-  * The SQLite RTree table type is enabled by default
+  * update to SQLite3 version 3.6.0 and enable the RTree option by default
+  * Amalgalite::Requires module allowing ruby code to be 'required' from columns
+    in an SQLite database
+  * Amagalite::Requires::Bootstrap extension module enabling low level boot
+    strapping of the pure ruby Amalgalite code from an sqlite database
 
 * Minor Enhancements
-  * new method Amalgalite::load_table_contents is available as a compile time
-    option.  See the RDoc in amalgalite_boot.c
+  * more indepth information about indexes is availble via the Index class
 
 * Bugfixes
   * fix nil exception when using a declared_data_type on primary key column that
