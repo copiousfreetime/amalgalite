@@ -101,6 +101,8 @@ VALUE am_bootstrap_lift( VALUE self, VALUE args )
     } else {
         args = rb_ary_shift( args );
     }
+
+    Check_Type( args, T_HASH );
     
     /* get the arguments */
     dbfile      = ( Qnil == (tmp = rb_hash_aref( args, rb_str_new2( "dbfile"          ) ) ) ) ? StringValuePtr( am_db_c )      : StringValuePtr( tmp );

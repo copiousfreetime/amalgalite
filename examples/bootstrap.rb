@@ -6,7 +6,7 @@
 # First use the blob.rb example in this same directory to load the a.rb file
 # into an example database:
 #
-#   ruby blob.rb a.rb
+#   ruby blob.rb store a.rb
 #
 # Then run this example.
 #
