@@ -1,5 +1,5 @@
 = Changelog
-== Version Future
+== Version 0.3.0
 
 * Major Enhancements
   * update to SQLite3 version 3.6.0 and enable the RTree option by default

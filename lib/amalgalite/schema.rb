@@ -48,16 +48,37 @@ module Amalgalite
         table = Amalgalite::Table.new( table_info['tbl_name'], table_info['sql'] )
         table.columns = load_columns( table )
         table.schema = self
+        table.indexes = load_indexes( table )
 
-        @db.prepare("SELECT name, sql FROM sqlite_master WHERE type ='index' and tbl_name = @name") do |idx_stmt|
-          idx_stmt.execute( "@name" => table.name) do |idx_info|
-            table.indexes << Amalgalite::Index.new( idx_info['name'], idx_info['sql'], table )
-          end
-        end
         @tables[table.name] = table
       end
 
       @tables
+    end
+
+    ## 
+    # load all the indexes for a particular table
+    #
+    def load_indexes( table )
+      indexes = {}
+
+      @db.prepare("SELECT name, sql FROM sqlite_master WHERE type ='index' and tbl_name = $name") do |idx_stmt|
+        idx_stmt.execute( "$name" => table.name) do |idx_info|
+          indexes[idx_info['name']] = Amalgalite::Index.new( idx_info['name'], idx_info['sql'], table )
+        end
+      end
+
+      @db.execute("PRAGMA index_list( #{table.name} );") do |idx_list|
+        idx = indexes[idx_list['name']]
+        
+        idx.sequence_number = idx_list['seq']
+        idx.unique          = Boolean.to_bool( idx_list['unique'] )
+
+        @db.execute("PRAGMA index_info( #{idx.name} );") do |col_info|
+          idx.columns << table.columns[col_info['name']]
+        end
+      end
+      return indexes
     end
 
     ##

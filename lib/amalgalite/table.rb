@@ -17,18 +17,18 @@ module Amalgalite
     # the original sql that was used to create this table
     attr_reader   :sql
 
-    # an array of Index objects holding the meta informationa about the indexes
-    # on this table
+    # hash of Index objects holding the meta informationa about the indexes
+    # on this table.  The keys of the indexes variable is the index name
     attr_accessor :indexes
 
-    # an array of Column objects holding the meta information about the columns
-    # in this table
+    # a hash of Column objects holding the meta information about the columns
+    # in this table.  keys are the column names
     attr_accessor :columns
 
     def initialize( name, sql ) 
       @name    = name
       @sql     = sql
-      @indexes = []
+      @indexes = {}
       @columns = {}
     end
   end

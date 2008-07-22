@@ -17,10 +17,26 @@ module Amalgalite
     # the table the index is for
     attr_accessor :table
 
+    # the columns that make up this index, in index order
+    attr_accessor :columns
+
+    # sqlite sequence number of the index
+    attr_accessor :sequence_number
+
+    # is the index unique
+    attr_writer   :unique
+
     def initialize( name, sql, table ) 
-      @name  = name
-      @sql   = sql
-      @table = table
+      @name             = name
+      @sql              = sql
+      @table            = table
+      @columns          = []
+      @sequence_number  = nil
+      @unique           = nil
+    end
+
+    def unique?
+      return @unique
     end
   end
 end

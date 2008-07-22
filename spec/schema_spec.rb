@@ -43,4 +43,18 @@ describe Amalgalite::Schema do
     ct.columns['name'].should_not be_has_default_value
     ct.columns['id'].should_not be_auto_increment
   end
+
+  it "loads the indexes" do
+    c = @iso_db.schema.tables['country']
+    c.indexes.size.should == 2
+    c.indexes['country_name'].columns.size.should == 1
+    c.indexes['country_name'].should_not be_unique
+    c.indexes['country_name'].sequence_number.should == 0
+    c.indexes['country_name'].columns.first.should == @iso_db.schema.tables['country'].columns['name']
+    c.indexes['sqlite_autoindex_country_1'].should be_unique
+
+    subc = @iso_db.schema.tables['subcountry']
+    subc.indexes.size.should == 3
+    subc.indexes['subcountry_country'].columns.first.should == @iso_db.schema.tables['subcountry'].columns['country']
+  end
 end

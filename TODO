@@ -1,7 +1,3 @@
-For next release
-================
-* query the index_info pragma to populate information for Database#Index
-
 For future releases
 ===================
 * amalgalite command line tool

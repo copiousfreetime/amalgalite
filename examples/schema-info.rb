@@ -22,5 +22,13 @@ db.schema.tables.keys.sort.each do |table_name|
     end
     puts 
   end
+
+  db.schema.tables[table_name].indexes.each_pair do |idx_name, index|
+    puts "  Index : #{index.name}"
+    puts "    |#{"sequence_number".rjust( max_width, "." )} : #{index.sequence_number}"
+    puts "    |#{"is unique?".rjust( max_width, ".")} : #{index.unique?}"
+    puts "    |#{"columns".rjust( max_width, ".")} : #{index.columns.collect { |c| c.name }.join(',') }"
+    puts
+  end
 end
 
