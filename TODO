@@ -1,5 +1,6 @@
 For future releases
 ===================
+* raise exception if another sqlite3 lib is found to already be loaded, or namespace the sqlite3 functions somehow
 * amalgalite command line tool
 * active record driver
 * data mapper driver
