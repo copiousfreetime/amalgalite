@@ -69,39 +69,58 @@ VALUE am_sqlite3_complete(VALUE self, VALUE args)
 
 /*
  * call-seq:
- *    Amalgalite::SQLite3.memory_used -> Numeric
+ *    Amalgalite::SQLite3.status_for( status_obj ) -> Hash
  *
- * Return the number of bytes of memory outstanding in the SQLite extension
+ * return a hash holindg a 'current' and 'highwater' value for the input status
+ * code.  this method is normally called by a Status object internally and is
+ * not normally invoked by application code.
+ *
  */
-VALUE am_sqlite3_memory_used(VALUE self)
+VALUE am_sqlite3_status_for( VALUE self, VALUE status )
 {
-    return SQLINT64_2NUM(sqlite3_memory_used());
+    int status_op = FIX2INT( rb_funcall( status, rb_intern( "code" ), 0 ) );
+    int current   = 0;
+    int highwater = 0;
+    int rc;
+    VALUE result = rb_hash_new();
+
+    rc = sqlite3_status( status_op, &current, &highwater, 0 );
+    if ( SQLITE_OK != rc ) {
+        VALUE n    = rb_funcall( status, rb_intern( "name" ), 0 );
+        char* name = StringValuePtr( n );
+        rb_raise(eAS_Error, "Failure to retrieve status for %s : [SQLITE_ERROR %d] \n", name, rc);
+    }
+
+    rb_hash_aset( result, rb_str_new2( "current" ), INT2NUM( current ) );
+    rb_hash_aset( result, rb_str_new2( "highwater" ), INT2NUM( highwater ) );
+
+    return result;
 }
 
 /*
  * call-seq:
- *    Amalgalite::SQLite3.memory_highwater_mark -> Numeric
+ *    Amalgalite::SQLite3.status_reset_for( status_obj ) -> true
  *
- * Return the maximum value of Amalgalite::SQLite3.memory_used since the last
- * time the highwater mark was reset.
+ * reset the highwater value for the given status code.  The codes are in the
+ * Status classes and this method is normaly invoked by the Status#reset!
+ * method.  It is not normally called from application code.
  *
  */
-VALUE am_sqlite3_memory_highwater(VALUE self)
+VALUE am_sqlite3_status_reset_for( VALUE self, VALUE status )
 {
-    return SQLINT64_2NUM(sqlite3_memory_highwater(0));
-}
+    int current   = 0;
+    int highwater = 0;
+    int rc;
+    int status_op = FIX2INT( rb_funcall( status, rb_intern( "code" ), 0 ) );
 
-/*
- * call-seq:
- *    Amalgalite::SQLite3.memory_highwater_mark_reset! 
- *
- * Reset the memory highwater mark.  The highwater mark becomes the current
- * value of memory_used.
- *
- */
-VALUE am_sqlite3_memory_highwater_reset(VALUE self)
-{
-    return SQLINT64_2NUM(sqlite3_memory_highwater(1));
+    rc = sqlite3_status( status_op, &current, &highwater, 1 );
+    if ( SQLITE_OK != rc ) {
+        VALUE n    = rb_funcall( status, rb_intern( "name" ), 0 );
+        char* name = StringValuePtr( n );
+        rb_raise(eAS_Error, "Failure to reset status on %s : [SQLITE_ERROR %d] \n", name, rc);
+    }
+
+    return Qtrue;
 }
 
 /*
@@ -165,10 +184,10 @@ void Init_amalgalite3()
     mAS  = rb_define_module_under(mA, "SQLite3");
     rb_define_module_function(mAS, "threadsafe?", am_sqlite3_threadsafe, 0);
     rb_define_module_function(mAS, "complete?", am_sqlite3_complete, -2);
-    rb_define_module_function(mAS, "memory_used", am_sqlite3_memory_used,0);
-    rb_define_module_function(mAS, "memory_highwater_mark", am_sqlite3_memory_highwater,0);
-    rb_define_module_function(mAS, "memory_highwater_mark_reset!", am_sqlite3_memory_highwater_reset,0);
     rb_define_module_function(mAS, "randomness", am_sqlite3_randomness,1);
+    rb_define_module_function(mAS, "status_for", am_sqlite3_status_for, 1);
+    rb_define_module_function(mAS, "status_reset_for", am_sqlite3_status_reset_for,1);
+
 
     /* 
      * Base class of all SQLite3 errors

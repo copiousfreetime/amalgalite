@@ -3,7 +3,8 @@ require 'rbconfig'
 
 # make available table and column meta data api
 $CFLAGS += " -DSQLITE_ENABLE_COLUMN_METADATA=1"  
-$CFLAGS += " -DSQLITE_ENABLE_RTREE"
+$CFLAGS += " -DSQLITE_ENABLE_RTREE=1"
+$CFLAGS += " -DSQLITE_OMIT_BUILTIN_TEST=1"
 
 # we compile sqlite the same way that the installation of ruby is compiled.
 if Config::CONFIG['configure_args'].include?( "--enable-pthread" ) then
