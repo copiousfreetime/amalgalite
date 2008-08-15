@@ -147,8 +147,8 @@ VALUE am_bootstrap_lift( VALUE self, VALUE args )
         rb_funcall(rb_mKernel, eval_id, 4, eval_this_code, toplevel_binding, require_name, INT2FIX(1) );
 
         /* TODO: for ruby 1.9 -- put in ? sqlite3://path/to/database?tablename=tbl_name#require_name */
-        /* update $" */
-        rb_ary_push( rb_gv_get( "$\"" ), require_name );
+        /* update $LOADED_FEATURES */
+        rb_ary_push( rb_gv_get( "$LOADED_FEATURES" ), require_name );
     }
 
     /* if there was some sqlite error in the processing of the rows */
