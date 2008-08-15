@@ -2,7 +2,7 @@
 == Version 0.3.0
 
 * Major Enhancements
-  * update to SQLite3 version 3.6.0 and enable the RTree option by default
+  * update to SQLite3 version 3.6.1 and enable the RTree option by default
   * Amalgalite::Requires module allowing ruby code to be 'required' from columns
     in an SQLite database
   * Amagalite::Requires::Bootstrap extension module enabling low level boot

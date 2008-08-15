@@ -1,13 +1,17 @@
+For next release
+================
+* expose sqlite3_status
+* expose sqlite3_db_status
+
 For future releases
 ===================
-* raise exception if another sqlite3 lib is found to already be loaded, or namespace the sqlite3 functions somehow
+* busy timeouts
+* progress handler
 * amalgalite command line tool
 * active record driver
 * data mapper driver
 * sequel driver
 * authorizers
-* busy timeouts
-* progress handler
 * loading of extensions
 * utf-16 integration
 * create_collation 
