@@ -1,5 +1,5 @@
 = Changelog
-== Version 0.3.0
+== Version 0.4.0
 
 * Major Enhancements
   * update to SQLite3 version 3.6.1 and enable the RTree option by default
@@ -10,6 +10,7 @@
 
 * Minor Enhancements
   * more indepth information about indexes is availble via the Index class
+  * add support for sqlite3_status and sqlite3_db_status information
 
 * Bugfixes
   * fix nil exception when using a declared_data_type on primary key column that
@@ -19,8 +20,8 @@
   * nested transactions are 'faked'.  Calling Database#transaction while
     Databased#in_transaction? is true does not result in an exception, but
     continues on in the current transaction.  
-  * raise LoadError if required in the same program as sqlite3-ruby.  These gems
-    conflict with each other.
+  * raise LoadError if required in the same program as sqlite3-ruby.  These
+    libraries conflict with each other.
 
 == Version 0.2.4 2008-07-13
 
