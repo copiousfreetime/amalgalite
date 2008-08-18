@@ -6,7 +6,8 @@
  * vim: shiftwidth=4 
  */ 
 
-VALUE cAS_Database;    /* class  Amalgliate::SQLite3::Database  */
+VALUE cAS_Database;       /* class  Amalgliate::SQLite3::Database        */
+VALUE cAS_Database_Stat;  /* class  Amalgliate::SQLite3::Database::Stat  */
 
 /**
  * Document-method: open
@@ -217,6 +218,50 @@ VALUE am_sqlite3_database_total_changes(VALUE self)
     
     return INT2FIX(rc);
 }
+
+/*
+ * call-seq:
+ *    stat.update!(  reset = false ) -> nil
+ *
+ * Populates the _@current_ and _@higwater_ instance variables of the given 
+ * Database Stat object with the values from the sqlite3_db_status call.  
+ * If reset it true then the highwater mark for the stat is reset
+ *
+ */
+VALUE am_sqlite3_database_stat_update_bang( int argc, VALUE *argv, VALUE self )
+{
+    int current    = -1;
+    int highwater  = -1;
+    int reset_flag = 0;
+    int status_op  = FIX2INT( rb_iv_get( self, "@code" ) );
+    int rc;
+
+    am_sqlite3    *am_db;
+
+    VALUE reset    = Qfalse;
+    VALUE db       = rb_iv_get( self, "@api_db" );
+
+    Data_Get_Struct(db, am_sqlite3, am_db);
+
+    if ( argc > 0 ) {
+        reset = argv[0];
+        reset_flag = ( Qtrue == reset ) ? 1 : 0 ;
+    }
+
+    rc = sqlite3_db_status( am_db->db, status_op, &current, &highwater, reset_flag );
+
+    if ( SQLITE_OK != rc ) {
+        VALUE n    = rb_iv_get( self, "@name");
+        char* name = StringValuePtr( n );
+        rb_raise(eAS_Error, "Failure to retrieve database status for %s : [SQLITE_ERROR %d] \n", name, rc);
+    }
+
+    rb_iv_set( self, "@current", INT2NUM( current ) );
+    rb_iv_set( self, "@highwater", INT2NUM( highwater) );
+
+    return Qnil;
+}
+
 
 
 /**
@@ -491,6 +536,12 @@ void Init_amalgalite3_database( )
     rb_define_method(cAS_Database, "total_changes", am_sqlite3_database_total_changes, 0); /* in amalgalite3_database.c */
     rb_define_method(cAS_Database, "last_error_code", am_sqlite3_database_last_error_code, 0); /* in amalgalite3_database.c */
     rb_define_method(cAS_Database, "last_error_message", am_sqlite3_database_last_error_message, 0); /* in amalgalite3_database.c */
+
+    /*
+     * Ecapuslate a SQLite3 Database stat
+     */
+    cAS_Database_Stat = rb_define_class_under( cAS_Database, "Stat", rb_cObject );
+    rb_define_method(cAS_Database_Stat, "update!", am_sqlite3_database_stat_update_bang, -1); /* in amalgalite3_database.c */
 
 }
 

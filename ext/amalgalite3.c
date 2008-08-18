@@ -12,6 +12,7 @@ VALUE mA;              /* module Amalgalite                     */
 VALUE mAS;             /* module Amalgalite::SQLite3            */
 VALUE mASV;            /* module Amalgalite::SQLite3::Version   */
 VALUE eAS_Error;       /* class  Amalgalite::SQLite3::Error     */
+VALUE cAS_Stat;        /* class  Amalgalite::SQLite3::Stat      */
 
 /*----------------------------------------------------------------------
  * module methods for Amalgalite::SQLite3
@@ -69,58 +70,40 @@ VALUE am_sqlite3_complete(VALUE self, VALUE args)
 
 /*
  * call-seq:
- *    Amalgalite::SQLite3.status_for( status_obj ) -> Hash
+ *    Amalgalite::SQLite3::Stat.update!( reset = false ) -> nil
  *
- * return a hash holindg a 'current' and 'highwater' value for the input status
- * code.  this method is normally called by a Status object internally and is
- * not normally invoked by application code.
+ * Populates the _@current_ and _@higwater_ instance variables of self
+ * object with the values from the sqlite3_status call.  If reset it true then
+ * the highwater mark for the stat is reset
  *
  */
-VALUE am_sqlite3_status_for( VALUE self, VALUE status )
+VALUE am_sqlite3_stat_update_bang( int argc, VALUE *argv, VALUE self )
 {
-    int status_op = FIX2INT( rb_funcall( status, rb_intern( "code" ), 0 ) );
-    int current   = 0;
-    int highwater = 0;
+    int status_op  = -1;
+    int current    = -1;
+    int highwater  = -1;
+    VALUE reset    = Qfalse;
+    int reset_flag = 0;
     int rc;
-    VALUE result = rb_hash_new();
 
-    rc = sqlite3_status( status_op, &current, &highwater, 0 );
+    status_op  = FIX2INT( rb_iv_get( self, "@code" ) );
+    if ( argc > 0 ) {
+        reset = argv[0];
+        reset_flag = ( Qtrue == reset ) ? 1 : 0 ;
+    }
+
+    rc = sqlite3_status( status_op, &current, &highwater, reset_flag );
+
     if ( SQLITE_OK != rc ) {
-        VALUE n    = rb_funcall( status, rb_intern( "name" ), 0 );
+        VALUE n    = rb_iv_get( self,  "@name" ) ;
         char* name = StringValuePtr( n );
         rb_raise(eAS_Error, "Failure to retrieve status for %s : [SQLITE_ERROR %d] \n", name, rc);
     }
 
-    rb_hash_aset( result, rb_str_new2( "current" ), INT2NUM( current ) );
-    rb_hash_aset( result, rb_str_new2( "highwater" ), INT2NUM( highwater ) );
+    rb_iv_set( self, "@current", INT2NUM( current ) );
+    rb_iv_set( self, "@highwater", INT2NUM( highwater) );
 
-    return result;
-}
-
-/*
- * call-seq:
- *    Amalgalite::SQLite3.status_reset_for( status_obj ) -> true
- *
- * reset the highwater value for the given status code.  The codes are in the
- * Status classes and this method is normaly invoked by the Status#reset!
- * method.  It is not normally called from application code.
- *
- */
-VALUE am_sqlite3_status_reset_for( VALUE self, VALUE status )
-{
-    int current   = 0;
-    int highwater = 0;
-    int rc;
-    int status_op = FIX2INT( rb_funcall( status, rb_intern( "code" ), 0 ) );
-
-    rc = sqlite3_status( status_op, &current, &highwater, 1 );
-    if ( SQLITE_OK != rc ) {
-        VALUE n    = rb_funcall( status, rb_intern( "name" ), 0 );
-        char* name = StringValuePtr( n );
-        rb_raise(eAS_Error, "Failure to reset status on %s : [SQLITE_ERROR %d] \n", name, rc);
-    }
-
-    return Qtrue;
+    return Qnil;
 }
 
 /*
@@ -185,9 +168,12 @@ void Init_amalgalite3()
     rb_define_module_function(mAS, "threadsafe?", am_sqlite3_threadsafe, 0);
     rb_define_module_function(mAS, "complete?", am_sqlite3_complete, -2);
     rb_define_module_function(mAS, "randomness", am_sqlite3_randomness,1);
-    rb_define_module_function(mAS, "status_for", am_sqlite3_status_for, 1);
-    rb_define_module_function(mAS, "status_reset_for", am_sqlite3_status_reset_for,1);
 
+    /*
+     * class encapsulating a single Stat
+     */
+    cAS_Stat = rb_define_class_under(mAS, "Stat", rb_cObject);
+    rb_define_method(cAS_Stat, "update!", am_sqlite3_stat_update_bang, -1);
 
     /* 
      * Base class of all SQLite3 errors

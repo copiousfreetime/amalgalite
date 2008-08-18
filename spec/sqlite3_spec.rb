@@ -17,18 +17,6 @@ describe "Amalgalite::SQLite3" do
     Amalgalite::SQLite3.complete?("SELECT * FROM sometable WHERE ", :utf16 => true).should == false
   end
 
-  it "knows how much memory it has used" do
-    Amalgalite::SQLite3.memory_used.should >= 0
-  end
-  
-  it "knows the maximum amount of memory it has used so far" do
-    Amalgalite::SQLite3.memory_highwater_mark.should >= 0
-  end
-  
-  it "can reset it maximum memory usage counter" do
-    Amalgalite::SQLite3.memory_highwater_mark_reset!.should >= 0
-  end
-
   it "can produce random data" do
     Amalgalite::SQLite3.randomness( 42 ).size.should == 42
   end

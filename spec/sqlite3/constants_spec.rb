@@ -13,13 +13,53 @@ describe Amalgalite::SQLite3::Constants do
   end
 
   it "has ResultCode constants" do
-    Amalgalite::SQLite3::Constants::ResultCode::OK.should == 0
   end
 
-  it "can return the constant from a number" do
-    c = Amalgalite::SQLite3::Constants::ResultCode.from_int( 21 )
-    c.should == "MISUSE"
+  describe 'ResultCode' do 
+    it "has constants" do
+      Amalgalite::SQLite3::Constants::ResultCode::OK.should == 0
+    end
+
+    it "can return the constant from a number" do
+      c = Amalgalite::SQLite3::Constants::ResultCode.name_from_value( 21 )
+      c.should == "MISUSE"
+    end
+
+    it "can return the number from a name" do
+      v = Amalgalite::SQLite3::Constants::ResultCode.value_from_name( "MISUSE" )
+      v.should == 21
+    end
   end
 
+  describe 'Status' do
+    it "has constants" do
+      Amalgalite::SQLite3::Constants::Status::MEMORY_USED.should == 0
+    end
 
+    it "can return the constant from a number" do
+      c = Amalgalite::SQLite3::Constants::Status.name_from_value( 3 )
+      c.should == "SCRATCH_USED"
+    end
+    
+    it "can return the number from a name" do
+      v = Amalgalite::SQLite3::Constants::Status.value_from_name( "memory_used" )
+      v.should == 0
+    end
+  end
+
+  describe 'DBStatus' do
+    it "has constants" do
+      Amalgalite::SQLite3::Constants::DBStatus::LOOKASIDE_USED.should == 0
+    end
+
+    it "can return the constant from a number" do
+      c = Amalgalite::SQLite3::Constants::DBStatus.name_from_value( 0 )
+      c.should == "LOOKASIDE_USED"
+    end
+    
+    it "can return the number from a name" do
+      v = Amalgalite::SQLite3::Constants::DBStatus.value_from_name( "lookaside_used" )
+      v.should == 0
+    end
+  end
 end

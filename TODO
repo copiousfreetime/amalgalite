@@ -1,7 +1,6 @@
 For next release
 ================
-* expose sqlite3_status - remove sqlite_memory_highwater and the like
-* expose sqlite3_db_status
+* install amalgliate3 into lib
 
 For future releases
 ===================
