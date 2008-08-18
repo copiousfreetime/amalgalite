@@ -28,7 +28,6 @@ Amalgalite::GEM_SPEC = Gem::Specification.new do |spec|
   if ext_conf = Configuration.for_if_exist?("extension") then
     spec.extensions <<  ext_conf.configs
     spec.extensions.flatten!
-    spec.require_paths << "ext"
   end
   
   if rdoc = Configuration.for_if_exist?('rdoc') then
