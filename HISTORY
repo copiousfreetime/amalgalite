@@ -2,14 +2,14 @@
 == Version 0.4.0
 
 * Major Enhancements
-  * update to SQLite3 version 3.6.1 and enable the RTree option by default
+  * update to SQLite3 version 3.6.2 and enable the RTree option by default
   * Amalgalite::Requires module allowing ruby code to be 'required' from columns
     in an SQLite database
   * Amagalite::Requires::Bootstrap extension module enabling low level boot
     strapping of the pure ruby Amalgalite code from an sqlite database
 
 * Minor Enhancements
-  * more indepth information about indexes is availble via the Index class
+  * more indepth information about indexes is available via the Index class
   * add support for sqlite3_status and sqlite3_db_status information
 
 * Bugfixes
@@ -57,7 +57,7 @@
   * added examples/gem_db.rb script demonstrating taps and prepared statements
   * added examples/schema-info.rb script demonstrating meta information
   * added examples/blob.rb demonstrating incremental blob IO
-  * added acces to the SQLite3 errcode and errmsg api
+  * added access to the SQLite3 errcode and errmsg api
   
 * Bugfixes
   * added taps.rb for requiring

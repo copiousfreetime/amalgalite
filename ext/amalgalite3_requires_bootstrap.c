@@ -57,7 +57,7 @@ void am_bootstrap_cleanup_and_raise( char* msg, sqlite3* db, sqlite3_stmt* stmt 
  * *content_column_name* and then updates _$"_ directly with the value from
  * *filename_column_name*.
  *
- * The database to be opened by _lift_ *must* ba an sqlite3 UTF-8 database.
+ * The database to be opened by _lift_ *must* be an sqlite3 UTF-8 database.
  *
  */
 VALUE am_bootstrap_lift( VALUE self, VALUE args )
