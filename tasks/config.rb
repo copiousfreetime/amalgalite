@@ -11,7 +11,7 @@ Configuration.for('project') {
   version       Amalgalite::Version.to_s
   author        "Jeremy Hinegardner"
   email         "jeremy at copiousfreetime dot org"
-  homepage      "http://www.copiousfreetime.org/projects/amalgalite/"
+  homepage      "http://copiousfreetime.rubyforge.org/amalgalite/"
   description   Utils.section_of("README", "description")
   summary       description.split(".").first
   history       "HISTORY"
