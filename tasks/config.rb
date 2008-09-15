@@ -28,13 +28,14 @@ Configuration.for('packaging') {
   files {
     bin       FileList["bin/*"]
     ext       FileList["ext/*.{c,h,rb}"]
+    examples  FileList["examples/*"]
     lib       FileList["lib/**/*.rb"]
     test      FileList["spec/**/*.rb", "test/**/*.rb"]
     data      FileList["data/**/*"]
     tasks     FileList["tasks/**/*.r{ake,b}"]
     rdoc      FileList[proj_conf.readme, proj_conf.history,
                        proj_conf.license] + lib + FileList["ext/amalgalite3*.c"]
-    all       bin + ext + lib + test + data + rdoc + tasks 
+    all       bin + ext + examples + lib + test + data + rdoc + tasks 
   }
 
   puts "ext files = #{files.ext}"
