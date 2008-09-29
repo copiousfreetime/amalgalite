@@ -27,6 +27,10 @@ overview of the API.
 
 * Jamis Buck for the first {ruby sqlite implementation}[http://www.rubyforge.org/projects/sqlite-ruby]
 
+== CHANGES
+
+Read the HISTORY file.
+
 == LICENSE
 
 Copyright (c) 2008 Jeremy Hinegardner

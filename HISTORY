@@ -1,11 +1,12 @@
 = Changelog
-== Version 0.4.1 2008-09-28
+== Version 0.4.1 - 2008-09-28
 
 === Minor Enhancement 
+
 * update to SQLite3 version 3.6.3
 * change rdoc template to darkfish
   
-== Version 0.4.0 2008-09-14
+== Version 0.4.0 - 2008-09-14
 
 === Major Enhancements
 * update to SQLite3 version 3.6.2 and enable the RTree option by default
@@ -15,10 +16,12 @@
   strapping of the pure ruby Amalgalite code from an sqlite database
 
 === Minor Enhancements
+
 * more indepth information about indexes is available via the Index class
 * add support for sqlite3_status and sqlite3_db_status information
 
 === Bugfixes
+
 * fix nil exception when using a declared_data_type on primary key column that
   has no declared_data_type
 * when Database#transaction is passed a block, the return value is the return
@@ -29,17 +32,17 @@
 * raise LoadError if required in the same program as sqlite3-ruby.  These
   libraries conflict with each other.
 
-== Version 0.2.4 2008-07-13
+== Version 0.2.4 - 2008-07-13
 
 ===  Bugfixes
 * fix compilation when ruby is compiled without pthreads using 
 
-== Version 0.2.3 2008-07-12
+== Version 0.2.3 - 2008-07-12
 
 === Bugfixes
 * make sure file permissions are all read before shipping gem
 
-== Version 0.2.2 2008-07-12
+== Version 0.2.2 - 2008-07-12
 
 === Bugfixes
 * Database#pragma should accept a block just like Database#execute does
