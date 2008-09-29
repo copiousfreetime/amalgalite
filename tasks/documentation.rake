@@ -9,11 +9,13 @@ if rdoc_config = Configuration.for_if_exist?('rdoc') then
   namespace :doc do
 
     require 'rake/rdoctask'
+    gem 'darkfish-rdoc'
+    require 'darkfish-rdoc'
 
     # generating documentation locally
     Rake::RDocTask.new do |rdoc|
       rdoc.rdoc_dir   = rdoc_config.output_dir
-      rdoc.options    = rdoc_config.options
+      rdoc.options    = rdoc_config.options 
       rdoc.rdoc_files = rdoc_config.files
       rdoc.title      = rdoc_config.title
       rdoc.main       = rdoc_config.main_page

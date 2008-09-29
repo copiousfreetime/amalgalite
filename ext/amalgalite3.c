@@ -151,7 +151,10 @@ VALUE am_sqlite3_libversion_number(VALUE self)
 }
 
 /**
- * The Amalgalite ruby extension
+ * Document-class: Amalgalite::SQLite3
+ *
+ * The SQLite ruby extension inside Amalgalite.
+ *
  */
 
 void Init_amalgalite3()
@@ -161,9 +164,6 @@ void Init_amalgalite3()
      */
     mA   = rb_define_module("Amalgalite");
 
-    /*
-     * module encapsulating the SQLite C extension
-     */
     mAS  = rb_define_module_under(mA, "SQLite3");
     rb_define_module_function(mAS, "threadsafe?", am_sqlite3_threadsafe, 0);
     rb_define_module_function(mAS, "complete?", am_sqlite3_complete, -2);
@@ -178,7 +178,7 @@ void Init_amalgalite3()
     /* 
      * Base class of all SQLite3 errors
      */
-    eAS_Error = rb_define_class_under(mAS, "Error", rb_eStandardError);
+    eAS_Error = rb_define_class_under(mAS, "Error", rb_eStandardError); /* in amalgalite.c */
 
     /**
      * Encapsulation of the SQLite C library version

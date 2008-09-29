@@ -509,7 +509,10 @@ VALUE am_sqlite3_database_alloc(VALUE klass)
 }
 
 /**
- * Amalgalite Database 
+ * Document-class: Amalgalite::SQLite3::Database
+ *
+ * The ruby extension wrapper around the core sqlite3 database object.
+ *
  */
 void Init_amalgalite3_database( )
 {

@@ -6,7 +6,8 @@
  * vim: shiftwidth=4 
  */ 
 
-VALUE cAS_Blob;   /* class  Amalgliate::SQLite3::Blob */
+/* class  Amalgliate::SQLite3::Blob */
+VALUE cAS_Blob;   
 
 /**
  * call-seq:
@@ -211,6 +212,13 @@ VALUE am_sqlite3_blob_alloc(VALUE klass)
     return obj;
 }
 
+
+/**
+ * Document-class: Amalgalite::SQLite3::Blob
+ *
+ * The Blob class enables incremental IO on blob items.  If you do not need
+ * incremental IO on a binary object, then you do not need to use Blob.
+ */
 
 void Init_amalgalite3_blob( )
 {

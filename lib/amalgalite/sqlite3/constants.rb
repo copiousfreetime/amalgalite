@@ -5,9 +5,6 @@
 
 require 'amalgalite3'
 module Amalgalite::SQLite3
-  ##
-  # module containing all constants used from the SQLite C extension
-  #
   module Constants
     module Helpers
       #
