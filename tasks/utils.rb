@@ -58,7 +58,6 @@ module Utils
         lines = section.split("\n")
         md = %r{Version ((\w+\.)+\w+)}.match(lines.first)
         next unless md
-        puts md
         releases[md[1]] = lines[1..-1].join("\n").strip
       end
       return releases
