@@ -9,7 +9,7 @@ module Amalgalite
 
     MAJOR   = 0
     MINOR   = 4
-    BUILD   = 0
+    BUILD   = 1
 
     #
     # return the Version as an array of MAJOR, MINOR, BUILD
@@ -21,6 +21,11 @@ module Amalgalite
     # return the Version as a dotted String MAJOR.MINOR.BUILD
     def self.to_s
       to_a.join(".")
+    end
+
+    # return the Vesion as a hash 
+    def self.to_hash
+      { :major => MAJOR, :minor => MINOR, :build => BUILD }
     end
 
     # Version string constant

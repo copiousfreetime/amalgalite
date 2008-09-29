@@ -3,3 +3,4 @@ doc/*
 coverage/*
 tags
 examples/*.db
+tmp/*
