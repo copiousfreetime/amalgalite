@@ -6,6 +6,7 @@
  */ 
 
 #include "amalgalite3.h"
+#include <stdio.h>
 extern VALUE mA;
 static VALUE cAR;
 static VALUE cARB;
@@ -66,7 +67,7 @@ VALUE am_bootstrap_lift( VALUE self, VALUE args )
     sqlite3_stmt* stmt = NULL;
     int             rc;
     int  last_row_good; 
-    char*    raise_msg = NULL;
+    char raise_msg[BUFSIZ];
 
     VALUE     am_db_c  = rb_const_get( cARB, rb_intern("DEFAULT_DB") );
     VALUE    am_tbl_c  = rb_const_get( cARB, rb_intern("DEFAULT_TABLE") );
@@ -115,7 +116,8 @@ VALUE am_bootstrap_lift( VALUE self, VALUE args )
     /* open the database */
     rc = sqlite3_open_v2( dbfile , &db, SQLITE_OPEN_READONLY, NULL);
     if ( SQLITE_OK != rc ) {
-        asprintf(&raise_msg,"Failure to open database %s for bootload: [SQLITE_ERROR %d] : %s", dbfile, rc, sqlite3_errmsg( db ) );
+        memset( raise_msg, 0, BUFSIZ );
+        snprintf(raise_msg, BUFSIZ, "Failure to open database %s for bootload: [SQLITE_ERROR %d] : %s", dbfile, rc, sqlite3_errmsg( db ) );
         am_bootstrap_cleanup_and_raise( raise_msg, db, stmt );
     }
 
@@ -124,7 +126,8 @@ VALUE am_bootstrap_lift( VALUE self, VALUE args )
     rc = sqlite3_prepare_v2( db, sql, sql_bytes, &stmt, &sql_tail ) ;
     free( sql );
     if ( SQLITE_OK != rc) {
-        asprintf( &raise_msg, 
+        memset( raise_msg, 0, BUFSIZ );
+        snprintf( raise_msg, BUFSIZ,
                   "Failure to prepare bootload select statement table = '%s', rowid col = '%s', filename col ='%s', contents col = '%s' : [SQLITE_ERROR %d] %s\n",
                   tbl_name, pk_col, fname_col, content_col, rc, sqlite3_errmsg( db ));
         am_bootstrap_cleanup_and_raise( raise_msg, db, stmt );
@@ -153,7 +156,8 @@ VALUE am_bootstrap_lift( VALUE self, VALUE args )
 
     /* if there was some sqlite error in the processing of the rows */
     if ( SQLITE_DONE != rc ) {
-        asprintf( &raise_msg, "Failure in bootloading, last successfully loaded rowid was %d : [SQLITE_ERROR %d] %s\n", 
+        memset( raise_msg, 0, BUFSIZ );
+        snprintf( raise_msg, BUFSIZ, "Failure in bootloading, last successfully loaded rowid was %d : [SQLITE_ERROR %d] %s\n", 
                   last_row_good, rc, sqlite3_errmsg( db ) );
         am_bootstrap_cleanup_and_raise( raise_msg, db, stmt );
     }
@@ -161,7 +165,8 @@ VALUE am_bootstrap_lift( VALUE self, VALUE args )
     /* finalize the statement */    
     rc = sqlite3_finalize( stmt );
     if ( SQLITE_OK != rc ) {
-        asprintf( &raise_msg, "Failure to finalize bootload statement : [SQLITE_ERROR %d]\n", rc, sqlite3_errmsg( db ) );
+        memset( raise_msg, 0, BUFSIZ );
+        snprintf( raise_msg, BUFSIZ, "Failure to finalize bootload statement : [SQLITE_ERROR %d]\n", rc, sqlite3_errmsg( db ) );
         am_bootstrap_cleanup_and_raise( raise_msg, db, stmt );
     }
 
@@ -170,7 +175,8 @@ VALUE am_bootstrap_lift( VALUE self, VALUE args )
     /* close the database */
     rc = sqlite3_close( db );
     if ( SQLITE_OK != rc ) {
-        asprintf( &raise_msg, "Failure to close database : [SQLITE_ERROR %d] : %s\n", rc, sqlite3_errmsg( db )),
+        memset( raise_msg, 0, BUFSIZ );
+        snprintf( raise_msg, BUFSIZ, "Failure to close database : [SQLITE_ERROR %d] : %s\n", rc, sqlite3_errmsg( db )),
         am_bootstrap_cleanup_and_raise( raise_msg, db,stmt );
     }
 
