@@ -27,7 +27,7 @@ if ext_config = Configuration.for_if_exist?('extension') then
     task :build_win => :clobber do
       ext_config.configs.each do |extension|
         path = Pathname.new( extension )
-        parts = plath.split
+        parts = path.split
         conf = parts.last
         Dir.chdir( path.dirname ) do |d|
           cp "rbconfig-mingw.rb", "rbconfig.rb"
