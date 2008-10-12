@@ -23,6 +23,20 @@ if ext_config = Configuration.for_if_exist?('extension') then
       end
     end
 
+    desc "Build the extensions for windows"
+    task :build_win => :clobber do
+      ext_config.configs.each do |extension|
+        path = Pathname.new( extension )
+        parts = plath.split
+        conf = parts.last
+        Dir.chdir( path.dirname ) do |d|
+          cp "rbconfig-mingw.rb", "rbconfig.rb"
+          sh "ruby -I. extconf.rb"
+          sh "make"
+        end
+      end
+    end
+
     task :clean do
       ext_config.configs.each do |extension|
         path  = Pathname.new(extension)
@@ -42,7 +56,9 @@ if ext_config = Configuration.for_if_exist?('extension') then
         conf  = parts.last
         Dir.chdir(path.dirname) do |d| 
           #sh "rake clobber"
-          sh "make distclean"
+          if File.exist?( "Makefile") then
+            sh "make distclean"
+          end
         end
       end
     end
@@ -76,7 +92,6 @@ if ext_config = Configuration.for_if_exist?('extension') then
           end
         end
       end
-
     end
   end
 end

@@ -45,5 +45,11 @@ Amalgalite::GEM_SPEC = Gem::Specification.new do |spec|
   if rf = Configuration.for_if_exist?('rubyforge') then
     spec.rubyforge_project  = rf.project
   end 
-
 end
+
+Amalgalite::GEM_SPEC_WIN = Amalgalite::GEM_SPEC.clone
+Amalgalite::GEM_SPEC_WIN.platform = ::Gem::Platform.new( "i386-mswin32_60" )
+Amalgalite::GEM_SPEC_WIN.extensions = []
+Amalgalite::GEM_SPEC_WIN.files +=  ["lib/hitimes_ext.so"]
+
+Amalgalite::SPECS = [ Amalgalite::GEM_SPEC, Amalgalite::GEM_SPEC_WIN ]

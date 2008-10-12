@@ -1,4 +1,10 @@
 = Changelog
+== Version 0.4.2 - 2008-10-12
+
+=== Minor Enhancements
+
+* support for windows binary gem
+
 == Version 0.4.1 - 2008-09-28
 
 === Minor Enhancement 
@@ -10,8 +16,7 @@
 
 === Major Enhancements
 * update to SQLite3 version 3.6.2 and enable the RTree option by default
-* Amalgalite::Requires module allowing ruby code to be 'required' from columns
-  in an SQLite database
+* Amalgalite::Requires module allowing ruby code to be 'required' from columns in an SQLite database
 * Amagalite::Requires::Bootstrap extension module enabling low level boot
   strapping of the pure ruby Amalgalite code from an sqlite database
 

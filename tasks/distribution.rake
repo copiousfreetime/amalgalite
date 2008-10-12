@@ -34,11 +34,19 @@ if pkg_config = Configuration.for_if_exist?("packaging") then
     desc "reinstall gem"
     task :reinstall => [:uninstall, :repackage, :install]
 
+    desc "package the windows gem"
+    task :package_win => "ext:build_win" do
+      cp "ext/amalgalite3.so", "lib", :verbose => true
+      Gem::Builder.new( Amalgalite::GEM_SPEC_WIN ).build
+      mv Dir["*.gem"].first, "pkg"
+    end
+
     desc "distribute copiously"
-    task :copious => [:package] do
+    task :copious => [:package, :package_win] do
+        gems = Amalgalite::SPECS.collect { |s| "#{s.full_name}.gem" }
         Rake::SshFilePublisher.new('jeremy@copiousfreetime.org',
                                '/var/www/vhosts/www.copiousfreetime.org/htdocs/gems/gems',
-                               'pkg',"#{Amalgalite::GEM_SPEC.full_name}.gem").upload
+                               'pkg', *gems).upload
         sh "ssh jeremy@copiousfreetime.org rake -f /var/www/vhosts/www.copiousfreetime.org/htdocs/gems/Rakefile"
     end
  end

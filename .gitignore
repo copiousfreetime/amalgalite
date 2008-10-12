@@ -2,5 +2,7 @@ pkg/*
 doc/*
 coverage/*
 tags
+ext/Makefile
+ext/rbconfig.rb
 examples/*.db
 tmp/*
