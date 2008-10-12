@@ -30,6 +30,9 @@ if rf_conf = Configuration.for_if_exist?("rubyforge") then
 
       puts "Uploading to rubyforge..."
       files = FileList[File.join("pkg","#{Amalgalite::GEM_SPEC.name}-#{Amalgalite::VERSION}*.*")].to_a
+      files.each do |f|
+        puts "  * #{f}"
+      end
       rubyforge.login
       rubyforge.add_release(Amalgalite::GEM_SPEC.rubyforge_project, Amalgalite::GEM_SPEC.name, Amalgalite::VERSION, *files)
       puts "done."
