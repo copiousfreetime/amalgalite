@@ -2,7 +2,9 @@ pkg/*
 doc/*
 coverage/*
 tags
+lib/amalgalite3.so
 ext/Makefile
 ext/rbconfig.rb
 examples/*.db
 tmp/*
+*~

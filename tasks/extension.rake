@@ -33,6 +33,7 @@ if ext_config = Configuration.for_if_exist?('extension') then
           cp "rbconfig-mingw.rb", "rbconfig.rb"
           sh "ruby -I. extconf.rb"
           sh "make"
+          rm_f "rbconfig.rb"
         end
       end
     end
@@ -45,6 +46,7 @@ if ext_config = Configuration.for_if_exist?('extension') then
         Dir.chdir(path.dirname) do |d| 
           #sh "rake clean"
           sh "make clean"
+          rm_f "rbconfig.rb"
         end
       end
     end
@@ -59,6 +61,7 @@ if ext_config = Configuration.for_if_exist?('extension') then
           if File.exist?( "Makefile") then
             sh "make distclean"
           end
+          rm_f "rbconfig.rb"
         end
       end
     end

@@ -81,7 +81,7 @@ VALUE am_bootstrap_lift( VALUE self, VALUE args )
     char*   fname_col = NULL;
     char* content_col = NULL;
 
-    char*            sql = NULL;
+    char             sql[BUFSIZ];
     const char* sql_tail = NULL;
     int        sql_bytes = 0;
     
@@ -122,9 +122,9 @@ VALUE am_bootstrap_lift( VALUE self, VALUE args )
     }
 
     /* prepare the db query */
-    sql_bytes = asprintf( &sql, "SELECT %s, %s FROM %s ORDER BY %s", fname_col, content_col, tbl_name, pk_col );
+    memset( sql, 0, BUFSIZ );
+    sql_bytes = snprintf( sql, BUFSIZ, "SELECT %s, %s FROM %s ORDER BY %s", fname_col, content_col, tbl_name, pk_col );
     rc = sqlite3_prepare_v2( db, sql, sql_bytes, &stmt, &sql_tail ) ;
-    free( sql );
     if ( SQLITE_OK != rc) {
         memset( raise_msg, 0, BUFSIZ );
         snprintf( raise_msg, BUFSIZ,

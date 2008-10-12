@@ -12,4 +12,8 @@ if Config::CONFIG['configure_args'].include?( "--enable-pthread" ) then
 else
   $CFLAGS += " -DSQLITE_THREADSAFE=0"
 end
+
+# remove the -g if it exists
+$CFLAGS = $CFLAGS.gsub(/-g/,'')
+
 create_makefile('amalgalite3')
