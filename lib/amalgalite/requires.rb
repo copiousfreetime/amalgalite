@@ -68,7 +68,7 @@ module Amalgalite
 
         db = Amalgalite::Database.new( opts[:dbfile] )
         unless db.schema.tables[ opts[:table_name] ]
-          db.execute_sql( create_table_sql( opts ) )
+          db.execute( create_table_sql( opts ) )
           db.reload_schema!
         end
 
@@ -76,13 +76,13 @@ module Amalgalite
         db.transaction do |db_in_trans|
           db_in_trans.prepare("INSERT INTO #{opts[:table_name]}(#{opts[:filename_column]}, #{opts[:contents_column]}) VALUES( $filename, $contents)") do |stmt|
             file_list.each do |file_path|
-              full_path = dir + file_path
-              next if Requires.require_order.include?( file_path )
-              if File.exist?( full_path ) then
-                stmt.execute( "$filename" => file_path,
-                              "$contents" => Amalgalite::Blob.new( :file => full_path, :column => db_in_trans.schema.tables[opts[:table_name]].columns[opts[:contents_column]] ) )
+              rel_path = Pathname.new( file_path ).relative_path_from dir 
+              next if Requires.require_order.include?( rel_path.to_s )
+              if File.exist?( file_path ) then
+                stmt.execute( "$filename" => rel_path,
+                              "$contents" => Amalgalite::Blob.new( :file => file_path, :column => db_in_trans.schema.tables[opts[:table_name]].columns[opts[:contents_column]] ) )
               else
-              STDERR.puts "#{file_path} does not exist"
+                STDERR.puts "#{file_path} does not exist"
               end
             end
           end
