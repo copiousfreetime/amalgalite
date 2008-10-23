@@ -51,6 +51,8 @@ module Amalgalite
           amalgalite/version.rb
           amalgalite/sqlite3/version.rb
           amalgalite/sqlite3/constants.rb
+          amalgalite/sqlite3/status.rb
+          amalgalite/sqlite3/database/status.rb
           amalgalite/sqlite3.rb
           amalgalite/taps/io.rb
           amalgalite/taps/console.rb

@@ -63,7 +63,7 @@ core_libs = (amalgalite_needs - Amalgalite::Requires.require_order).delete_if { 
 core_libs.each do |l| 
   if l.index("malgalite") then
     STDERR.puts "ERROR!  require_order needs an update #{l}" 
-    STDERR.puts "run rake test:check_requries and fix"
+    STDERR.puts "run rake test:check_requires and fix"
     exit 2
   end
 end
