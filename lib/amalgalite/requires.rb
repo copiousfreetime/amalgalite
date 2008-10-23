@@ -61,7 +61,7 @@ module Amalgalite
       # from the list
       #
       def store_files_from_dir_in_db( file_list, dir, opts = {} )
-        opts[:dbfile] ||= default_db_file_name
+        opts[:dbfile] ||= default_dbfile_name
         opts[:table_name] ||= default_table_name
         opts[:filename_column] ||= default_filename_column
         opts[:contents_column] ||= default_contents_column
