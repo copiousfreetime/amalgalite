@@ -29,8 +29,9 @@ if ext_config = Configuration.for_if_exist?('extension') then
         path = Pathname.new( extension )
         parts = path.split
         conf = parts.last
+        mingw_rbconfig = path.dirname.parent.realpath + "rbconfig-mingw.rb"
         Dir.chdir( path.dirname ) do |d|
-          cp "rbconfig-mingw.rb", "rbconfig.rb"
+          cp mingw_rbconfig, "rbconfig.rb"
           sh "ruby -I. extconf.rb"
           sh "make"
           rm_f "rbconfig.rb"
