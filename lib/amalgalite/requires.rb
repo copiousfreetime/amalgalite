@@ -14,12 +14,77 @@ module Amalgalite
 
       def db_connection_to( dbfile_name )
         unless connection = load_path_db_connections[ dbfile_name ] 
-          puts "loading file #{dbfile_name}"
           connection = ::Amalgalite::Database.new( dbfile_name )
           load_path_db_connections[dbfile_name] = connection
         end
         return connection
       end
+
+      def default_dbfile_name
+        "lib.db"
+      end
+
+      def default_table_name
+        "rubylibs"
+      end
+
+      def default_filename_column
+        "filename"
+      end
+
+      def default_contents_column
+        "contents"
+      end
+
+      def create_table_sql( opts = {} )
+        table = opts[:table_name] || default_table_name
+        filename_column = opts[:filename_column] || default_filename_column
+        contents_column = opts[:contents_column] || default_contents_column
+
+        sql = <<-create
+        CREATE TABLE #{table} (
+        id                 INTEGER PRIMARY KEY AUTOINCREMENT,
+        #{filename_column} TEXT UNIQ,
+        #{contents_column} BLOB
+        );
+        create
+      end
+
+      # 
+      # Stores all the .rb files in a directory into the given database.
+      # Any filenames that would match the amalgalite requires items are removed
+      # from the list
+      #
+      def store_directory_in_db( dir, opts = {} )
+        opts[:dbfile] ||= default_db_file_name
+        opts[:table_name] ||= default_table_name
+        opts[:filename_column] ||= default_filename_column
+        opts[:contents_column] ||= default_contents_column
+
+        db = Amalgalite::Database.new( dbfile )
+        unless db.schema.tables[ opts[:table_name] ]
+          db.execute_sql( create_table_sql( opts ) )
+          db.reload_schema!
+        end
+
+        dir = Pathname.new( File.expand_path( dir ) )
+        db.transaction do |db_in_trans|
+          db_in_trans.prepare("INSERT INTO files(#{opts[:filename_column]}, #{opts[:contents_column]}) VALUES( $filename, $contents)") do |stmt|
+            FileList[ "#{dir}/**/*.rb" ].each do |file_path|
+              p = Pathname.new( file_path )
+              rel_p = p.relative_path_from( dir )
+              next if Requires.require_order.include?( rel_p )
+              if p.exist? then
+                stmt.execute( "$filename" => rel_p,
+                              "$contents" => Amalgalite::Blob.new( :file => file_path, :column => db_in_trans.schema.tables[opts[:filename_column]].columns[opts[:contents_column]] ) )
+                STDERR.puts "inserted #{file_path} with id #{db.last_insert_rowid}"
+              else
+              STDERR.puts "#{file_path} does not exist"
+              end
+            end
+          end
+        end
+      end # def 
 
       def require( filename )
         load_path.each { |lp| lp.require( filename ) }
@@ -70,10 +135,10 @@ module Amalgalite
     attr_reader :db_connection
 
     def initialize( opts = {} )
-      @dbfile_name     = opts[:dbfile_name]     || "lib.db"
-      @table_name      = opts[:table_name]      || "rubylibs"
-      @filename_column = opts[:filename_column] || "filename"
-      @contents_column = opts[:contents_column] || "contents"
+      @dbfile_name     = opts[:dbfile_name]     || Requires.default_dbfile_name
+      @table_name      = opts[:table_name]      || Requires.default_table_name
+      @filename_column = opts[:filename_column] || Requires.default_filename_column
+      @contents_column = opts[:contents_column] || Requires.default_contents_column
       @db_connection   = Requires.db_connection_to( dbfile_name )
       Requires.load_path << self
     end
