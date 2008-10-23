@@ -1,4 +1,10 @@
 = Changelog
+== Version 0.4.3 - 2008-10-22
+
+=== Minor Enhancement
+
+* update to SQLite version 3.6.4
+
 == Version 0.4.2 - 2008-10-12
 
 === Minor Enhancements

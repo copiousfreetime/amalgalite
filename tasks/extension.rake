@@ -69,9 +69,11 @@ if ext_config = Configuration.for_if_exist?('extension') then
     desc "Download and integrate the next version of sqlite"
     task :update_sqlite do
       next_version = ENV['VERSION']
+      raise "VERSION env variable must be set" unless next_version
       puts "downloading ..."
       url = URI.parse("http://sqlite.org/sqlite-amalgamation-#{next_version}.tar.gz")
       file = "tmp/#{File.basename( url.path ) }"
+      FileUtils.mkdir "tmp" unless File.directory?( "tmp" )
       File.open( file, "wb+") do |f|
         res = Net::HTTP.get_response( url )
         f.write( res.body )
