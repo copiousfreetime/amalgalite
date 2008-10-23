@@ -8,3 +8,4 @@ ext/rbconfig.rb
 examples/*.db
 tmp/*
 *~
+*.swp

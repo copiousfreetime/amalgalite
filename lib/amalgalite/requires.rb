@@ -1,4 +1,5 @@
 require 'amalgalite'
+require 'pathname'
 
 module Amalgalite
   #
@@ -50,18 +51,22 @@ module Amalgalite
         create
       end
 
+      def store_dir_in_db( dir, opts = {} )
+        store_files_from_dir_in_db( FileList[ "#{dir}/**/*.rb"].to_a, dir, opts)
+      end
+
       # 
       # Stores all the .rb files in a directory into the given database.
       # Any filenames that would match the amalgalite requires items are removed
       # from the list
       #
-      def store_directory_in_db( dir, opts = {} )
+      def store_files_from_dir_in_db( file_list, dir, opts = {} )
         opts[:dbfile] ||= default_db_file_name
         opts[:table_name] ||= default_table_name
         opts[:filename_column] ||= default_filename_column
         opts[:contents_column] ||= default_contents_column
 
-        db = Amalgalite::Database.new( dbfile )
+        db = Amalgalite::Database.new( opts[:dbfile] )
         unless db.schema.tables[ opts[:table_name] ]
           db.execute_sql( create_table_sql( opts ) )
           db.reload_schema!
@@ -69,15 +74,13 @@ module Amalgalite
 
         dir = Pathname.new( File.expand_path( dir ) )
         db.transaction do |db_in_trans|
-          db_in_trans.prepare("INSERT INTO files(#{opts[:filename_column]}, #{opts[:contents_column]}) VALUES( $filename, $contents)") do |stmt|
-            FileList[ "#{dir}/**/*.rb" ].each do |file_path|
-              p = Pathname.new( file_path )
-              rel_p = p.relative_path_from( dir )
-              next if Requires.require_order.include?( rel_p )
-              if p.exist? then
-                stmt.execute( "$filename" => rel_p,
-                              "$contents" => Amalgalite::Blob.new( :file => file_path, :column => db_in_trans.schema.tables[opts[:filename_column]].columns[opts[:contents_column]] ) )
-                STDERR.puts "inserted #{file_path} with id #{db.last_insert_rowid}"
+          db_in_trans.prepare("INSERT INTO #{opts[:table_name]}(#{opts[:filename_column]}, #{opts[:contents_column]}) VALUES( $filename, $contents)") do |stmt|
+            file_list.each do |file_path|
+              full_path = dir + file_path
+              next if Requires.require_order.include?( file_path )
+              if File.exist?( full_path ) then
+                stmt.execute( "$filename" => file_path,
+                              "$contents" => Amalgalite::Blob.new( :file => full_path, :column => db_in_trans.schema.tables[opts[:table_name]].columns[opts[:contents_column]] ) )
               else
               STDERR.puts "#{file_path} does not exist"
               end

@@ -18,6 +18,7 @@
 
 require 'rubygems'
 require 'amalgalite'
+require 'amalgalite/requires'
 VALID_ACTIONS = %w[ list retrieve store ]
 def usage 
   STDERR.puts "Usage: #{File.basename($0)} ( #{VALID_ACTIONS.join(' | ')} )  file(s)"
@@ -36,13 +37,13 @@ file_list = ARGV
 # create the database if it doesn't exist
 #
 db = Amalgalite::Database.new( "filestore.db" )
-unless db.schema.tables['files']
-  STDERR.puts "Creating files table"
+unless db.schema.tables['rubylibs']
+  STDERR.puts "Creating rubylibs table"
   db.execute(<<-create)
-  CREATE TABLE files(
-    id     INTEGER PRIMARY KEY AUTOINCREMENT,
-    path   VARCHAR UNIQUE,
-    data   BLOB
+  CREATE TABLE rubylibs(
+    id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    filename VARCHAR UNIQUE,
+    contents BLOB
   )
   create
   db.reload_schema!
@@ -54,8 +55,8 @@ case action
   # list all the files that are stored in the database
   #
 when 'list'
-  db.execute("SELECT path FROM files") do |row|
-    puts row['path']
+  db.execute("SELECT filename FROM rubylibs") do |row|
+    puts row['filename']
   end
 
   #
@@ -72,24 +73,8 @@ when 'list'
   #
 when 'store'
   usage if file_list.empty?
-  db.transaction do |db_in_trans|
-    db_in_trans.prepare("INSERT INTO files(path, data) VALUES( $path, $data )") do |stmt|
-      file_list.each do |file_path|
-        begin        
-          if File.exist?( file_path ) then
-            stmt.execute( "$path" => file_path, 
-                          "$data" => Amalgalite::Blob.new( :file => file_path, :column => db_in_trans.schema.tables['files'].columns['data'] ) )
-            STDERR.puts "inserted #{file_path} with id #{db.last_insert_rowid}"
-          else
-            STDERR.puts "#{file_path} does not exist"
-          end
-        rescue => e
-          STDERR.puts e
-        end
-      end
-    end
-  end
-  STDERR.puts "inserted a total of #{db.total_changes} changes"
+
+  Amalgalite::Requires.store_files_from_dir_in_db( file_list, Dir.pwd, :dbfile => 'filestore.db' )
 
   #
   # dump the file that matches the right path to stdout.  This also shows
@@ -97,9 +82,9 @@ when 'store'
   #
 when 'retrieve'
   usage if file_list.empty?
-  db.execute("SELECT id, path, data FROM files WHERE path = ?", file_list.first) do |row|
-  STDERR.puts "Dumping #{row['path']} to stdout"
-  row['data'].write_to_io( STDOUT )
+  db.execute("SELECT id, filename, contents FROM rubylibs WHERE filename = ?", file_list.first) do |row|
+  STDERR.puts "Dumping #{row['filename']} to stdout"
+  row['contents'].write_to_io( STDOUT )
   end
 end
 db.close

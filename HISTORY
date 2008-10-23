@@ -4,6 +4,8 @@
 === Minor Enhancement
 
 * update to SQLite version 3.6.4
+* added store_files_in_db and store_dir_in_db methods to Amalgalite::Requires
+* updated amalgalite-pack-into-db program
 
 == Version 0.4.2 - 2008-10-12
 
