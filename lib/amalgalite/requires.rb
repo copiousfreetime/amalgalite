@@ -90,7 +90,11 @@ module Amalgalite
       end # def 
 
       def require( filename )
-        load_path.each { |lp| lp.require( filename ) }
+        if load_path.empty? then
+          return false
+        else
+          return load_path.each { |lp| lp.require( filename ) }
+        end
       end
 
       #

@@ -38,6 +38,9 @@ extern VALUE mA;              /* module Amalgalite                     */
 extern VALUE mAS;             /* module Amalgalite::SQLite3            */
 extern VALUE mASV;            /* module Amalgalite::SQLite3::Version   */
 extern VALUE eAS_Error;       /* class  Amalgalite::SQLite3::Error     */
+extern VALUE cAR;             /* class  Amalgalite::Requries */
+extern VALUE cARB;            /* class  Amalgalite::Requries::Bootstrap  */
+
 
 /*----------------------------------------------------------------------
  * Prototype for Amalgalite::SQLite3::Database
