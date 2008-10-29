@@ -172,9 +172,13 @@ module Amalgalite
       else
         begin
           rows = db_connection.execute(sql, filename)
-          row = rows.first
-          eval( row[contents_column].to_s, TOPLEVEL_BINDING)
-          $" << row[filename_column]
+          if rows.size > 0 then
+            row = rows.first
+            eval( row[contents_column].to_s, TOPLEVEL_BINDING)
+            $" << row[filename_column]
+          else
+            raise LoadError, "no row with filename #{filename} exists in #{dbfile_name}"
+          end
         rescue => e
           raise LoadError, "Failure loading #{filename} from #{dbfile_name} : #{e}"
         end
