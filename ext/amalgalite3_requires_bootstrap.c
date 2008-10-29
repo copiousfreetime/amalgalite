@@ -106,7 +106,6 @@ VALUE am_bootstrap_lift( VALUE self, VALUE args )
     Check_Type( args, T_HASH );
     
     /* get the arguments */
-    printf("getting arguments \n");
     dbfile      = ( Qnil == (tmp = rb_hash_aref( args, rb_str_new2( "dbfile"          ) ) ) ) ? StringValuePtr( am_db_c )      : StringValuePtr( tmp );
     tbl_name    = ( Qnil == (tmp = rb_hash_aref( args, rb_str_new2( "table_name"      ) ) ) ) ? StringValuePtr( am_tbl_c )     : StringValuePtr( tmp );
     pk_col      = ( Qnil == (tmp = rb_hash_aref( args, rb_str_new2( "rowid_column"    ) ) ) ) ? StringValuePtr( am_pk_c )      : StringValuePtr( tmp );
@@ -115,7 +114,6 @@ VALUE am_bootstrap_lift( VALUE self, VALUE args )
 
 
     /* open the database */
-    printf("opening database %s\n", dbfile );
     rc = sqlite3_open_v2( dbfile , &db, SQLITE_OPEN_READONLY, NULL);
     if ( SQLITE_OK != rc ) {
         memset( raise_msg, 0, BUFSIZ );
@@ -126,7 +124,6 @@ VALUE am_bootstrap_lift( VALUE self, VALUE args )
     /* prepare the db query */
     memset( sql, 0, BUFSIZ );
     sql_bytes = snprintf( sql, BUFSIZ, "SELECT %s, %s FROM %s ORDER BY %s", fname_col, content_col, tbl_name, pk_col );
-    printf( "preparing query : %s\n", sql);
     rc = sqlite3_prepare_v2( db, sql, sql_bytes, &stmt, &sql_tail ) ;
     if ( SQLITE_OK != rc) {
         memset( raise_msg, 0, BUFSIZ );
@@ -148,7 +145,6 @@ VALUE am_bootstrap_lift( VALUE self, VALUE args )
         result_text    = sqlite3_column_text( stmt, 1 );
         result_length  = sqlite3_column_bytes( stmt, 1 );
         eval_this_code = rb_str_new( (const char*)result_text, result_length );
-        printf("  eval of %s\n", result_text);
 
         /* Kernel.eval( code, TOPLEVEL_BINDING, filename, 1 ) */ 
         rb_funcall(rb_mKernel, eval_id, 4, eval_this_code, toplevel_binding, require_name, INT2FIX(1) );
@@ -167,7 +163,6 @@ VALUE am_bootstrap_lift( VALUE self, VALUE args )
     }
 
     /* finalize the statement */    
-    printf("finalizing statement\n");
     rc = sqlite3_finalize( stmt );
     if ( SQLITE_OK != rc ) {
         memset( raise_msg, 0, BUFSIZ );
@@ -178,7 +173,6 @@ VALUE am_bootstrap_lift( VALUE self, VALUE args )
     stmt = NULL;
 
     /* close the database */
-    printf("closing db\n");
     rc = sqlite3_close( db );
     if ( SQLITE_OK != rc ) {
         memset( raise_msg, 0, BUFSIZ );
