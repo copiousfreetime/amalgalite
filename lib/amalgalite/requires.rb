@@ -93,7 +93,12 @@ module Amalgalite
         if load_path.empty? then
           return false
         else
-          return load_path.each { |lp| lp.require( filename ) }
+          load_path.each do |lp|
+            if lp.require( filename ) then
+              return true
+            end
+          end
+          return false
         end
       end
 
@@ -174,10 +179,10 @@ module Amalgalite
           rows = db_connection.execute(sql, filename)
           if rows.size > 0 then
             row = rows.first
-            eval( row[contents_column].to_s, TOPLEVEL_BINDING)
+            eval( row[contents_column].to_s, TOPLEVEL_BINDING, row[filename_column])
             $" << row[filename_column]
           else
-            raise LoadError, "no row with filename #{filename} exists in #{dbfile_name}"
+            return false
           end
         rescue => e
           raise LoadError, "Failure loading #{filename} from #{dbfile_name} : #{e}"

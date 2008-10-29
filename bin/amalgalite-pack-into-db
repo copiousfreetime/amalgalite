@@ -44,8 +44,8 @@ end
 # when we required amalgalite
 #
 require 'rubygems'
-$: << File.join( File.dirname( __FILE__), "../lib" )
-$: << File.join( File.dirname( __FILE__), "../ext" )
+$:.unshift File.join( File.dirname( __FILE__), "../lib" )
+$:.unshift File.join( File.dirname( __FILE__), "../ext" )
 loaded_features_before = $".dup
 require 'amalgalite/requires'
 loaded_features_after = $".dup
