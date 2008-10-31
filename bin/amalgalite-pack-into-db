@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+LOADED_FEATURES_BEFORE = $".dup
 
 require 'optparse'
 
@@ -6,30 +7,6 @@ require 'optparse'
 # A commandline utility to pack all of amalgalite into a database so that it can
 # be loaded with the C extension only.
 #
-
-#
-# given a file, see if it can be found in the ruby load path, if so, return that
-# full path
-#
-def full_path_of( rb_file )
-  $:.each do |load_path|
-    guess = File.join( load_path, rb_file )
-    return guess if File.exist?( guess )
-  end
-  return nil
-end
-
-OPTIONS = { :force => false }
-
-parser = OptionParser.new do |op|
-  op.banner  = "Usage: #{op.program_name} [options] <dbfile>"
-  op.separator ""
-  
-  op.on("-f", "--force", "Force overwriting of an existing database") do |f|
-    OPTIONS[:force]= true
-  end
-
-end
 
 begin
   parser.parse!
