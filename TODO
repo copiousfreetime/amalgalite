@@ -1,5 +1,6 @@
 For future releases
 ===================
+* add to command line which directory to pack into a rubylibs table
 * busy timeouts
 * progress handler
 * amalgalite command line tool
