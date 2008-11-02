@@ -76,7 +76,6 @@ begin
   require 'amalgalite/packer'
   file_list = ARGV.dup
 
-  STDERR.puts parser if file_list.empty?
   
   if options[:self] then
     options[:table_name] = Amalgalite::Requires::Bootstrap::DEFAULT_TABLE
@@ -93,7 +92,12 @@ begin
       end
     end
     file_list = core_libs.concat( Amalgalite::Requires.require_order )
+    if options[:compressed] then
+      STDERR.puts "Compressing --self is not allowed, reverting to uncompressed"
+      options[:compressed] = false
+    end
   end
+  STDERR.puts parser if file_list.empty?
 
   packer = Amalgalite::Packer.new( options )
   packer.pack( file_list )
