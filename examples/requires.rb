@@ -11,44 +11,25 @@ $: << "../ext"
 require 'rubygems'
 require 'amalgalite'
 
-#
-# create the database 
-#
-File.unlink( "lib.db" ) if File.exist?( "lib.db" )
-db = Amalgalite::Database.new( "lib.db" )
-STDERR.puts "Creating rubylibs table"
-db.execute(<<-create)
-CREATE TABLE rubylibs(
-  id        INTEGER PRIMARY KEY AUTOINCREMENT,
-  filename  VARCHAR UNIQUE,
-  contents  TEXT
-)
-create
-
-
-#
-# insert some source code into a row
-#
-db.execute("INSERT INTO rubylibs(filename, contents) VALUES ( $filename, $contents )",
-           { "$filename" => "example",
-             "$contents" => <<code 
-class ExampleCode
-  def initialize( x )
-    puts "Initializing ExampleCode"
-    @x = x
+%w[ normal compressed ].each do |style|
+  #
+  # create the database 
+  #
+  dbfile = Amalgalite::Requires::Bootstrap::DEFAULT_DB
+  File.unlink( dbfile ) if File.exist?( dbfile )
+  require 'amalgalite/packer'
+  options = {}
+  if style == "compressed" then
+    options[:compressed] = true
   end
-  
-  def foo
-   puts @x
-  end
+  p = Amalgalite::Packer.new( options )
+  p.pack( [ "require_me.rb" ] )
+
+  require 'amalgalite/requires'
+  Amalgalite::Requires.new( :dbfile_name => p.dbfile )
+  require 'require_me'
+  e = RequireMe.new( "#{style} style works!" )
+  e.foo
+
+  puts 
 end
-code
-})
-db.close
-
-require 'amalgalite/requires'
-Amalgalite::Requires.new( :dbfile_name => "lib.db" )
-require 'example'
-e = ExampleCode.new( 'it works!' )
-e.foo
-                            

@@ -285,7 +285,7 @@ module Amalgalite
         write_blobs
       else
         raise Amalgalite::SQLite3::Error, 
-              "SQLITE ERROR #{rc} (#{Amalgalite::SQLite3::Constants::ResultCode.from_int( rc )}) : #{@db.api.last_error_message}"
+              "SQLITE ERROR #{rc} (#{Amalgalite::SQLite3::Constants::ResultCode.name_from_value( rc )}) : #{@db.api.last_error_message}"
       end
       return row
     end

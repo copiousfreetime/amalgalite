@@ -33,61 +33,32 @@ module Amalgalite
         "filename"
       end
 
+      def default_compressed_column
+        "compressed"
+      end
+
       def default_contents_column
         "contents"
       end
 
-      def create_table_sql( opts = {} )
-        table = opts[:table_name] || default_table_name
-        filename_column = opts[:filename_column] || default_filename_column
-        contents_column = opts[:contents_column] || default_contents_column
-
-        sql = <<-create
-        CREATE TABLE #{table} (
-        id                 INTEGER PRIMARY KEY AUTOINCREMENT,
-        #{filename_column} TEXT UNIQ,
-        #{contents_column} BLOB
-        );
-        create
-      end
-
-      def store_dir_in_db( dir, opts = {} )
-        store_files_from_dir_in_db( FileList[ "#{dir}/**/*.rb"].to_a, dir, opts)
-      end
-
       # 
-      # Stores all the .rb files in a directory into the given database.
-      # Any filenames that would match the amalgalite requires items are removed
-      # from the list
+      # uncompress gzip data
       #
-      def store_files_from_dir_in_db( file_list, dir, opts = {} )
-        opts[:dbfile] ||= default_dbfile_name
-        opts[:table_name] ||= default_table_name
-        opts[:filename_column] ||= default_filename_column
-        opts[:contents_column] ||= default_contents_column
+      def gunzip( data )
+        data = StringIO.new( data )
+        Zlib::GzipReader.new( data ).read
+      end
 
-        db = Amalgalite::Database.new( opts[:dbfile] )
-        unless db.schema.tables[ opts[:table_name] ]
-          db.execute( create_table_sql( opts ) )
-          db.reload_schema!
+      #
+      # compress data
+      #
+      def gzip( data )
+        zipped = StringIO.new
+        Zlib::GzipWriter.wrap( zipped ) do |io|
+          io.write( data )
         end
-
-        dir = Pathname.new( File.expand_path( dir ) )
-        db.transaction do |db_in_trans|
-          db_in_trans.prepare("INSERT INTO #{opts[:table_name]}(#{opts[:filename_column]}, #{opts[:contents_column]}) VALUES( $filename, $contents)") do |stmt|
-            file_list.each do |file_path|
-              rel_path = Pathname.new( file_path ).relative_path_from dir 
-              next if Requires.require_order.include?( rel_path.to_s )
-              if File.exist?( file_path ) then
-                stmt.execute( "$filename" => rel_path,
-                              "$contents" => Amalgalite::Blob.new( :file => file_path, :column => db_in_trans.schema.tables[opts[:table_name]].columns[opts[:contents_column]] ) )
-              else
-                STDERR.puts "#{file_path} does not exist"
-              end
-            end
-          end
-        end
-      end # def 
+        return zipped.string
+      end
 
       def require( filename )
         if load_path.empty? then
@@ -136,6 +107,7 @@ module Amalgalite
           amalgalite/taps.rb
           amalgalite/core_ext/kernel/require.rb
           amalgalite/requires.rb
+          amalgalite/packer.rb
        ]
      end
     end
@@ -144,13 +116,15 @@ module Amalgalite
     attr_reader :table_name
     attr_reader :filename_column
     attr_reader :contents_column
+    attr_reader :compressed_column
     attr_reader :db_connection
 
     def initialize( opts = {} )
-      @dbfile_name     = opts[:dbfile_name]     || Requires.default_dbfile_name
-      @table_name      = opts[:table_name]      || Requires.default_table_name
-      @filename_column = opts[:filename_column] || Requires.default_filename_column
-      @contents_column = opts[:contents_column] || Requires.default_contents_column
+      @dbfile_name       = opts[:dbfile_name]       || Requires.default_dbfile_name
+      @table_name        = opts[:table_name]        || Requires.default_table_name
+      @filename_column   = opts[:filename_column]   || Requires.default_filename_column
+      @contents_column   = opts[:contents_column]   || Requires.default_contents_column
+      @compressed_column = opts[:compressed_column] || Requires.default_compressed_column
       @db_connection   = Requires.db_connection_to( dbfile_name )
       Requires.load_path << self
     end
@@ -159,7 +133,7 @@ module Amalgalite
     # return the sql to find the file contents for a file in this requires
     #
     def sql
-      @sql ||= "SELECT #{filename_column}, #{contents_column} FROM #{table_name} WHERE #{filename_column} = ?"
+      @sql ||= "SELECT #{filename_column}, #{compressed_column}, #{contents_column} FROM #{table_name} WHERE #{filename_column} = ?"
     end
 
     #
@@ -179,7 +153,14 @@ module Amalgalite
           rows = db_connection.execute(sql, filename)
           if rows.size > 0 then
             row = rows.first
-            eval( row[contents_column].to_s, TOPLEVEL_BINDING, row[filename_column])
+            contents = nil
+            if row[compressed_column] then 
+              contents = gunzip( row[contents_column] )
+            else
+              contents = row[contents_column].to_s
+            end
+
+            eval( contents, TOPLEVEL_BINDING, row[filename_column])
             $" << row[filename_column]
           else
             return false

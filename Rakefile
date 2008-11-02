@@ -44,28 +44,6 @@ end
 task :default => 'test:default'
 
 #-------------------------------------------------------------------------------
-# make sure that the Amalgalite::Requires.requires_order has a listing of all
-# files in lib
-#-------------------------------------------------------------------------------
-namespace :test do
-  desc "Check that requires_order will package"
-  task :check_requires do
-    require 'amalgalite/requires'
-    Dir.chdir( "lib" ) do 
-      all_files = FileList["**/*.rb"].uniq
-      requires_order = Amalgalite::Requires.require_order.uniq
-      if ( requires_order.size != all_files.size ) then
-        puts "Missing files "
-        (all_files - requires_order).each do |l|
-          puts "  #{l}"
-        end
-      else
-        puts "All files found"
-      end
-    end
-  end
-end
-#-------------------------------------------------------------------------------
 # Finalize the loading of all pending imports and update the top level clobber
 # task to depend on all possible sub-level tasks that have a name like
 # ':clobber'  in other namespaces.  This allows us to say:
