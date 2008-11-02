@@ -82,7 +82,12 @@ module Amalgalite
             end
 
             trans.prepare("INSERT INTO #{options[:table_name]}(#{options[:filename_column]}, #{options[:compressed_column]}, #{options[:contents_column]}) VALUES( $filename, $compressed, $contents)") do |stmt|
-              contents = IO.read( file_info.file_path )
+              contents = IO.readlines( file_info.file_path )
+              if options[:self] then
+                contents.each { |l| l.gsub!( /^(\s*require .*)$/m, "# commented out by #{self.class.name} \\1") }
+              end
+              contents = contents.join
+
               if options[:compressed] then
                 contents = Requires.gzip( contents )
               end

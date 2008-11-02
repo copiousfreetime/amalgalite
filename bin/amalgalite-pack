@@ -42,10 +42,6 @@ begin
       options[:drop_table] = t
     end
 
-    op.on("-f", "--force", "Force overwriting of an existing database") do |f|
-      options[:force]= true
-    end
-
     op.on("-m", "--merge", "Merge these files into the existing table overwriting rows that conflict") do |m|
       options[:merge] = true
     end
@@ -109,26 +105,6 @@ rescue OptionParser::ParseError => pe
 end
 
 __END__
-
-
-# width value for tidy output
-max_width = amalgalite_needs.sort_by { |l| l.length }.last.length
-
-#
-# Get the filename, and do not overwrite if the file already exists, unless of
-# course, --force is used
-#
-dbfile = ARGV.shift || Amalgalite::Requires::Bootstrap::DEFAULT_DB
-if OPTIONS[:force] then
-  File.unlink( dbfile ) if File.exist?( dbfile )
-end
-
-if File.exist?( dbfile ) then
-  STDERR.puts "ERROR: #{dbfile} already exists, erase manually or use '--force' option"
-  STDERR.puts parser
-  exit 1
-end
-
 
 puts <<-text
 
