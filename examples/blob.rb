@@ -17,6 +17,8 @@
 #
 
 require 'rubygems'
+$: << "../lib"
+$: << "../ext"
 require 'amalgalite'
 require 'amalgalite/requires'
 VALID_ACTIONS = %w[ list retrieve store ]
@@ -37,18 +39,6 @@ file_list = ARGV
 # create the database if it doesn't exist
 #
 db = Amalgalite::Database.new( "filestore.db" )
-unless db.schema.tables['rubylibs']
-  STDERR.puts "Creating rubylibs table"
-  db.execute(<<-create)
-  CREATE TABLE rubylibs(
-    id       INTEGER PRIMARY KEY AUTOINCREMENT,
-    filename VARCHAR UNIQUE,
-    contents BLOB
-  )
-  create
-  db.reload_schema!
-end
-
 
 case action
   #
@@ -73,8 +63,11 @@ when 'list'
   #
 when 'store'
   usage if file_list.empty?
+  require 'amalgalite/packer'
 
-  Amalgalite::Requires.store_files_from_dir_in_db( file_list, Dir.pwd, :dbfile => 'filestore.db' )
+  packer = Amalgalite::Packer.new( :dbfile => 'filestore.db',
+                                   :compressed => true )
+  packer.pack( file_list )
 
   #
   # dump the file that matches the right path to stdout.  This also shows
@@ -82,9 +75,14 @@ when 'store'
   #
 when 'retrieve'
   usage if file_list.empty?
-  db.execute("SELECT id, filename, contents FROM rubylibs WHERE filename = ?", file_list.first) do |row|
-  STDERR.puts "Dumping #{row['filename']} to stdout"
-  row['contents'].write_to_io( STDOUT )
+  db.execute("SELECT id, compressed, filename, contents FROM rubylibs WHERE filename = ?", file_list.first) do |row|
+    STDERR.puts "Dumping #{row['filename']} to stdout"
+    if row['compressed'] then
+      s = row['contents'].to_s
+      STDOUT.puts Amalgalite::Requires.gunzip( s )
+    else
+      row['contents'].write_to_io( STDOUT )
+    end
   end
 end
 db.close

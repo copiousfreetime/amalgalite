@@ -153,11 +153,9 @@ module Amalgalite
           rows = db_connection.execute(sql, filename)
           if rows.size > 0 then
             row = rows.first
-            contents = nil
+            contents = row[contents_column].to_s
             if row[compressed_column] then 
-              contents = gunzip( row[contents_column] )
-            else
-              contents = row[contents_column].to_s
+              contents = Requires.gunzip( contents )
             end
 
             eval( contents, TOPLEVEL_BINDING, row[filename_column])

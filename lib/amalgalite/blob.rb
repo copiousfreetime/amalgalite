@@ -11,7 +11,7 @@ module Amalgalite
   #
   # For instance during an insert:
   #
-  #   blob_column = db.schema.tables['blobs'].columsn['data']
+  #   blob_column = db.schema.tables['blobs'].columns['data']
   #   db.execute("INSERT INTO blobs(name, data) VALUES ( $name, $blob )",
   #             { "$name" => "/path/to/file",
   #               "$blob" => Amalgalite::Blob.new( :file => '/path/to/file',

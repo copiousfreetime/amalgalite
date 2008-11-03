@@ -73,6 +73,7 @@ module Amalgalite
       db = Amalgalite::Database.new( dbfile )
       check_db( db )
       max_width = manifest.collect{ |m| m.require_path.length }.sort.last
+      contents_column = db.schema.tables[ options[:table_name] ].columns[ options[:contents_column] ]
       db.transaction do |trans|
         manifest.each do |file_info|
           msg  = "  -> #{file_info.require_path.ljust( max_width )} : "
@@ -91,9 +92,11 @@ module Amalgalite
               if options[:compressed] then
                 contents = Requires.gzip( contents )
               end
-              stmt.execute( "$filename" => file_info.require_path,
-                              "$contents" => contents,
-                              "$compressed" => options[:compressed] )
+              content_io = StringIO.new( contents )
+              stmt.execute( "$filename"   => file_info.require_path,
+                            "$contents"   => Amalgalite::Blob.new( :io => content_io,
+                                                                   :column => contents_column ),
+                            "$compressed" => options[:compressed] )
               STDERR.puts "#{msg} stored #{file_info.file_path}" if options[:verbose]
             end
           rescue => e
@@ -135,7 +138,7 @@ module Amalgalite
           m.require_path = f
           m.file_path    = lp
         else
-          STDERR.puts "Unable to add #{f} to the manifest, cannot file the file on disk"
+          STDERR.puts "Unable to add #{f} to the manifest, cannot find the file on disk"
           next
         end
         m.require_path = m.require_path.to_s[ /\A(.*)\.rb\Z/, 1]
