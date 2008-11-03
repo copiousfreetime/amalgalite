@@ -6,7 +6,7 @@ module Kernel
   #
   def require( filename )
     found = Amalgalite::Requires.require( filename )
-    unless found
+    if not found and not $".include?( filename ) and not Amalgalite::Requires.requiring.include?( filename ) then
       found = amalgalite_original_require( filename )
     end
     return found

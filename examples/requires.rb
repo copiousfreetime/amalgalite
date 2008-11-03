@@ -11,25 +11,28 @@ $: << "../ext"
 require 'rubygems'
 require 'amalgalite'
 
-%w[ normal compressed ].each do |style|
-  #
-  # create the database 
-  #
-  dbfile = Amalgalite::Requires::Bootstrap::DEFAULT_DB
-  File.unlink( dbfile ) if File.exist?( dbfile )
-  require 'amalgalite/packer'
-  options = {}
-  if style == "compressed" then
-    options[:compressed] = true
-  end
-  p = Amalgalite::Packer.new( options )
-  p.pack( [ "require_me.rb" ] )
+style = ARGV.shift
 
-  require 'amalgalite/requires'
-  Amalgalite::Requires.new( :dbfile_name => p.dbfile )
-  require 'require_me'
-  e = RequireMe.new( "#{style} style works!" )
-  e.foo
-
-  puts 
+#
+# create the database 
+#
+dbfile = Amalgalite::Requires::Bootstrap::DEFAULT_DB
+File.unlink( dbfile ) if File.exist?( dbfile )
+require 'amalgalite/packer'
+options = {}
+if style == "compressed" then
+  options[:compressed] = true
 end
+p = Amalgalite::Packer.new( options )
+p.pack( [ "require_me.rb" ] )
+
+require 'amalgalite/requires'
+Amalgalite::Requires.new( :dbfile_name => p.dbfile )
+FileUtils.mv 'require_me.rb', 'rm.rb'
+require 'require_me'
+e = RequireMe.new( "#{style} style works!" )
+e.foo
+require 'require_me'
+
+puts 
+FileUtils.mv 'rm.rb', 'require_me.rb'

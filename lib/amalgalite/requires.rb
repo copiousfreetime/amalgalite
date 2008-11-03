@@ -9,6 +9,7 @@ module Amalgalite
       def load_path_db_connections
         @load_path_db_connections ||= {}
       end
+
       def load_path
         @load_path ||= []
       end
@@ -19,6 +20,14 @@ module Amalgalite
           load_path_db_connections[dbfile_name] = connection
         end
         return connection
+      end
+
+      # 
+      # Setting a class level variable as a flag to know what we are currently
+      # in the middle of requiring
+      #
+      def requiring
+        @requiring ||= []
       end
 
       def default_dbfile_name
@@ -63,12 +72,17 @@ module Amalgalite
       def require( filename )
         if load_path.empty? then
           return false
+        elsif Requires.requiring.include?( filename ) then 
+          return false
         else
+          Requires.requiring << filename
           load_path.each do |lp|
             if lp.require( filename ) then
+              Requires.requiring.delete( filename )
               return true
             end
           end
+
           return false
         end
       end
