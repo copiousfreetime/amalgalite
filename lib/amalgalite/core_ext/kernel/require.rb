@@ -5,10 +5,22 @@ module Kernel
   # amalgalite database.  
   #
   def require( filename )
-    found = Amalgalite::Requires.require( filename )
-    if not found and not $".include?( filename ) and not Amalgalite::Requires.requiring.include?( filename ) then
-      found = amalgalite_original_require( filename )
+    loaded = false
+    if $".include?( filename ) then
+      return loaded
     end
-    return found
+
+
+
+    begin 
+      puts "#{"--"}> am loading #{filename}"
+      loaded = Amalgalite::Requires.require( filename )
+      puts "<#{"--"} am loaded #{filename} #{loaded}"
+    rescue LoadError => le
+      puts "load error from amalgalite : #{le}"
+      puts "--> am original loading #{filename}"
+      loaded = amalgalite_original_require( filename )
+      puts "<-- am original loaded #{filename} #{loaded}"
+    end
   end
 end

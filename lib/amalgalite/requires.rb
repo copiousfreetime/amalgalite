@@ -72,7 +72,11 @@ module Amalgalite
       def require( filename )
         if load_path.empty? then
           return false
+        elsif $".include?( filename ) then
+          puts "#{filename} already in $\""
+          return false
         elsif Requires.requiring.include?( filename ) then 
+          puts "#{filename} already in requiring"
           return false
         else
           Requires.requiring << filename
@@ -82,8 +86,8 @@ module Amalgalite
               return true
             end
           end
-
-          return false
+          Requires.requiring.delete( filename )
+          raise ::LoadError, "no such file to load -- #{filename}"
         end
       end
 
@@ -178,7 +182,7 @@ module Amalgalite
             return false
           end
         rescue => e
-          raise LoadError, "Failure loading #{filename} from #{dbfile_name} : #{e}"
+          raise ::LoadError, "Failure loading #{filename} from #{dbfile_name} : #{e}"
         end
       end
       return true
