@@ -12,6 +12,7 @@ module Kernel
     begin 
       loaded = Amalgalite::Requires.require( filename )
     rescue LoadError => le
+      puts "failed to load #{le} from db"
       loaded = amalgalite_original_require( filename )
     end
     return loaded

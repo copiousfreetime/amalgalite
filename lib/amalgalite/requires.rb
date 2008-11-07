@@ -73,10 +73,8 @@ module Amalgalite
         if load_path.empty? then
           return false
         elsif $".include?( filename ) then
-          puts "#{filename} already in $\""
           return false
         elsif Requires.requiring.include?( filename ) then 
-          puts "#{filename} already in requiring"
           return false
         else
           Requires.requiring << filename
@@ -176,11 +174,11 @@ module Amalgalite
               contents = Requires.gunzip( contents )
             end
 
-            eval( contents, TOPLEVEL_BINDING, row[filename_column])
+            eval( contents, TOPLEVEL_BINDING, row[filename_column] )
             $" << row[filename_column]
             return true
           else
-            false #raise ::LoadError, "no such file to load -- #{filename} -- "
+            return false
           end
         rescue => e
           raise ::LoadError, "Failure loading #{filename} from #{dbfile_name} : #{e}"
