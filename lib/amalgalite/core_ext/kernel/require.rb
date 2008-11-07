@@ -9,18 +9,11 @@ module Kernel
     if $".include?( filename ) then
       return loaded
     end
-
-
-
     begin 
-      puts "#{"--"}> am loading #{filename}"
       loaded = Amalgalite::Requires.require( filename )
-      puts "<#{"--"} am loaded #{filename} #{loaded}"
     rescue LoadError => le
-      puts "load error from amalgalite : #{le}"
-      puts "--> am original loading #{filename}"
       loaded = amalgalite_original_require( filename )
-      puts "<-- am original loaded #{filename} #{loaded}"
     end
+    return loaded
   end
 end

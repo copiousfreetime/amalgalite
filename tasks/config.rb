@@ -63,7 +63,7 @@ Configuration.for("gem") {
 Configuration.for('test') {
   mode      "spec"
   files     Configuration.for("packaging").files.test
-  options   %w[ --format specdoc --color ]
+  options   %w[ --format progress --color ]
   ruby_opts %w[ ]
 }
 
@@ -77,7 +77,7 @@ Configuration.for('rcov') {
   ruby_opts   %w[ ]
   test_files  Configuration.for('packaging').files.test
 }
-
+#
 #-----------------------------------------------------------------------
 # Rdoc 
 #-----------------------------------------------------------------------
@@ -106,5 +106,4 @@ Configuration.for('rubyforge') {
   host          "rubyforge.org"
   rdoc_location "#{user}@#{host}:/var/www/gforge-projects/#{project}/amalgalite/"
 }
-
 

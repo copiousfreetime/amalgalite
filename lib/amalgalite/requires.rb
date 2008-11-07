@@ -178,14 +178,14 @@ module Amalgalite
 
             eval( contents, TOPLEVEL_BINDING, row[filename_column])
             $" << row[filename_column]
+            return true
           else
-            return false
+            false #raise ::LoadError, "no such file to load -- #{filename} -- "
           end
         rescue => e
           raise ::LoadError, "Failure loading #{filename} from #{dbfile_name} : #{e}"
         end
       end
-      return true
     end
   end
 end
