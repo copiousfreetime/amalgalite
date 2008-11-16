@@ -20,7 +20,7 @@ require 'rubygems'
 $: << "../lib"
 $: << "../ext"
 require 'amalgalite'
-require 'amalgalite/requires'
+require 'amalgalite/packer'
 VALID_ACTIONS = %w[ list retrieve store ]
 def usage 
   STDERR.puts "Usage: #{File.basename($0)} ( #{VALID_ACTIONS.join(' | ')} )  file(s)"
@@ -66,7 +66,7 @@ when 'store'
   require 'amalgalite/packer'
 
   packer = Amalgalite::Packer.new( :dbfile => 'filestore.db',
-                                   :compressed => true )
+                                   :compressed => false )
   packer.pack( file_list )
 
   #
@@ -79,7 +79,7 @@ when 'retrieve'
     STDERR.puts "Dumping #{row['filename']} to stdout"
     if row['compressed'] then
       s = row['contents'].to_s
-      STDOUT.puts Amalgalite::Requires.gunzip( s )
+      STDOUT.puts Amalgalite::Packer.gunzip( s )
     else
       row['contents'].write_to_io( STDOUT )
     end

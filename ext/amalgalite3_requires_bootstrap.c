@@ -69,11 +69,11 @@ VALUE am_bootstrap_lift( VALUE self, VALUE args )
     int  last_row_good; 
     char raise_msg[BUFSIZ];
 
-    VALUE     am_db_c  = rb_const_get( cARB, rb_intern("DEFAULT_DB") );
-    VALUE    am_tbl_c  = rb_const_get( cARB, rb_intern("DEFAULT_TABLE") );
-    VALUE     am_pk_c  = rb_const_get( cARB, rb_intern("DEFAULT_ROWID_COLUMN") );
-    VALUE  am_fname_c  = rb_const_get( cARB, rb_intern("DEFAULT_FILENAME_COLUMN") );
-    VALUE am_content_c = rb_const_get( cARB, rb_intern("DEFAULT_CONTENTS_COLUMN") );
+    VALUE     am_db_c     = rb_const_get( cARB, rb_intern("DEFAULT_DB") );
+    VALUE    am_tbl_c     = rb_const_get( cARB, rb_intern("DEFAULT_BOOTSTRAP_TABLE") );
+    VALUE     am_pk_c     = rb_const_get( cARB, rb_intern("DEFAULT_ROWID_COLUMN") );
+    VALUE  am_fname_c     = rb_const_get( cARB, rb_intern("DEFAULT_FILENAME_COLUMN") );
+    VALUE am_content_c    = rb_const_get( cARB, rb_intern("DEFAULT_CONTENTS_COLUMN") );
 
     char*     dbfile = NULL;
     char*    tbl_name = NULL;
@@ -199,11 +199,13 @@ void Init_amalgalite3_requires_bootstrap()
     rb_define_module_function(cARB, "lift", am_bootstrap_lift, -2); 
 
     /* constants for default db, table, column, rowid, contents */ 
-    rb_define_const(cARB,              "DEFAULT_DB", rb_str_new2( "lib.db" ));
-    rb_define_const(cARB,           "DEFAULT_TABLE", rb_str_new2( "bootstrap" ));
-    rb_define_const(cARB,    "DEFAULT_ROWID_COLUMN", rb_str_new2( "id" ));
-    rb_define_const(cARB, "DEFAULT_FILENAME_COLUMN", rb_str_new2( "filename" ));
-    rb_define_const(cARB, "DEFAULT_CONTENTS_COLUMN", rb_str_new2( "contents" ));
+    rb_define_const(cARB,                "DEFAULT_DB", rb_str_new2( "lib.db" ));
+    rb_define_const(cARB,             "DEFAULT_TABLE", rb_str_new2( "rubylibs" ));
+    rb_define_const(cARB,   "DEFAULT_BOOTSTRAP_TABLE", rb_str_new2( "bootstrap" ));
+    rb_define_const(cARB,      "DEFAULT_ROWID_COLUMN", rb_str_new2( "id" ));
+    rb_define_const(cARB,   "DEFAULT_FILENAME_COLUMN", rb_str_new2( "filename" ));
+    rb_define_const(cARB,   "DEFAULT_CONTENTS_COLUMN", rb_str_new2( "contents" ));
+    rb_define_const(cARB, "DEFAULT_COMPRESSED_COLUMN", rb_str_new2( "compressed" ));
 
     return;
 }

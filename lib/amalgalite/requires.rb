@@ -1,5 +1,6 @@
 require 'amalgalite'
 require 'pathname'
+require 'zlib'
 
 module Amalgalite
   #
@@ -12,6 +13,20 @@ module Amalgalite
 
       def load_path
         @load_path ||= []
+      end
+
+      #
+      # Global option to say whether to fall back to the original ruby requires
+      # or not
+      def fallback_to_ruby_requires
+        @fallback_to_ruby_requires ||= true
+      end
+
+      #
+      # Set whether or not to fallback to the original ruby requires or not.
+      #
+      def fallback_to_ruby_requires=( fallback )
+        @fallback_to_ruby_requires = fallback
       end
 
       def db_connection_to( dbfile_name )
@@ -31,42 +46,23 @@ module Amalgalite
       end
 
       def default_dbfile_name
-        "lib.db"
+        Bootstrap::DEFAULT_DB
       end
 
       def default_table_name
-        "rubylibs"
+        Bootstrap::DEFAULT_TABLE
       end
 
       def default_filename_column
-        "filename"
+        Bootstrap::DEFAULT_FILENAME_COLUMN
       end
 
       def default_compressed_column
-        "compressed"
+        Bootstrap::DEFAULT_COMPRESSED_COLUMN
       end
 
       def default_contents_column
-        "contents"
-      end
-
-      # 
-      # uncompress gzip data
-      #
-      def gunzip( data )
-        data = StringIO.new( data )
-        Zlib::GzipReader.new( data ).read
-      end
-
-      #
-      # compress data
-      #
-      def gzip( data )
-        zipped = StringIO.new
-        Zlib::GzipWriter.wrap( zipped ) do |io|
-          io.write( data )
-        end
-        return zipped.string
+        Bootstrap::DEFAULT_CONTENTS_COLUMN
       end
 
       def require( filename )
@@ -89,44 +85,7 @@ module Amalgalite
         end
       end
 
-      #
-      # return the files in their dependency order for use for packing into a
-      # database
-      #
-      def require_order
-        @require_roder ||= %w[
-          amalgalite.rb
-          amalgalite/blob.rb
-          amalgalite/boolean.rb
-          amalgalite/column.rb
-          amalgalite/statement.rb
-          amalgalite/trace_tap.rb
-          amalgalite/profile_tap.rb
-          amalgalite/type_map.rb
-          amalgalite/type_maps/storage_map.rb
-          amalgalite/type_maps/text_map.rb
-          amalgalite/type_maps/default_map.rb
-          amalgalite/database.rb
-          amalgalite/index.rb
-          amalgalite/paths.rb
-          amalgalite/table.rb
-          amalgalite/view.rb
-          amalgalite/schema.rb
-          amalgalite/version.rb
-          amalgalite/sqlite3/version.rb
-          amalgalite/sqlite3/constants.rb
-          amalgalite/sqlite3/status.rb
-          amalgalite/sqlite3/database/status.rb
-          amalgalite/sqlite3.rb
-          amalgalite/taps/io.rb
-          amalgalite/taps/console.rb
-          amalgalite/taps.rb
-          amalgalite/core_ext/kernel/require.rb
-          amalgalite/requires.rb
-          amalgalite/packer.rb
-       ]
-     end
-    end
+   end
 
     attr_reader :dbfile_name
     attr_reader :table_name
@@ -136,11 +95,11 @@ module Amalgalite
     attr_reader :db_connection
 
     def initialize( opts = {} )
-      @dbfile_name       = opts[:dbfile_name]       || Requires.default_dbfile_name
-      @table_name        = opts[:table_name]        || Requires.default_table_name
-      @filename_column   = opts[:filename_column]   || Requires.default_filename_column
-      @contents_column   = opts[:contents_column]   || Requires.default_contents_column
-      @compressed_column = opts[:compressed_column] || Requires.default_compressed_column
+      @dbfile_name       = opts[:dbfile_name]       || Bootstrap::DEFAULT_DB
+      @table_name        = opts[:table_name]        || Bootstrap::DEFAULT_TABLE
+      @filename_column   = opts[:filename_column]   || Bootstrap::DEFAULT_FILENAME_COLUMN
+      @contents_column   = opts[:contents_column]   || Bootstrap::DEFAULT_CONTENTS_COLUMN
+      @compressed_column = opts[:compressed_column] || Bootstrap::DEFAULT_COMPRESSED_COLUMN
       @db_connection   = Requires.db_connection_to( dbfile_name )
       Requires.load_path << self
     end

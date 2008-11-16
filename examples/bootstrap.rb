@@ -22,10 +22,10 @@ puts "Before $\" : #{$".inspect}"
 # table 'files' orderd by column 'id'.  The 'path' column is added to $" and the
 # code in 'data' is evaled.
 Amalgalite::Requires::Bootstrap.lift( "dbfile"          => "filestore.db", 
-                                      "table_name"      => "files", 
+                                      "table_name"      => "rubylibs", 
                                       "rowid_column"    => "id", 
-                                      "filename_column" => "path", 
-                                      "contents_column" => "data" )
+                                      "filename_column" => "filename", 
+                                      "contents_column" => "contents" )
 
 # Notice that a.rb is in the list of files that has been required
 puts "After $\" : #{$".inspect}"

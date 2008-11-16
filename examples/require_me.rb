@@ -1,3 +1,4 @@
+CONSTANT = "bad"
 class RequireMe
   def initialize( msg )
     @msg = msg

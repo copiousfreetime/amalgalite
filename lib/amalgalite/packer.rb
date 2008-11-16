@@ -1,6 +1,9 @@
 require 'optparse'
 require 'ostruct'
-require 'amalgalite/requires'
+require 'pathname'
+require 'zlib'
+
+require 'amalgalite'
 module Amalgalite
   #
   # Pack items into an amalgalite database.  
@@ -13,23 +16,82 @@ module Amalgalite
     class << self
       def default_options
         {
-          :table_name        => Requires.default_table_name,
-          :filename_column   => Requires.default_filename_column,
-          :contents_column   => Requires.default_contents_column,
-          :compressed_column => Requires.default_compressed_column,
+          :table_name        => Requires::Bootstrap::DEFAULT_TABLE,
+          :filename_column   => Requires::Bootstrap::DEFAULT_FILENAME_COLUMN,
+          :contents_column   => Requires::Bootstrap::DEFAULT_CONTENTS_COLUMN,
+          :compressed_column => Requires::Bootstrap::DEFAULT_COMPRESSED_COLUMN,
           :strip_prefix      => Dir.pwd,
           :compressed        => false,
           :verbose           => false,
         }
+      end
+
+      #
+      # compress data
+      #
+      def gzip( data )
+        zipped = StringIO.new
+        Zlib::GzipWriter.wrap( zipped ) do |io|
+          io.write( data )
+        end
+        return zipped.string
+      end
+
+      # 
+      # uncompress gzip data
+      #
+      def gunzip( data )
+        data = StringIO.new( data )
+        Zlib::GzipReader.new( data ).read
+      end
+
+
+      #
+      # return the files in their dependency order for use for packing into a
+      # database
+      #
+      def amalgalite_require_order
+        @require_order ||= %w[
+          amalgalite.rb
+          amalgalite/blob.rb
+          amalgalite/boolean.rb
+          amalgalite/column.rb
+          amalgalite/statement.rb
+          amalgalite/trace_tap.rb
+          amalgalite/profile_tap.rb
+          amalgalite/type_map.rb
+          amalgalite/type_maps/storage_map.rb
+          amalgalite/type_maps/text_map.rb
+          amalgalite/type_maps/default_map.rb
+          amalgalite/database.rb
+          amalgalite/index.rb
+          amalgalite/paths.rb
+          amalgalite/table.rb
+          amalgalite/view.rb
+          amalgalite/schema.rb
+          amalgalite/version.rb
+          amalgalite/sqlite3/version.rb
+          amalgalite/sqlite3/constants.rb
+          amalgalite/sqlite3/status.rb
+          amalgalite/sqlite3/database/status.rb
+          amalgalite/sqlite3.rb
+          amalgalite/taps/io.rb
+          amalgalite/taps/console.rb
+          amalgalite/taps.rb
+          amalgalite/packer.rb
+          amalgalite/core_ext/kernel/require.rb
+          amalgalite/requires.rb
+        ]
       end
     end
 
     # 
     # Create a new packer instance with the list of items to pack and all the
     # options
+    #
     def initialize(  options = {} )
-      @options        = Packer.default_options.merge( options )
-      @dbfile         = options[:dbfile] || Amalgalite::Requires::Bootstrap::DEFAULT_DB
+      @options = Packer.default_options.merge( options )
+      @dbfile  = @options[:dbfile] || Requires::Bootstrap::DEFAULT_DB
     end
 
     # 
@@ -63,6 +125,7 @@ module Amalgalite
 
     end
 
+
     #
     # Stores all the .rb files in the list into the given database.  The prefix
     # is the file system path to remove from the front of the path on each file
@@ -90,7 +153,7 @@ module Amalgalite
               contents = contents.join
 
               if options[:compressed] then
-                contents = Requires.gzip( contents )
+                contents = Packer.gzip( contents )
               end
               content_io = StringIO.new( contents )
               stmt.execute( "$filename"   => file_info.require_path,
@@ -123,10 +186,10 @@ module Amalgalite
     #
     def make_manifest( file_list )
       manifest = []
-      prefix_path = Pathname.new( options[:strip_prefix] )
+      prefix_path = ::Pathname.new( options[:strip_prefix] )
       file_list.each do |f|
-        file_path = Pathname.new( File.expand_path( f ) )
-        m = OpenStruct.new
+        file_path = ::Pathname.new( File.expand_path( f ) )
+        m = ::OpenStruct.new
         # if it is a directory then grab all the .rb files from it
         if File.directory?( file_path ) then
           manifest.concat( make_manifest( Dir.glob( File.join( f, "**", "*.rb" ) ) ) )

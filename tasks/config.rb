@@ -44,14 +44,14 @@ Configuration.for('packaging') {
   formats {
     tgz true
     zip true
-    gem Configuration::Table.has_key?('gem')
+    rubygem  Configuration::Table.has_key?('rubygem')
   }
 }
 
 #-----------------------------------------------------------------------
 # Gem packaging
 #-----------------------------------------------------------------------
-Configuration.for("gem") {
+Configuration.for("rubygem") {
   spec "gemspec.rb"
   Configuration.for('packaging').files.all << spec
 }
