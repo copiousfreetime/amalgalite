@@ -12,7 +12,7 @@ describe "Amalgalite::Packer" do
   end
 
   it "does not load the amalgalite/requires file" do
-    $".should_not be_include("amalgalite/requires")
+    $LOADED_FEATURES.should_not be_include("amalgalite/requires")
   end
 
   it "packs amalgalite into a bootsrap database" do

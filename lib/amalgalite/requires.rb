@@ -1,10 +1,12 @@
 require 'amalgalite'
 require 'pathname'
 require 'zlib'
+require 'amalgalite/packer'
 
 module Amalgalite
   #
-  # Requires encapsulates requiring itesm from the database
+  # Requires encapsulates requiring items from the database
+  #
   class Requires
     class << self
       def load_path_db_connections
@@ -16,19 +18,22 @@ module Amalgalite
       end
 
       #
-      # Global option to say whether to fall back to the original ruby requires
-      # or not
-      def fallback_to_ruby_requires
-        @fallback_to_ruby_requires ||= true
+      # Global option to say whether to use the global ruby requires or not
+      #
+      def use_original_require
+        @use_original_require ||= true
       end
 
       #
       # Set whether or not to fallback to the original ruby requires or not.
       #
-      def fallback_to_ruby_requires=( fallback )
-        @fallback_to_ruby_requires = fallback
+      def use_original_require=( use_it )
+        @use_original_require ||= use_it
       end
 
+      #
+      # Allocate a database connection to the given filename
+      #
       def db_connection_to( dbfile_name )
         unless connection = load_path_db_connections[ dbfile_name ] 
           connection = ::Amalgalite::Database.new( dbfile_name )
@@ -45,30 +50,10 @@ module Amalgalite
         @requiring ||= []
       end
 
-      def default_dbfile_name
-        Bootstrap::DEFAULT_DB
-      end
-
-      def default_table_name
-        Bootstrap::DEFAULT_TABLE
-      end
-
-      def default_filename_column
-        Bootstrap::DEFAULT_FILENAME_COLUMN
-      end
-
-      def default_compressed_column
-        Bootstrap::DEFAULT_COMPRESSED_COLUMN
-      end
-
-      def default_contents_column
-        Bootstrap::DEFAULT_CONTENTS_COLUMN
-      end
-
       def require( filename )
         if load_path.empty? then
-          return false
-        elsif $".include?( filename ) then
+          raise ::LoadError, "Amalgalite load path is empty -- #{filename}"
+        elsif $LOADED_FEATURES.include?( filename ) then
           return false
         elsif Requires.requiring.include?( filename ) then 
           return false
@@ -81,10 +66,9 @@ module Amalgalite
             end
           end
           Requires.requiring.delete( filename )
-          raise ::LoadError, "no such file to load -- #{filename}"
+          raise ::LoadError, "amalgalite has no such file to load -- #{filename}"
         end
       end
-
    end
 
     attr_reader :dbfile_name
@@ -112,16 +96,16 @@ module Amalgalite
     end
 
     #
-    # require a file in this database table.  This will check and see if the
+    # load a file in this database table.  This will check and see if the
     # file is already required.  If it isn't it will select the contents
     # associated with the row identified by the filename and eval those contents
     # within the context of TOPLEVEL_BINDING.  The filename is then appended to
-    # $".
+    # $LOADED_FEATURES.
     #
     # if the file was required then true is returned, otherwise false 
     #
     def require( filename )
-      if $".include?( filename ) then
+      if $LOADED_FEATURES.include?( filename ) then
         return false
       else
         begin
@@ -130,11 +114,11 @@ module Amalgalite
             row = rows.first
             contents = row[contents_column].to_s
             if row[compressed_column] then 
-              contents = Requires.gunzip( contents )
+              contents = ::Amalgalite::Packer.gunzip( contents )
             end
 
             eval( contents, TOPLEVEL_BINDING, row[filename_column] )
-            $" << row[filename_column]
+            $LOADED_FEATURES << row[filename_column]
             return true
           else
             return false

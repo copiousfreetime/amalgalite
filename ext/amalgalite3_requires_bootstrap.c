@@ -55,7 +55,7 @@ void am_bootstrap_cleanup_and_raise( char* msg, sqlite3* db, sqlite3_stmt* stmt 
  *   ORDER BY rowid_column_name
  *
  * For each row returned it does an _eval_ on the code in the
- * *content_column_name* and then updates _$"_ directly with the value from
+ * *content_column_name* and then updates _$LOADED_FEATURES_ directly with the value from
  * *filename_column_name*.
  *
  * The database to be opened by _lift_ *must* be an sqlite3 UTF-8 database.
@@ -133,7 +133,7 @@ VALUE am_bootstrap_lift( VALUE self, VALUE args )
         am_bootstrap_cleanup_and_raise( raise_msg, db, stmt );
     }
 
-    /* loop over the resulting rows, eval'ing and loading $" */
+    /* loop over the resulting rows, eval'ing and loading $LOADED_FEATURES */
     last_row_good = -1;
     while ( SQLITE_ROW == ( rc = sqlite3_step( stmt ) ) ) {
         /* file name */

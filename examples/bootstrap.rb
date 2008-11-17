@@ -16,10 +16,10 @@ $: << "../ext"
 require 'amalgalite3'
 
 # See what the load path is, notice that it is very small
-puts "Before $\" : #{$".inspect}"
+puts "Before $\" : #{$LOADED_FEATURES.inspect}"
 
 # tell the binary extension to "require" every file in the filestore.db in the
-# table 'files' orderd by column 'id'.  The 'path' column is added to $" and the
+# table 'files' orderd by column 'id'.  The 'path' column is added to $LOADED_FEATURES and the
 # code in 'data' is evaled.
 Amalgalite::Requires::Bootstrap.lift( "dbfile"          => "filestore.db", 
                                       "table_name"      => "rubylibs", 
@@ -28,7 +28,7 @@ Amalgalite::Requires::Bootstrap.lift( "dbfile"          => "filestore.db",
                                       "contents_column" => "contents" )
 
 # Notice that a.rb is in the list of files that has been required
-puts "After $\" : #{$".inspect}"
+puts "After $\" : #{$LOADED_FEATURES.inspect}"
 
 # and look we prove that the code was eval'd appropriately
 a = A.new
