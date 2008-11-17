@@ -7,9 +7,7 @@ module Kernel
   # amalgalite database.  
   #
   def require( filename )
-    if Amalgalite::Requires.use_original_require? then
-      loaded = amalgalite_original_require( filename )
-    end
+    loaded = amalgalite_original_require( filename )
   rescue LoadError => load_error
     if load_error.message =~ /#{Regexp.escape filename}\z/ then
       loaded = Amalgalite::Requires.require( filename )

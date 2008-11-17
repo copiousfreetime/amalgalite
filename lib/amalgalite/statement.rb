@@ -83,6 +83,9 @@ module Amalgalite
     def execute( *params )
       bind( *params )
       begin
+        # save the error state at the beginning of the execution.  We only want to
+        # reraise the error if it was raised during this execution.
+        s_before = $!
         if block_given? then
           while row = next_row
             yield row
@@ -96,7 +99,7 @@ module Amalgalite
           reset_for_next_execute!
         rescue => e
         end
-        raise s if s
+        raise s if s != s_before
       end
     end
 

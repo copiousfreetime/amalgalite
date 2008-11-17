@@ -18,20 +18,6 @@ module Amalgalite
       end
 
       #
-      # Global option to say whether to use the global ruby requires or not
-      #
-      def use_original_require
-        @use_original_require ||= true
-      end
-
-      #
-      # Set whether or not to fallback to the original ruby requires or not.
-      #
-      def use_original_require=( use_it )
-        @use_original_require ||= use_it
-      end
-
-      #
       # Allocate a database connection to the given filename
       #
       def db_connection_to( dbfile_name )
@@ -109,6 +95,7 @@ module Amalgalite
         return false
       else
         begin
+          filename = filename.gsub(/\.rb\Z/,'')
           rows = db_connection.execute(sql, filename)
           if rows.size > 0 then
             row = rows.first
