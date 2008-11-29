@@ -9,7 +9,21 @@ require 'archive/tar/minitar'
 
 if ext_config = Configuration.for_if_exist?('extension') then
   namespace :ext do  
-    desc "Build the extension(s)"
+    def current_sqlite_version
+      ext = Configuration.for('extension').configs.first
+      path = Pathname.new( ext )
+      h_path = path.dirname.realpath + "sqlite3.h"
+      File.open( h_path ) do |f|
+        f.each_line do |line|
+          if line =~ /\A#define SQLITE_VERSION\s+/ then
+            define ,constant ,value = line.split
+            return value
+          end
+        end
+      end
+    end
+
+    desc "Build the SQLite extension version #{current_sqlite_version}"
     task :build do
       ext_config.configs.each do |extension|
         path  = Pathname.new(extension)
@@ -67,7 +81,7 @@ if ext_config = Configuration.for_if_exist?('extension') then
       end
     end
 
-    desc "Download and integrate the next version of sqlite"
+    desc "Download and integrate the next version of sqlite (use VERSION=x.y.z)"
     task :update_sqlite do
       next_version = ENV['VERSION']
       raise "VERSION env variable must be set" unless next_version
