@@ -509,6 +509,22 @@ module Amalgalite
     def rollback
       execute( "ROLLBACK" ) if in_transaction?
     end
+
+    ##
+    # call-seq: 
+    #   db.register_functor( MyScalerFunctor ) -> nil
+    #   db.register_functor( MyAggregateFunctor ) -> nil
+    #
+    # register a Class to be used as an SQL Function
+    #
+    def register_functor( klass )
+      if klass.ancestors.include?( Amalgalite::ScalarFunctor ) then
+        @api.create_
+
+      end
+
+    end
+
   end
 end
 

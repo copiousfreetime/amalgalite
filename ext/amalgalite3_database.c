@@ -413,6 +413,64 @@ VALUE am_sqlite3_database_register_profile_tap(VALUE self, VALUE tap)
 }
 
 /**
+ * the amalgalite xFunc callback that is used to invoke the ruby function for
+ * doing scalar SQL functions.
+ *
+ * This function conforms to the xFunc function specification for
+ * sqlite3_create_function
+ */
+void amalgalite_xFunc( sqlite3_context* context, int argc, sqlite3_value** argv )
+{
+    /* functor is an instance of the Functor class that was sent to register_functor
+     */
+    VALUE   functor = (VALUE) sqlite3_user_data( context );
+
+    /* convert each item in argv toa VALUE object based upon its type via
+     * sqlite3_value_type( argv[n] )
+     *
+     *  sqlite3_value_to_ruby_value( argv[n] )
+     */
+
+    /* wrap the sqlite3_context as an SQLite3::Context object */
+    /* the functor is responsible for calling ctx.result = to store the result
+     * of the call
+     */
+
+    return; 
+}
+
+/**
+ * the amalgalite xStep callback that is used to invoke the ruby method for
+ * doing aggregate step oprations as part of an aggregate SQL function.
+ *
+ * This function conforms to the xStep function specification for
+ * sqlite3_create_function.
+ */
+void amalgalite_xStep( sqlite3_context* context, int argc, sqlite3_value** argv )
+{
+    /* functor is a klass that  an instance of is created to hold hte context of
+     * the aggregation */
+    VALUE aggregator = (VALUE) sqlite3_aggregate_context( context, sizeof( amalgalite_aggregate_t) );
+    VALUE functor = (VALUE) sqlite3_user_data( context );
+    return ;
+}
+
+/**
+ * the amalgalite xFinal callback that is used to invoke the ruby method for
+ * doing aggregate final oprations as part of an aggregate SQL function.
+ *
+ * This function conforms to the xFinal function specification for
+ * sqlite3_create_function.
+ */
+void amalgalite_xFinal( sqlite3_context* context )
+{ 
+    VALUE functor = (VALUE) sqlite3_user_data( context );
+
+    return ;
+}
+
+
+/**
  * call-seq:
  *    database.table_column_metadata( db_name, table_name, column_name) -> Hash
  *

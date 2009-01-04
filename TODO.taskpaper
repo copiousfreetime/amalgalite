@@ -1,21 +1,29 @@
-For future releases
-===================
-* add to command line which directory to pack into a rubylibs table
-* busy timeouts
-* progress handler
-* amalgalite command line tool
-* active record driver
-* data mapper driver
-* sequel driver
-* authorizers
-* loading of extensions
-* utf-16 integration
-* create_collation 
-* global temp directory setting
-* create_function
-* full text search
-* virtual file system
-* encryption key support
-* convert type dependency to just use 'call'
-* use ruby's ALLOC_N and hook into sqlite3_mem_methods
-* sqlite3_config
+Next Release:
+  - create_function
+  - busy timeouts
+  - progress handler
+
+Future Release:
+  SQLite API:
+    - authorizers
+    - loading of extensions
+    - utf-16 integration
+    - create_collation 
+    - global temp directory setting
+    - encryption key support
+    - sqlite3_config
+
+  SQLite Features:
+    - virtual file system
+    - full text search
+
+  Drivers:
+    - active record driver
+    - data mapper driver
+    - sequel driver
+
+  Features:
+    - add to command line which directory to pack into a rubylibs table
+    - amalgalite command line tool
+    - use ruby's ALLOC_N and hook into sqlite3_mem_methods
+    - convert type dependency to just use 'call'
