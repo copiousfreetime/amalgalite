@@ -1,5 +1,6 @@
 Next Release:
   - create_function
+    - examples
   - busy timeouts
   - progress handler
 

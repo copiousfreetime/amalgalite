@@ -250,7 +250,7 @@ describe Amalgalite::Database do
       r.first['f'].should == "foo2 -> bar baz"
     end
 
-    it "can define a custom SQL function as a class with 2 params" do
+    it "can define a custom SQL function as a class with N params" do
       class FunctionTest1
         def name 
           "ftest1"
