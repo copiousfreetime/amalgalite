@@ -20,7 +20,6 @@ VALUE eARB_Error;
  */
 void am_bootstrap_cleanup_and_raise( char* msg, sqlite3* db, sqlite3_stmt* stmt )
 {
-    VALUE msg_obj = rb_str_new2( msg );
 
     if ( NULL != stmt ) { sqlite3_finalize( stmt ); }
     if ( NULL != db   ) { sqlite3_close( db ); }
@@ -91,7 +90,6 @@ VALUE am_bootstrap_lift( VALUE self, VALUE args )
     VALUE     require_name = Qnil;  /* ruby string of the file name for use in eval */
     VALUE   eval_this_code = Qnil;  /* ruby string of the code to eval from the db  */
     VALUE toplevel_binding = rb_const_get( rb_cObject, rb_intern("TOPLEVEL_BINDING") ) ;
-    VALUE    sqlite_errmsg = Qnil;
     VALUE              tmp = Qnil;
 
     ID             eval_id = rb_intern("eval");
@@ -166,7 +164,7 @@ VALUE am_bootstrap_lift( VALUE self, VALUE args )
     rc = sqlite3_finalize( stmt );
     if ( SQLITE_OK != rc ) {
         memset( raise_msg, 0, BUFSIZ );
-        snprintf( raise_msg, BUFSIZ, "Failure to finalize bootload statement : [SQLITE_ERROR %d]\n", rc, sqlite3_errmsg( db ) );
+        snprintf( raise_msg, BUFSIZ, "Failure to finalize bootload statement : [SQLITE_ERROR %d] %s\n", rc, sqlite3_errmsg( db ) );
         am_bootstrap_cleanup_and_raise( raise_msg, db, stmt );
     }
 

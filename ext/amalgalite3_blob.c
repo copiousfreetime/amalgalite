@@ -99,10 +99,9 @@ VALUE am_sqlite3_blob_close( VALUE self )
 VALUE am_sqlite3_blob_length( VALUE self )
 {
     am_sqlite3_blob *am_blob;
-    int              n;
 
     Data_Get_Struct(self, am_sqlite3_blob, am_blob);
-    
+
     return INT2FIX( am_blob->length );
 }
 
