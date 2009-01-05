@@ -331,7 +331,6 @@ void amalgalite_xTrace(void* tap, const char* msg)
 VALUE am_sqlite3_database_register_trace_tap(VALUE self, VALUE tap)
 {
     am_sqlite3   *am_db;
-    int           rc;
 
     Data_Get_Struct(self, am_sqlite3, am_db);
 
@@ -387,7 +386,6 @@ void amalgalite_xProfile(void* tap, const char* msg, sqlite3_uint64 time)
 VALUE am_sqlite3_database_register_profile_tap(VALUE self, VALUE tap)
 {
     am_sqlite3   *am_db;
-    int           rc;
 
     Data_Get_Struct(self, am_sqlite3, am_db);
 
@@ -418,11 +416,7 @@ VALUE am_sqlite3_database_register_profile_tap(VALUE self, VALUE tap)
 VALUE amalgalite_wrap_funcall2( VALUE arg )
 {
     am_protected_t *protected = (am_protected_t*) arg;
-    printf( "invoking wrap with %d args\n", protected->argc );
-    return rb_funcall2( protected->instance,
-                        protected->method,
-                        protected->argc,
-                        protected->argv );
+    return rb_funcall2( protected->instance, protected->method, protected->argc, protected->argv );
 }
 
 /**
@@ -453,7 +447,8 @@ void amalgalite_set_context_result( sqlite3_context* context, VALUE result )
             sqlite3_result_text( context, RSTRING(result)->ptr, RSTRING(result)->len, NULL);
             break;
         default:
-            sqlite3_result_error( context, "Unable to convert from ruby type to sqlite3 type", -1 );
+            sqlite3_result_error( context, "Unable to convert ruby object to an SQL function result", -1 );
+            sqlite3_result_error_code( context, 42 );
             break;
     }
     return;
@@ -480,7 +475,7 @@ VALUE sqlite3_value_to_ruby_value( sqlite3_value* s_value )
             break;
         case SQLITE_TEXT:
         case SQLITE_BLOB:
-            rb_value = rb_str_new2( sqlite3_value_text( s_value ) );
+            rb_value = rb_str_new2((const char*) sqlite3_value_text( s_value ) );
             break;
     }
     return rb_value;
@@ -495,7 +490,7 @@ VALUE sqlite3_value_to_ruby_value( sqlite3_value* s_value )
  */
 void amalgalite_xFunc( sqlite3_context* context, int argc, sqlite3_value** argv )
 {
-    VALUE         *args    = ALLOCA_N( VALUE, argc );
+    VALUE         *args = ALLOCA_N( VALUE, argc );
     VALUE          result;
     int            state;
     int            i;
@@ -530,6 +525,7 @@ void amalgalite_xFunc( sqlite3_context* context, int argc, sqlite3_value** argv 
  * call-seq:
  *   database.define_function( name, proc_like )
  *
+ * register the given function to be invoked as an sql function.
  */
 VALUE am_sqlite3_database_define_function( VALUE self, VALUE name, VALUE proc_like )
 {
@@ -546,11 +542,41 @@ VALUE am_sqlite3_database_define_function( VALUE self, VALUE name, VALUE proc_li
                                   (void *)proc_like, amalgalite_xFunc,
                                   NULL, NULL);
     if ( SQLITE_OK != rc ) {
-       rb_raise(eAS_Error, "Failure registering SQL function '%s' with arity '%d' : [SQLITE_ERROR %d] : %s\n",
+       rb_raise(eAS_Error, "Failure defining SQL function '%s' with arity '%d' : [SQLITE_ERROR %d] : %s\n",
                 zFunctionName, nArg, rc, sqlite3_errmsg( am_db->db ));
     }
+    rb_gc_register_address( &proc_like );
     return Qnil;
 }
+
+/**
+ * call-seq:
+ *  database.remove_function( name, proc_like )
+ *
+ * remove the given function from availability in SQL.
+ */
+VALUE am_sqlite3_database_remove_function( VALUE self, VALUE name, VALUE proc_like )
+{
+    am_sqlite3    *am_db;
+    int            rc;
+    VALUE         arity = rb_funcall( proc_like, rb_intern( "arity" ), 0 );
+    char*         zFunctionName = RSTRING(name)->ptr;
+    int           nArg = FIX2INT( arity );
+
+    Data_Get_Struct(self, am_sqlite3, am_db);
+    rc = sqlite3_create_function( am_db->db, 
+                                  zFunctionName, nArg,
+                                  SQLITE_ANY,
+                                  NULL, NULL,
+                                  NULL, NULL);
+    if ( SQLITE_OK != rc ) {
+       rb_raise(eAS_Error, "Failure removing SQL function '%s' with arity '%d' : [SQLITE_ERROR %d] : %s\n",
+                zFunctionName, nArg, rc, sqlite3_errmsg( am_db->db ));
+    }
+    rb_gc_unregister_address( &proc_like );
+    return Qnil;
+}
+
 
 
 /**
@@ -713,7 +739,7 @@ void Init_amalgalite3_database( )
     rb_define_method(cAS_Database, "last_error_code", am_sqlite3_database_last_error_code, 0); /* in amalgalite3_database.c */
     rb_define_method(cAS_Database, "last_error_message", am_sqlite3_database_last_error_message, 0); /* in amalgalite3_database.c */
     rb_define_method(cAS_Database, "define_function", am_sqlite3_database_define_function, 2); /* in amalgalite3_database.c */
-    /* rb_define_method(cAS_Database, "remove_function", am_sqlite3_database_remove_function, 2);*/ /* in amalgalite3_database.c */
+    rb_define_method(cAS_Database, "remove_function", am_sqlite3_database_remove_function, 2); /* in amalgalite3_database.c */
 
 
     /*

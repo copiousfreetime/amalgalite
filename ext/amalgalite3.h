@@ -32,8 +32,8 @@ typedef struct am_sqlite3_blob {
   int           current_offset;
 } am_sqlite3_blob;
 
-/* wrapper struct around the information needed to call rb_funcall2
- * used to encapsulate data into a call for amalgalite_wrap_funcall2
+/* wrapper struct around the information needed to call rb_apply
+ * used to encapsulate data into a call for amalgalite_wrap_apply
  */
 typedef struct am_protected {
     VALUE     instance;
@@ -122,6 +122,16 @@ extern VALUE am_sqlite3_blob_write(VALUE self, VALUE buffer);
 extern VALUE am_sqlite3_blob_close(VALUE self);
 extern VALUE am_sqlite3_blob_length(VALUE self);
 
+/*----------------------------------------------------------------------
+ * more initialization methods
+ *----------------------------------------------------------------------*/
+extern void Init_amalgalite3_constants( );
+extern void Init_amalgalite3_database( );
+extern void Init_amalgalite3_statement( );
+extern void Init_amalgalite3_blob( );
+extern void Init_amalgalite3_requires_bootstrap( );
+
+ 
 /***********************************************************************
  * Type conversion macros between sqlite data types and ruby types
  **********************************************************************/

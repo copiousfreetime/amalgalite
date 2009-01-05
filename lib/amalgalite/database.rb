@@ -49,7 +49,7 @@ module Amalgalite
       # a readlock is obtained immediately so that no other process can write to
       # the database
       IMMEDIATE = "IMMEDIATE"
-      
+
       # a read+write lock is obtained, no other proces can read or write to the
       # database
       EXCLUSIVE = "EXCLUSIVE"
@@ -123,6 +123,7 @@ module Amalgalite
       @profile_tap    = nil
       @trace_tap      = nil
       @type_map       = ::Amalgalite::TypeMaps::DefaultMap.new
+      @functions      = Hash.new 
 
       unless VALID_MODES.keys.include?( mode ) 
         raise InvalidModeError, "#{mode} is invalid, must be one of #{VALID_MODES.keys.join(', ')}" 
@@ -548,15 +549,22 @@ module Amalgalite
       p = ( callable || block ).to_proc
       raise FunctionError, "Use only mandatory or arbitrary parameters in an SQL Function, not both" if p.arity < -1
       db_function = ::Amalgalite::SQLite3::Database::Function.new( name, p )
-      @api.define_function( name, db_function )
+      @api.define_function( db_function.name, db_function )
+      @functions[db_function.signature] = db_function
     end
     alias :function :define_function
 
     ##
     # call-seq:
-    #   db.remove_function( 'name', MyScalerFunctor.new ) -> true / false
+    #   db.remove_function( 'name', MyScalerFunctor.new )
     #   db.remove_function( 'name', callable )
     #   db.remove_function( 'name', arity )
+    #   db.remove_function( 'name' )
+    #
+    # Remove a function from use in the database.  Since the same function may
+    # be registered more than once with different arity, you may specify the
+    # arity, or the function object, or nil.  If nil is used for the arity, then
+    # Amalgalite does its best to remove all functions of given name.
     #
     def remove_function( name, callable_or_arity = nil )
       arity = nil
@@ -565,9 +573,25 @@ module Amalgalite
       elsif callable_or_arity.respond_to?( :to_int ) then
         arity = callable_or_arity.to_int
       end
-      raise FunctionError, "Unable to remove SQL function #{name}, cannot determine arity" unless arity
-      @api.remove_function( name, arity )
+      to_remove = []
+
+      if arity then
+        signature = ::Amalgalite::SQLite3::Database::Function.signature( name, arity ) 
+        db_function = @functions[ signature ]
+        raise FunctionError, "db function '#{name}' with arity #{arity} does not appeaer to be defined" unless db_function
+        to_remove << db_function
+      else
+        possibles = @functions.values.select { |f| f.name == name }
+        raise FunctionError, "no db functions '#{name}'appeaer to be defined" if possibles.empty?
+        to_remove = possibles
+      end
+
+      to_remove.each do |db_function|
+        @api.remove_function( db_function.name, db_function) 
+        @functions.delete( db_function.signature )
+      end
     end
+
   end
 end
 

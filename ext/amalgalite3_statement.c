@@ -281,7 +281,7 @@ VALUE am_sqlite3_statement_clear_bindings(VALUE self)
 VALUE am_sqlite3_statement_step(VALUE self)
 {
     am_sqlite3_stmt  *am_stmt;
-    
+
     Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
     return INT2FIX( sqlite3_step( am_stmt->stmt ) );
 }
@@ -296,7 +296,7 @@ VALUE am_sqlite3_statement_step(VALUE self)
 VALUE am_sqlite3_statement_column_count(VALUE self)
 {
     am_sqlite3_stmt  *am_stmt;
-    
+
     Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
     return INT2FIX( sqlite3_column_count( am_stmt->stmt ) );
 }

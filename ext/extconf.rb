@@ -1,6 +1,7 @@
 require 'mkmf'
 require 'rbconfig'
 
+# $CFLAGS += " -Wall"
 # make available table and column meta data api
 $CFLAGS += " -DSQLITE_ENABLE_COLUMN_METADATA=1"  
 $CFLAGS += " -DSQLITE_ENABLE_RTREE=1"

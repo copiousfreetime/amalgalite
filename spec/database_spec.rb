@@ -237,37 +237,38 @@ describe Amalgalite::Database do
 
   describe "#define_function" do
     it "can define a custom SQL function as a block with 0 params" do
-      @iso_db.define_function("foo") do |*x|
-        puts "callsize #{x.size}"
-        "foo(#{x.join(', ')})"
+      @iso_db.define_function("foo") do 
+        "foo"
       end
-      r = @iso_db.execute("SELECT foo('a','b','c') AS f");
+      r = @iso_db.execute("SELECT foo() AS f");
       r.first['f'].should == "foo"
     end
 
-    it "can define a custom SQL function as a lambda with 1 param" do
-      @iso_db.define_function("foo2", lambda{ |x| "foo2 -> #{x}" } )
-      r = @iso_db.execute("SELECT foo2( 'bar' ) as f")
-      r.first['f'].should == "foo2 -> bar"
+    it "can define a custom SQL function as a lambda with 2 param" do
+      @iso_db.define_function("foo2", lambda{ |x,y| "foo2 -> #{x} #{y}" } )
+      r = @iso_db.execute("SELECT foo2( 'bar', 'baz' ) as f")
+      r.first['f'].should == "foo2 -> bar baz"
     end
 
-    it "can define a custom SQL function as a class with variable params" do
+    it "can define a custom SQL function as a class with 2 params" do
       class FunctionTest1
+        def name 
+          "ftest1"
+        end
         def arity
-          -1
+         -1 
         end
         def to_proc
           self
         end
         def call( *args )
-          puts "args.inspect : #{args.inspect}"
-          "#{args.size} args #{args.join(", ")}"
+          "#{args.length} args #{args.join(', ')}"
         end
       end
 
-      @iso_db.define_function("foo3", FunctionTest1.new )
-      r = @iso_db.execute("SELECT foo3(1,2,3) as f")
-      r.first['f'].should == "4 args 1, 2, 3, 4"
+      @iso_db.define_function("ftest1", FunctionTest1.new )
+      r = @iso_db.execute("SELECT ftest1(1,2,3,'baz') as f")
+      r.first['f'].should == "4 args 1, 2, 3, baz"
     end
 
     it "does not allow mixing of arbitrary and mandatory arguments to an SQL function" do
@@ -278,6 +279,82 @@ describe Amalgalite::Database do
       end
       lambda { @iso_db.define_function("ftest2", FunctionTest2.new ) }.should raise_error( ::Amalgalite::Database::FunctionError )
     end
+
+    it "does not allow outrageous arity" do
+      class FunctionTest3
+        def arity() 101; end
+        def to_proc() self; end
+        def call( *args) ; end
+      end
+      lambda { @iso_db.define_function("ftest3", FunctionTest3.new ) }.should raise_error( ::Amalgalite::SQLite3::Error )
+    end
+
+    [ [   1,   lambda { true  } ],
+      [   0,   lambda { false } ],
+      [   nil, lambda { nil   } ],
+      [ "foo", lambda { "foo" } ],
+      [ 42,    lambda { 42 }    ],
+      [ 42.2 , lambda { 42.2 }  ], ].each do |expected, func|
+        it "returns the appropriate class #{expected.class} " do
+          @iso_db.define_function("ctest", func )
+          r = @iso_db.execute( "SELECT ctest() AS c" )
+          r.first['c'].should == expected
+        end
+      end
+
+    it "raises an error if the function returns a complex Ruby object" do
+      l = lambda { Hash.new }
+      @iso_db.define_function("htest", l)
+      begin
+        @iso_db.execute( "SELECT htest() AS h" ) 
+      rescue => e
+        e.should be_instance_of( ::Amalgalite::SQLite3::Error )
+        e.message.should =~ /Unable to convert ruby object to an SQL function result/
+      end
+    end
+
+    it "an error raised during the sql function is handled correctly" do
+      @iso_db.define_function( "etest" ) do 
+        raise "error from within an sql function"
+      end
+      lambda { @iso_db.execute( "SELECT etest() AS e" ) }.should raise_error( ::Amalgalite::SQLite3::Error, 
+                                                                              /error from within an sql function/ )
+    end
+  end
+
+  describe "#remove_function" do
+    it "unregisters a single function by name and arity" do
+      @iso_db.define_function( "rtest" ) do
+        "rtest called"
+      end
+      @iso_db.functions.size.should == 1 
+
+      r = @iso_db.execute( "select rtest() AS r" )
+      r.first['r'].should == "rtest called"
+      @iso_db.remove_function("rtest", -1)
+      lambda { @iso_db.execute( "select rtest() as r" )}.should raise_error( ::Amalgalite::SQLite3::Error, /no such function: rtest/ )
+      @iso_db.functions.size.should == 0
+    end
+
+    it "unregisteres all functions with the same name" do
+      @iso_db.function( "rtest" ) do |x|
+        "rtest #{x} called"
+      end
+
+      @iso_db.function( "rtest" ) do ||
+        "rtest/0 called"
+      end
+
+      @iso_db.functions.size.should == 2
+      r = @iso_db.execute( "select rtest(1) AS r")
+      r.first['r'].should == "rtest 1 called"
+      r = @iso_db.execute( "select rtest() AS r")
+      r.first['r'].should == "rtest/0 called"
+      @iso_db.remove_function( 'rtest' )
+      lambda {  @iso_db.execute( "select rtest(1) AS r") }.should raise_error( ::Amalgalite::SQLite3::Error )
+      lambda {  @iso_db.execute( "select rtest() AS r")  }.should raise_error( ::Amalgalite::SQLite3::Error )
+      @iso_db.functions.size.should == 0
+    end
+
   end
 end
-
