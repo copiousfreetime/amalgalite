@@ -32,6 +32,15 @@ typedef struct am_sqlite3_blob {
   int           current_offset;
 } am_sqlite3_blob;
 
+/* wrapper struct around the information needed to call rb_funcall2
+ * used to encapsulate data into a call for amalgalite_wrap_funcall2
+ */
+typedef struct am_protected {
+    VALUE     instance;
+    ID        method;
+    int       argc;
+    VALUE    *argv;
+} am_protected_t;
 
 /** module and classes **/
 extern VALUE mA;              /* module Amalgalite                     */
@@ -121,4 +130,9 @@ extern VALUE am_sqlite3_blob_length(VALUE self);
 #define SQLUINT64_2NUM(x)     ( ULL2NUM( x ) )
 #define NUM2SQLINT64( obj )   ( NUM2LL( obj ) )
 #define NUM2SQLUINT64( obj )  ( NUM2ULL( obj ) )
+
+/***********************************************************************
+ * return the last exception in ruby's error message
+ */
+#define ERROR_INFO_MESSAGE()  ( rb_obj_as_string( rb_gv_get("$!") ) )
 #endif

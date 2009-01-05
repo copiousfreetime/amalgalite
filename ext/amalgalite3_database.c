@@ -413,6 +413,80 @@ VALUE am_sqlite3_database_register_profile_tap(VALUE self, VALUE tap)
 }
 
 /**
+ * invoke a ruby function.  This is here to be used by rb_protect.
+ */
+VALUE amalgalite_wrap_funcall2( VALUE arg )
+{
+    am_protected_t *protected = (am_protected_t*) arg;
+    printf( "invoking wrap with %d args\n", protected->argc );
+    return rb_funcall2( protected->instance,
+                        protected->method,
+                        protected->argc,
+                        protected->argv );
+}
+
+/**
+ * Set the context result on the sqlite3_context based upon the ruby VALUE.
+ * This converts the ruby value to the appropriate C-type and makes the
+ * appropriate call sqlite3_result_* call
+ */
+void amalgalite_set_context_result( sqlite3_context* context, VALUE result )
+{
+    switch( TYPE(result) ) {
+        case T_FIXNUM:
+        case T_BIGNUM:
+            sqlite3_result_int64( context, NUM2SQLINT64(result) );
+            break;
+        case T_FLOAT:
+            sqlite3_result_double( context, NUM2DBL(result) );
+            break;
+        case T_NIL:
+            sqlite3_result_null( context );
+            break;
+        case T_TRUE:
+            sqlite3_result_int64( context, 1);
+            break;
+        case T_FALSE:
+            sqlite3_result_int64( context, 0);
+            break;
+        case T_STRING:
+            sqlite3_result_text( context, RSTRING(result)->ptr, RSTRING(result)->len, NULL);
+            break;
+        default:
+            sqlite3_result_error( context, "Unable to convert from ruby type to sqlite3 type", -1 );
+            break;
+    }
+    return;
+}
+
+/** 
+ * Convert from a protected sqlite3_value to a ruby object
+ */
+VALUE sqlite3_value_to_ruby_value( sqlite3_value* s_value )
+{
+    VALUE         rb_value = Qnil;
+    sqlite3_int64 i64;
+
+    switch( sqlite3_value_type( s_value) ) {
+        case SQLITE_NULL:
+            rb_value = Qnil;
+            break;
+        case SQLITE_INTEGER:
+            i64 = sqlite3_value_int64( s_value);
+            rb_value = SQLINT64_2NUM(i64); 
+            break;
+        case SQLITE_FLOAT:
+            rb_value = rb_float_new( sqlite3_value_double( s_value ) );
+            break;
+        case SQLITE_TEXT:
+        case SQLITE_BLOB:
+            rb_value = rb_str_new2( sqlite3_value_text( s_value ) );
+            break;
+    }
+    return rb_value;
+}
+
+/**
  * the amalgalite xFunc callback that is used to invoke the ruby function for
  * doing scalar SQL functions.
  *
@@ -421,23 +495,63 @@ VALUE am_sqlite3_database_register_profile_tap(VALUE self, VALUE tap)
  */
 void amalgalite_xFunc( sqlite3_context* context, int argc, sqlite3_value** argv )
 {
-    /* functor is an instance of the Functor class that was sent to register_functor
-     */
-    VALUE   functor = (VALUE) sqlite3_user_data( context );
+    VALUE         *args    = ALLOCA_N( VALUE, argc );
+    VALUE          result;
+    int            state;
+    int            i;
+    am_protected_t protected;
 
-    /* convert each item in argv toa VALUE object based upon its type via
+    /* convert each item in argv to a VALUE object based upon its type via
      * sqlite3_value_type( argv[n] )
-     *
-     *  sqlite3_value_to_ruby_value( argv[n] )
      */
+    for( i = 0 ; i < argc ; i++) {
+        args[i] = sqlite3_value_to_ruby_value( argv[i] );
+    }
 
-    /* wrap the sqlite3_context as an SQLite3::Context object */
-    /* the functor is responsible for calling ctx.result = to store the result
-     * of the call
-     */
+    /* gather all the data to make the protected call */
+    protected.instance = (VALUE) sqlite3_user_data( context );
+    protected.method   = rb_intern("call");
+    protected.argc     = argc;
+    protected.argv     = args;
+
+    result = rb_protect( amalgalite_wrap_funcall2, (VALUE)&protected, &state );
+    /* check the results */
+    if ( state ) {
+        VALUE msg = ERROR_INFO_MESSAGE();
+        sqlite3_result_error( context, RSTRING(msg)->ptr, RSTRING(msg)->len );
+    } else {
+        amalgalite_set_context_result( context, result );
+    }
 
     return; 
 }
+
+/**
+ * call-seq:
+ *   database.define_function( name, proc_like )
+ *
+ */
+VALUE am_sqlite3_database_define_function( VALUE self, VALUE name, VALUE proc_like )
+{
+    am_sqlite3   *am_db;
+    int           rc;
+    VALUE         arity = rb_funcall( proc_like, rb_intern( "arity" ), 0 );
+    char*         zFunctionName = RSTRING(name)->ptr;
+    int           nArg = FIX2INT( arity );
+
+    Data_Get_Struct(self, am_sqlite3, am_db);
+    rc = sqlite3_create_function( am_db->db, 
+                                  zFunctionName, nArg,
+                                  SQLITE_ANY,
+                                  (void *)proc_like, amalgalite_xFunc,
+                                  NULL, NULL);
+    if ( SQLITE_OK != rc ) {
+       rb_raise(eAS_Error, "Failure registering SQL function '%s' with arity '%d' : [SQLITE_ERROR %d] : %s\n",
+                zFunctionName, nArg, rc, sqlite3_errmsg( am_db->db ));
+    }
+    return Qnil;
+}
+
 
 /**
  * the amalgalite xStep callback that is used to invoke the ruby method for
@@ -450,8 +564,9 @@ void amalgalite_xStep( sqlite3_context* context, int argc, sqlite3_value** argv 
 {
     /* functor is a klass that  an instance of is created to hold hte context of
      * the aggregation */
-    VALUE aggregator = (VALUE) sqlite3_aggregate_context( context, sizeof( amalgalite_aggregate_t) );
+    /*VALUE aggregator = (VALUE) sqlite3_aggregate_context( context, sizeof( amalgalite_aggregate_t) );
     VALUE functor = (VALUE) sqlite3_user_data( context );
+    */
     return ;
 }
 
@@ -597,6 +712,9 @@ void Init_amalgalite3_database( )
     rb_define_method(cAS_Database, "total_changes", am_sqlite3_database_total_changes, 0); /* in amalgalite3_database.c */
     rb_define_method(cAS_Database, "last_error_code", am_sqlite3_database_last_error_code, 0); /* in amalgalite3_database.c */
     rb_define_method(cAS_Database, "last_error_message", am_sqlite3_database_last_error_message, 0); /* in amalgalite3_database.c */
+    rb_define_method(cAS_Database, "define_function", am_sqlite3_database_define_function, 2); /* in amalgalite3_database.c */
+    /* rb_define_method(cAS_Database, "remove_function", am_sqlite3_database_remove_function, 2);*/ /* in amalgalite3_database.c */
+
 
     /*
      * Ecapuslate a SQLite3 Database stat

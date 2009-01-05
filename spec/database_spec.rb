@@ -234,5 +234,50 @@ describe Amalgalite::Database do
       @iso_db.execute("SELECT count(1) as cnt FROM country").first['cnt'].should == 242
     end
   end
+
+  describe "#define_function" do
+    it "can define a custom SQL function as a block with 0 params" do
+      @iso_db.define_function("foo") do |*x|
+        puts "callsize #{x.size}"
+        "foo(#{x.join(', ')})"
+      end
+      r = @iso_db.execute("SELECT foo('a','b','c') AS f");
+      r.first['f'].should == "foo"
+    end
+
+    it "can define a custom SQL function as a lambda with 1 param" do
+      @iso_db.define_function("foo2", lambda{ |x| "foo2 -> #{x}" } )
+      r = @iso_db.execute("SELECT foo2( 'bar' ) as f")
+      r.first['f'].should == "foo2 -> bar"
+    end
+
+    it "can define a custom SQL function as a class with variable params" do
+      class FunctionTest1
+        def arity
+          -1
+        end
+        def to_proc
+          self
+        end
+        def call( *args )
+          puts "args.inspect : #{args.inspect}"
+          "#{args.size} args #{args.join(", ")}"
+        end
+      end
+
+      @iso_db.define_function("foo3", FunctionTest1.new )
+      r = @iso_db.execute("SELECT foo3(1,2,3) as f")
+      r.first['f'].should == "4 args 1, 2, 3, 4"
+    end
+
+    it "does not allow mixing of arbitrary and mandatory arguments to an SQL function" do
+      class FunctionTest2
+        def arity()  -2; end
+        def to_proc() self ; end
+        def call( a, *args ); end
+      end
+      lambda { @iso_db.define_function("ftest2", FunctionTest2.new ) }.should raise_error( ::Amalgalite::Database::FunctionError )
+    end
+  end
 end
 

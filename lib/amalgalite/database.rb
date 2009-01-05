@@ -31,6 +31,12 @@ module Amalgalite
     # Error thrown if a database is opened with an invalid mode
     class InvalidModeError < ::Amalgalite::Error; end
 
+    # Error thrown if there is a failure in a user defined function
+    class FunctionError < ::Amalgalite::Error; end
+
+    # Error thrown if there is a failure in a user defined aggregate
+    class AggregateError < ::Amalgalite::Error; end
+
     ##
     # container class for holding transaction behavior constants.  These are the
     # SQLite values passed to a START TRANSACTION SQL statement.
@@ -80,6 +86,9 @@ module Amalgalite
     # An object that follows the TypeMap protocol, or nil.  
     # By default this is an instances of TypeMaps::DefaultMap
     attr_reader :type_map
+
+    # A list of the user defined functions
+    attr_reader :functions
 
     ##
     # Create a new Amalgalite database
@@ -511,20 +520,54 @@ module Amalgalite
     end
 
     ##
-    # call-seq: 
-    #   db.register_functor( MyScalerFunctor ) -> nil
-    #   db.register_functor( MyAggregateFunctor ) -> nil
+    # call-seq:
+    #   db.function( "name", MyDBFunction.new )
+    #   db.function( "my_func", callable )
+    #   db.function( "my_func" ) do |x,y|
+    #     .... 
+    #     return result
+    #   end
     #
-    # register a Class to be used as an SQL Function
+    # register a callback to be exposed as an SQL function.  There are multiple
+    # ways to register this function:
     #
-    def register_functor( klass )
-      if klass.ancestors.include?( Amalgalite::ScalarFunctor ) then
-        @api.create_
-
-      end
-
+    # 1. db.function( "name" ) { |a| ... }
+    #    * pass +function+ a _name_ and a block.  
+    #    * The SQL function _name_ taking _arity_ parameters will be registered, 
+    #      where _arity_ is the _arity_ of the block.
+    #    * The return value of the block is the return value of the registred
+    #      SQL function
+    # 2. db.function( "name", callable )
+    #    * pass +function+ a _name_ and something that <tt>responds_to?( :to_proc )</tt>
+    #    * The SQL function _name_ is registered taking _arity_ parameters is
+    #      registered where _arity_ is the _arity_ of +callable.to_proc.call+
+    #    * The return value of the +callable.to_proc.call+ is the return value
+    #      of the SQL function
+    #
+    def define_function( name, callable = nil, &block ) 
+      p = ( callable || block ).to_proc
+      raise FunctionError, "Use only mandatory or arbitrary parameters in an SQL Function, not both" if p.arity < -1
+      db_function = ::Amalgalite::SQLite3::Database::Function.new( name, p )
+      @api.define_function( name, db_function )
     end
+    alias :function :define_function
 
+    ##
+    # call-seq:
+    #   db.remove_function( 'name', MyScalerFunctor.new ) -> true / false
+    #   db.remove_function( 'name', callable )
+    #   db.remove_function( 'name', arity )
+    #
+    def remove_function( name, callable_or_arity = nil )
+      arity = nil
+      if callable_or_arity.respond_to?( :to_proc ) then
+        arity = callable_or_arity.to_proc.arity
+      elsif callable_or_arity.respond_to?( :to_int ) then
+        arity = callable_or_arity.to_int
+      end
+      raise FunctionError, "Unable to remove SQL function #{name}, cannot determine arity" unless arity
+      @api.remove_function( name, arity )
+    end
   end
 end
 
