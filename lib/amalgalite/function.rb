@@ -1,10 +1,15 @@
 require 'amalgalite/sqlite3/database/function'
 module Amalgalite
   #
-  # A Base class to inherit from for creating your own SQL scalar unctions in ruby.
+  # A Base class to inherit from for creating your own SQL scalar functions
+  # in ruby.
   #
   # These are SQL functions similar to _abs(X)_, _length(X)_, _random()_.  Items
-  # that take parameters and return value.  They have no state between calls.
+  # that take parameters and return value.  They have no state between
+  # calls. Built in SQLite scalar functions are :
+  #
+  # * http://www.sqlite.org/lang_corefunc.html
+  # * http://www.sqlite.org/lang_datefunc.html
   #
   # Functions defined in Amalgalite databases conform to the Proc interface.
   # Everything that is defined in an Amalgalite database using +define_function+
@@ -47,7 +52,7 @@ module Amalgalite
     # <b>Do Not Override</b>
     #
     # The function signature for use by the Amaglaite datase in tracking
-    # function creation.
+    # function definition and removal.
     #
     def signature
       @signature ||= ::Amalgalite::SQLite3::Database::Function.signature( self.name, self.arity )

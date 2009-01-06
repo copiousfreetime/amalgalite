@@ -7,6 +7,8 @@ require 'amalgalite/statement'
 require 'amalgalite/trace_tap'
 require 'amalgalite/profile_tap'
 require 'amalgalite/type_maps/default_map'
+require 'amalgalite/function'
+require 'amalgalite/aggregate'
 
 module Amalgalite
   #
@@ -90,6 +92,9 @@ module Amalgalite
     # A list of the user defined functions
     attr_reader :functions
 
+    # A list of the user defined aggregates
+    attr_reader :aggregates
+
     ##
     # Create a new Amalgalite database
     #
@@ -124,6 +129,7 @@ module Amalgalite
       @trace_tap      = nil
       @type_map       = ::Amalgalite::TypeMaps::DefaultMap.new
       @functions      = Hash.new 
+      @aggregates     = Hash.new
 
       unless VALID_MODES.keys.include?( mode ) 
         raise InvalidModeError, "#{mode} is invalid, must be one of #{VALID_MODES.keys.join(', ')}" 
@@ -551,6 +557,7 @@ module Amalgalite
       db_function = ::Amalgalite::SQLite3::Database::Function.new( name, p )
       @api.define_function( db_function.name, db_function )
       @functions[db_function.signature] = db_function
+      nil
     end
     alias :function :define_function
 
@@ -578,11 +585,11 @@ module Amalgalite
       if arity then
         signature = ::Amalgalite::SQLite3::Database::Function.signature( name, arity ) 
         db_function = @functions[ signature ]
-        raise FunctionError, "db function '#{name}' with arity #{arity} does not appeaer to be defined" unless db_function
+        raise FunctionError, "db function '#{name}' with arity #{arity} does not appear to be defined" unless db_function
         to_remove << db_function
       else
         possibles = @functions.values.select { |f| f.name == name }
-        raise FunctionError, "no db functions '#{name}'appeaer to be defined" if possibles.empty?
+        raise FunctionError, "no db function '#{name}' appears to be defined" if possibles.empty?
         to_remove = possibles
       end
 
@@ -592,6 +599,66 @@ module Amalgalite
       end
     end
 
+    ##
+    # call-seq:
+    #   db.define_aggregate( 'name', MyAggregateClass )
+    #
+    # Define an SQL aggregate function, these are functions like max(), min(),
+    # avg(), etc.  SQL functions that would be used when a GROUP BY clause is in
+    # effect.  See also ::Amalgalite::Aggregate.
+    #
+    # A new instance of MyAggregateClass is created for each instance that the
+    # SQL aggregate is mentioned in SQL.
+    #
+    def define_aggregate( name, klass )
+      db_aggregate = klass
+      a = klass.new
+      raise AggregateError, "Use only mandatory or arbitrary parameters in an SQL Aggregate, not both" if a.arity < -1
+      raise AggregateError, "Aggregate implementation name '#{a.name}' does not match defined name '#{name}'"if a.name != name
+      @api.define_aggregate( name, a.arity, klass )
+      @aggregates[a.signature] = db_aggregate
+      nil
+    end
+    alias :aggregate :define_aggregate
+
+    ##
+    # call-seq:
+    #   db.remove_aggregate( 'name', MyAggregateClas )
+    #   db.remove_aggregate( 'name' )
+    #
+    # Remove an aggregate from use in the database.  Since the same aggregate
+    # may be refistered more than once with different arity, you may specify the
+    # arity, or the aggregate class, or nil.  If nil is used for the arity then
+    # Amalgalite does its best to remove all aggregates of the given name
+    #
+    def remove_aggregate( name, klass_or_arity = nil )
+      klass = nil
+      case klass_or_arity
+      when Integer
+        arity = klass_or_arity
+      when NilClass
+        arity = nil
+      else
+        klass = klass_or_arity
+        arity = klass_or_arity.new.arity
+      end
+      to_remove = []
+      if arity then
+        signature = ::Amalgalite::SQLite3::Database::Function.signature( name, arity )
+        db_aggregate = @aggregates[ signature ]
+        raise AggregateError, "db aggregate '#{name}' with arity #{arity} does not appear to be defined" unless db_aggregate
+        to_remove << db_aggregate
+      else
+        possibles = @aggregates.values.select { |a| a.name == name }
+        raise AggregateError, "no db aggregate '#{name}' appears to be defined" if possibles.empty?
+        to_remove = possibles
+      end
+
+      to_remove.each do |db_aggregate|
+        @api.remove_aggregate( db_aggregate.name, db_aggregate.arity, db_aggregate )
+        @aggregates.delete( db_aggregate.signature )
+      end
+    end
   end
 end
 

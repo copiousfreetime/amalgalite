@@ -577,6 +577,11 @@ VALUE am_sqlite3_database_remove_function( VALUE self, VALUE name, VALUE proc_li
     return Qnil;
 }
 
+/* wrap rb_class_new_instance so it can be called from within an rb_protect */
+VALUE amalgalite_wrap_new_aggregate( VALUE arg )
+{
+    return rb_class_new_instance( 0, 0, arg );
+}
 
 
 /**
@@ -588,27 +593,169 @@ VALUE am_sqlite3_database_remove_function( VALUE self, VALUE name, VALUE proc_li
  */
 void amalgalite_xStep( sqlite3_context* context, int argc, sqlite3_value** argv )
 {
-    /* functor is a klass that  an instance of is created to hold hte context of
-     * the aggregation */
-    /*VALUE aggregator = (VALUE) sqlite3_aggregate_context( context, sizeof( amalgalite_aggregate_t) );
-    VALUE functor = (VALUE) sqlite3_user_data( context );
-    */
+    VALUE         *args = ALLOCA_N( VALUE, argc );
+    VALUE          result;
+    int            state;
+    int            i;
+    am_protected_t protected;
+    VALUE         *aggregate_context = (VALUE*)sqlite3_aggregate_context( context, sizeof( VALUE ) );
+
+    if ( 0 == aggregate_context ) {
+        sqlite3_result_error_nomem( context );
+        return;
+    }
+
+    /* instantiate an instance of the aggregate function class if the 
+     * aggregate context is zero'd out .
+     *
+     * If there is an error in initialization of the aggregate, set the error
+     * context
+     */ 
+    if ( *aggregate_context == T_NONE ) {
+        VALUE klass = (VALUE) sqlite3_user_data( context );
+        result = rb_protect( amalgalite_wrap_new_aggregate, klass, &state );
+        *aggregate_context = result;
+        /* mark the instance as protected from collection */
+        rb_gc_register_address( aggregate_context );
+        if ( state ) {
+            VALUE msg = ERROR_INFO_MESSAGE();
+            sqlite3_result_error( context, RSTRING(msg)->ptr, RSTRING(msg)->len);
+            rb_iv_set( *aggregate_context, "@_exception", rb_gv_get("$!" ));
+            return;
+        } else {
+            rb_iv_set( *aggregate_context, "@_exception", Qnil );
+        }
+    }
+
+    /* convert each item in argv to a VALUE object based upon its type via
+     * sqlite3_value_type( argv[n] )
+     */
+    for( i = 0 ; i < argc ; i++) {
+        args[i] = sqlite3_value_to_ruby_value( argv[i] );
+    }
+
+    /* gather all the data to make the protected call */
+    protected.instance = *aggregate_context;
+    protected.method   = rb_intern("step");
+    protected.argc     = argc;
+    protected.argv     = args;
+
+    result = rb_protect( amalgalite_wrap_funcall2, (VALUE)&protected, &state );
+
+    /* check the results, if there is an error, set the @exception ivar */
+    if ( state ) {
+        VALUE msg = ERROR_INFO_MESSAGE();
+        sqlite3_result_error( context, RSTRING(msg)->ptr, RSTRING(msg)->len);
+        rb_iv_set( *aggregate_context, "@_exception", rb_gv_get("$!" ));
+    }
+
     return ;
 }
 
+
 /**
  * the amalgalite xFinal callback that is used to invoke the ruby method for
- * doing aggregate final oprations as part of an aggregate SQL function.
+ * doing aggregate final operations as part of an aggregate SQL function.
  *
  * This function conforms to the xFinal function specification for
  * sqlite3_create_function.
  */
 void amalgalite_xFinal( sqlite3_context* context )
-{ 
-    VALUE functor = (VALUE) sqlite3_user_data( context );
+{
+    VALUE          result;
+    int            state;
+    am_protected_t protected;
+    VALUE         *aggregate_context = (VALUE*)sqlite3_aggregate_context( context, sizeof( VALUE ) );
+    VALUE          exception = rb_iv_get( *aggregate_context, "@_exception" );
+
+    if ( Qnil == exception ) {
+        /* gather all the data to make the protected call */
+        protected.instance = *aggregate_context;
+        protected.method   = rb_intern("finalize");
+        protected.argc     = 0;
+        protected.argv     = NULL;
+
+        result = rb_protect( amalgalite_wrap_funcall2, (VALUE)&protected, &state );
+
+        /* check the results */
+        if ( state ) {
+            VALUE msg = ERROR_INFO_MESSAGE();
+            sqlite3_result_error( context, RSTRING(msg)->ptr, RSTRING(msg)->len );
+        } else {
+            amalgalite_set_context_result( context, result );
+        }
+    } else {
+        VALUE msg = rb_obj_as_string( exception );
+        sqlite3_result_error( context, RSTRING(msg)->ptr, RSTRING(msg)->len );
+    }
+
+
+
+    /* release the aggregate instance from garbage collector protection */
+    rb_gc_unregister_address( aggregate_context );
 
     return ;
 }
+
+
+
+/**
+ * call-seq:
+ *   database.define_aggregate( name, arity, klass )
+ *
+ * register the given klass to be invoked as an sql aggregate.
+ */
+VALUE am_sqlite3_database_define_aggregate( VALUE self, VALUE name, VALUE arity, VALUE klass )
+{
+    am_sqlite3   *am_db;
+    int           rc;
+    char*         zFunctionName = RSTRING(name)->ptr;
+    int           nArg = FIX2INT( arity );
+
+    Data_Get_Struct(self, am_sqlite3, am_db);
+    rc = sqlite3_create_function( am_db->db, 
+                                  zFunctionName, nArg,
+                                  SQLITE_ANY,
+                                  (void *)klass, NULL,
+                                  amalgalite_xStep,
+                                  amalgalite_xFinal);
+    if ( SQLITE_OK != rc ) {
+       rb_raise(eAS_Error, "Failure defining SQL aggregate '%s' with arity '%d' : [SQLITE_ERROR %d] : %s\n",
+                zFunctionName, nArg, rc, sqlite3_errmsg( am_db->db ));
+    }
+    rb_gc_register_address( &klass );
+    return Qnil;
+}
+
+
+/**
+ * call-seq:
+ *  database.remove_aggregate( name, arity, klass )
+ *
+ * remove the given klass from availability in SQL as an aggregate.
+ */
+VALUE am_sqlite3_database_remove_aggregate( VALUE self, VALUE name, VALUE arity, VALUE klass )
+{
+    am_sqlite3    *am_db;
+    int            rc;
+    char*         zFunctionName = RSTRING(name)->ptr;
+    int           nArg = FIX2INT( arity );
+
+    Data_Get_Struct(self, am_sqlite3, am_db);
+    rc = sqlite3_create_function( am_db->db, 
+                                  zFunctionName, nArg,
+                                  SQLITE_ANY,
+                                  NULL, NULL,
+                                  NULL, 
+                                  NULL);
+    if ( SQLITE_OK != rc ) {
+       rb_raise(eAS_Error, "Failure removing SQL aggregate '%s' with arity '%d' : [SQLITE_ERROR %d] : %s\n",
+                zFunctionName, nArg, rc, sqlite3_errmsg( am_db->db ));
+    }
+    rb_gc_unregister_address( &klass );
+    return Qnil;
+}
+
 
 
 /**
@@ -740,6 +887,8 @@ void Init_amalgalite3_database( )
     rb_define_method(cAS_Database, "last_error_message", am_sqlite3_database_last_error_message, 0); /* in amalgalite3_database.c */
     rb_define_method(cAS_Database, "define_function", am_sqlite3_database_define_function, 2); /* in amalgalite3_database.c */
     rb_define_method(cAS_Database, "remove_function", am_sqlite3_database_remove_function, 2); /* in amalgalite3_database.c */
+    rb_define_method(cAS_Database, "define_aggregate", am_sqlite3_database_define_aggregate, 3); /* in amalgalite3_database.c */
+    rb_define_method(cAS_Database, "remove_aggregate", am_sqlite3_database_remove_aggregate, 3); /* in amalgalite3_database.c */
 
 
     /*
