@@ -251,16 +251,8 @@ describe Amalgalite::Database do
     end
 
     it "can define a custom SQL function as a class with N params" do
-      class FunctionTest1
-        def name 
-          "ftest1"
-        end
-        def arity
-         -1 
-        end
-        def to_proc
-          self
-        end
+      class FunctionTest1 < ::Amalgalite::Function
+        def initialize() super('ftest1', -1 ); end
         def call( *args )
           "#{args.length} args #{args.join(', ')}"
         end
@@ -272,18 +264,20 @@ describe Amalgalite::Database do
     end
 
     it "does not allow mixing of arbitrary and mandatory arguments to an SQL function" do
-      class FunctionTest2
-        def arity()  -2; end
-        def to_proc() self ; end
+      class FunctionTest2 < ::Amalgalite::Function
+        def initialize
+          super( 'ftest2', -2 )
+        end
         def call( a, *args ); end
       end
       lambda { @iso_db.define_function("ftest2", FunctionTest2.new ) }.should raise_error( ::Amalgalite::Database::FunctionError )
     end
 
     it "does not allow outrageous arity" do
-      class FunctionTest3
-        def arity() 101; end
-        def to_proc() self; end
+      class FunctionTest3 < ::Amalgalite::Function
+        def initialize
+          super( 'ftest3', 101 )
+        end
         def call( *args) ; end
       end
       lambda { @iso_db.define_function("ftest3", FunctionTest3.new ) }.should raise_error( ::Amalgalite::SQLite3::Error )
