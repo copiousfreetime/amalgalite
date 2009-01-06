@@ -1,8 +1,8 @@
 Next Release:
   - create_function @done
     - examples @done
-  - create_aggregate
-    - examples
+  - create_aggregate @done
+    - examples @done
   - busy timeouts
   - progress handler
 
