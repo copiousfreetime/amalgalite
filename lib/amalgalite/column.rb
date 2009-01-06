@@ -34,7 +34,7 @@ module Amalgalite
     # the declared data type of the column in the original sql that created the
     # column
     attr_accessor :declared_data_type
-    
+
     # the collation sequence name of the column
     attr_accessor :collation_sequence_name
 

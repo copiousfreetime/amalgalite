@@ -1,5 +1,7 @@
 Next Release:
-  - create_function
+  - create_function @done
+    - examples @done
+  - create_aggregate
     - examples
   - busy timeouts
   - progress handler
