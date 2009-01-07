@@ -141,14 +141,9 @@ describe "Busy Handlers" do
   end
 
   it "can remove a busy handler" do
-    call_count = 0
-    callable = lambda do |x|
-      # this handler should never be invoked
-      call_count = x
-      call_count >= 40 ? false : true
-    end
+    bht = BusyHandlerTest.new
 
-    @write_db.busy_handler( callable )
+    @write_db.busy_handler( bht )
 
     # put a read lock on the database
     @read_db.transaction( "DEFERRED" )
@@ -163,7 +158,7 @@ describe "Busy Handlers" do
     @write_db.execute("DELETE FROM subcountry")
     @write_db.remove_busy_handler
     lambda { @write_db.execute("COMMIT"); }.should raise_error( ::Amalgalite::SQLite3::Error, /database is locked/ )
-    call_count.should == 0
+    bht.call_count.should == 0
   end
 
 end

@@ -7,7 +7,7 @@
 * Added ability to define custom SQL aggregates implemented in Ruby
 * Added support for Ruby busy handlers
 * Added database 'interrupt' support
-
+* Added support for Ruby progress handlers
 
 === Minor Enhancement
 
