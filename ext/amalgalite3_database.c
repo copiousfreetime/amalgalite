@@ -6,14 +6,14 @@
  * vim: shiftwidth=4
  */
 
-VALUE cAS_Database;       /* class  Amalgliate::SQLite3::Database        */
-VALUE cAS_Database_Stat;  /* class  Amalgliate::SQLite3::Database::Stat  */
+VALUE cAS_Database;       /* class  Amalgalite::SQLite3::Database        */
+VALUE cAS_Database_Stat;  /* class  Amalgalite::SQLite3::Database::Stat  */
 
 /**
  * Document-method: open
  *
  * call-seq:
- *    Amalagliate::SQLite3::Database.open( filename, flags = READWRITE | CREATE ) -> Database
+ *    Amalgalite::SQLite3::Database.open( filename, flags = READWRITE | CREATE ) -> Database
  *
  * Create a new SQLite2 database with a UTF-8 encoding.
  *
@@ -557,6 +557,69 @@ VALUE am_sqlite3_database_busy_handler( VALUE self, VALUE handler )
 
 
 /**
+ * the amalgalite xProgress  handler that is used to invoke the ruby function for
+ * doing progress handler callbacks.
+ *
+ * This function conforms to the xProgress function specification for
+ * sqlite3_progress_handler.
+ */
+int amalgalite_xProgress( void *pArg )
+{
+    VALUE          result = Qnil;
+    int            state;
+    int            cancel = 0;
+    am_protected_t protected;
+
+    protected.instance = (VALUE)pArg;
+    protected.method   = rb_intern("call");
+    protected.argc     = 0;
+    protected.argv     = NULL;
+
+    result = rb_protect( amalgalite_wrap_funcall2, (VALUE)&protected, &state );
+    if ( state || ( Qnil == result || Qfalse == result ) ){
+        cancel = 1;
+     }
+    return cancel;
+}
+
+
+/**
+ * call-seq:
+ *  database.progress_handler( op_count, proc_like or nil )
+ *
+ * register a progress handler.  If the argument is nil, then an existing
+ * progress handler is removed.  Otherwise the argument is registered as the
+ * progress handler.
+ */
+VALUE am_sqlite3_database_progress_handler( VALUE self, VALUE op_count, VALUE handler )
+{
+    am_sqlite3   *am_db;
+    int           op_codes = FIX2INT( op_count );
+
+    Data_Get_Struct(self, am_sqlite3, am_db);
+
+    /* Removing a progress handler, remove it from sqlite and then remove it
+     * from the garbage collector if it existed */
+    if ( Qnil == handler ) {
+        sqlite3_progress_handler( am_db->db, 0, NULL, (void*)NULL );
+        if ( Qnil != am_db->progress_handler_obj ) {
+            rb_gc_unregister_address( &(am_db->progress_handler_obj) );
+        }
+    } else {
+        /* installing a progress handler
+         * - register it with sqlite
+         * - keep a reference for ourselves with our database handle
+         * - register the handler reference with the garbage collector
+         */
+        sqlite3_progress_handler( am_db->db, op_codes, amalgalite_xProgress, (void*)handler );
+        am_db->progress_handler_obj = handler;
+        rb_gc_register_address( &(am_db->progress_handler_obj) );
+    }
+    return Qnil;
+}
+
+
+/**
  * the amalgalite xFunc callback that is used to invoke the ruby function for
  * doing scalar SQL functions.
  *
@@ -930,6 +993,13 @@ void am_sqlite3_database_free(am_sqlite3* am_db)
         am_db->busy_handler_obj = Qnil;
     }
 
+    if ( Qnil != am_db->progress_handler_obj ) {
+        rb_gc_unregister_address( &(am_db->progress_handler_obj) );
+        am_db->progress_handler_obj = Qnil;
+    }
+
+
+
     free(am_db);
     return;
 }
@@ -942,9 +1012,10 @@ VALUE am_sqlite3_database_alloc(VALUE klass)
     am_sqlite3*  am_db = ALLOC(am_sqlite3);
     VALUE          obj ;
 
-    am_db->trace_obj        = Qnil;
-    am_db->profile_obj      = Qnil;
-    am_db->busy_handler_obj = Qnil;
+    am_db->trace_obj            = Qnil;
+    am_db->profile_obj          = Qnil;
+    am_db->busy_handler_obj     = Qnil;
+    am_db->progress_handler_obj = Qnil;
 
     obj = Data_Wrap_Struct(klass, NULL, am_sqlite3_database_free, am_db);
     return obj;
@@ -986,6 +1057,7 @@ void Init_amalgalite3_database( )
     rb_define_method(cAS_Database, "define_aggregate", am_sqlite3_database_define_aggregate, 3); /* in amalgalite3_database.c */
     rb_define_method(cAS_Database, "remove_aggregate", am_sqlite3_database_remove_aggregate, 3); /* in amalgalite3_database.c */
     rb_define_method(cAS_Database, "busy_handler", am_sqlite3_database_busy_handler, 1); /* in amalgalite3_database.c */
+    rb_define_method(cAS_Database, "progress_handler", am_sqlite3_database_progress_handler, 2); /* in amalgalite3_database.c */
     rb_define_method(cAS_Database, "interrupt!", am_sqlite3_database_interrupt_bang, 0); /* in amalgalite3_database.c */
 
 

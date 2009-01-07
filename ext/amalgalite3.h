@@ -17,6 +17,7 @@ typedef struct am_sqlite3 {
   VALUE    trace_obj;
   VALUE    profile_obj;
   VALUE    busy_handler_obj;
+  VALUE    progress_handler_obj;
 } am_sqlite3;
 
 /* wrapper struct around the sqlite3_statement opaque pointer */
@@ -51,11 +52,10 @@ extern VALUE eAS_Error;       /* class  Amalgalite::SQLite3::Error     */
 extern VALUE cAR;             /* class  Amalgalite::Requries */
 extern VALUE cARB;            /* class  Amalgalite::Requries::Bootstrap  */
 
-
 /*----------------------------------------------------------------------
  * Prototype for Amalgalite::SQLite3::Database
  *---------------------------------------------------------------------*/
-extern VALUE cAS_Database;    /* class  Amalgliate::SQLite3::Database  */
+extern VALUE cAS_Database;    /* class  Amalgalite::SQLite3::Database  */
 
 extern void  am_define_constants_under(VALUE);
 extern VALUE am_sqlite3_database_alloc(VALUE klass);

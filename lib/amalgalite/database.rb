@@ -10,6 +10,7 @@ require 'amalgalite/type_maps/default_map'
 require 'amalgalite/function'
 require 'amalgalite/aggregate'
 require 'amalgalite/busy_timeout'
+require 'amalgalite/progress_handler'
 
 module Amalgalite
   #
@@ -42,6 +43,9 @@ module Amalgalite
 
     # Error thrown if there is a failure in defining a busy handler
     class BusyHandlerError < ::Amalgalite::Error; end
+
+    # Error thrown if there is a failure in defining a progress handler
+    class ProgressHandlerError < ::Amalgalite::Error; end
 
     ##
     # container class for holding transaction behavior constants.  These are the
@@ -729,6 +733,49 @@ module Amalgalite
       @api.interrupt!
     end
 
-  end
+    ##
+    # call-seq:
+    #   db.progress_handler( 50, MyProgressHandler.new )
+    #   db.progress_handler( 25 , callable )
+    #   db.progress_handler do
+    #     ....
+    #     return result
+    #   end
+    #
+    # Register a progress handler for this database connection, the handler MUST
+    # follow the +to_proc+ protocol indicating that is will 
+    # +respond_to?(:call)+.  This is intrinsic to lambdas and blocks so 
+    # those will work automatically.
+    #
+    # This exposes the sqlite progress handler api to ruby.
+    #
+    # * http://sqlite.org/c3ref/progress_handler.html
+    #
+    # The progress handler's _call()_ method may be invoked ever N SQLite op
+    # codes.  If the progress handler returns anything that can evaluate to
+    # +true+ then current running sqlite statement is terminated at the earliest
+    # oppportunity.
+    #
+    # You can use this to be notified that a thread is still processingn a
+    # request.
+    #
+    def define_progress_handler( op_code_count = 25, callable = nil, &block )
+      handler  = ( callable || block ).to_proc
+      a = handler.arity
+      raise ProgressHandlerError, "A progress handler expects 0 arguments, not #{a}" if a != 0
+      @api.progress_handler( op_code_count, handler )
+    end
+    alias :progress_handler :define_progress_handler
+
+
+    ##
+    # call-seq:
+    #   db.remove_progress_handler
+    #
+    # Remove the progress handler for this database connection.
+    def remove_progress_handler
+      @api.progress_handler( nil, nil )
+    end
+ end
 end
 
