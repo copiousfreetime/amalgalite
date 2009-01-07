@@ -59,7 +59,7 @@ describe "Scalar SQL Functions" do
       r = @iso_db.execute( "SELECT ctest() AS c" )
       r.first['c'].should == expected
     end
-    end
+  end
 
   it "raises an error if the function returns a complex Ruby object" do
     l = lambda { Hash.new }

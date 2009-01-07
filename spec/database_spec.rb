@@ -271,7 +271,23 @@ describe Amalgalite::Database do
       @iso_db.functions.size.should == 0
     end
 
-    it "unregisteres all functions with the same name" do
+    it "unregisters a function by instances" do
+      class FunctionTest5 < ::Amalgalite::Function
+        def initialize
+          super( 'ftest5', 0)
+        end
+        def call( *args) "ftest5 called"; end
+      end
+      @iso_db.define_function("ftest5", FunctionTest5.new )
+      @iso_db.functions.size.should == 1
+      r = @iso_db.execute( "select ftest5() AS r" )
+      r.first['r'].should == "ftest5 called"
+      @iso_db.remove_function("ftest5", FunctionTest5.new )
+      lambda { @iso_db.execute( "select ftest5() as r" )}.should raise_error( ::Amalgalite::SQLite3::Error, /no such function: ftest5/ )
+      @iso_db.functions.size.should == 0
+    end
+
+    it "unregisters all functions with the same name" do
       @iso_db.function( "rtest" ) do |x|
         "rtest #{x} called"
       end
