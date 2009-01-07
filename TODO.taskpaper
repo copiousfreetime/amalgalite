@@ -18,6 +18,7 @@ Future Release:
 
   Non backwards compatible changes:
     - change taps to use to_proc protocol
+    - convert type dependency to just use 'call'
 
   SQLite Features:
     - virtual file system
@@ -32,4 +33,3 @@ Future Release:
     - add to command line which directory to pack into a rubylibs table
     - amalgalite command line tool
     - use ruby's ALLOC_N and hook into sqlite3_mem_methods
-    - convert type dependency to just use 'call'
