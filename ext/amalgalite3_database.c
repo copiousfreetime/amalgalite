@@ -481,6 +481,81 @@ VALUE sqlite3_value_to_ruby_value( sqlite3_value* s_value )
     return rb_value;
 }
 
+
+/**
+ * the amalgalite xBusy handler that is used to invoke the ruby function for
+ * doing busy callbacks.
+ *
+ * This function conforms to the xBusy function specification for
+ * sqlite3_busy_handler.
+ */
+int amalgalite_xBusy( void *pArg , int nArg)
+{
+    VALUE         *args = ALLOCA_N( VALUE, 1 );
+    VALUE          result = Qnil;
+    int            state;
+    int            busy = 1;
+    am_protected_t protected;
+
+    args[0] = INT2FIX(nArg);
+
+    protected.instance = (VALUE)pArg;
+    protected.method   = rb_intern("call");
+    protected.argc     = 1;
+    protected.argv     = args;
+
+    result = rb_protect( amalgalite_wrap_funcall2, (VALUE)&protected, &state );
+    if ( state || ( Qnil == result || Qfalse == result ) ){
+        busy = 0;
+     }
+    return busy;
+}
+
+
+/**
+ * call-seq:
+ *  database.busy_handler( proc_like or nil )
+ *
+ * register a busy handler.  If the argument is nil, then an existing busy
+ * handler is removed.  Otherwise the argument is registered as the busy
+ * handler.
+ */
+VALUE am_sqlite3_database_busy_handler( VALUE self, VALUE handler )
+{
+    am_sqlite3   *am_db;
+    int           rc;
+
+    Data_Get_Struct(self, am_sqlite3, am_db);
+
+    /* Removing a busy handler case, remove it from sqlite and then remove it
+     * from the garbage collector if it existed */
+    if ( Qnil == handler ) {
+        rc = sqlite3_busy_handler( am_db->db, NULL, NULL );
+        if ( SQLITE_OK != rc ) {
+            rb_raise(eAS_Error, "Failure removing busy handler : [SQLITE_ERROR %d] : %s\n", 
+                    rc, sqlite3_errmsg( am_db->db ));
+        }
+        if ( Qnil != am_db->busy_handler_obj ) {
+            rb_gc_unregister_address( &(am_db->busy_handler_obj) );
+        }
+    } else {
+        /* installing a busy handler
+         * - register it with sqlite
+         * - keep a reference for ourselves with our database handle
+         * - registere the handler reference with the garbage collector
+         */
+        rc = sqlite3_busy_handler( am_db->db, amalgalite_xBusy, (void*)handler );
+        if ( SQLITE_OK != rc ) {
+            rb_raise(eAS_Error, "Failure setting busy handler : [SQLITE_ERROR %d] : %s\n", 
+                    rc, sqlite3_errmsg( am_db->db ));
+        }
+        am_db->busy_handler_obj = handler;
+        rb_gc_register_address( &(am_db->busy_handler_obj) );
+    }
+    return Qnil;
+}
+
+
 /**
  * the amalgalite xFunc callback that is used to invoke the ruby function for
  * doing scalar SQL functions.
@@ -835,6 +910,11 @@ void am_sqlite3_database_free(am_sqlite3* am_db)
         am_db->profile_obj = Qnil;
     }
 
+    if ( Qnil != am_db->busy_handler_obj ) {
+        rb_gc_unregister_address( &(am_db->busy_handler_obj) );
+        am_db->busy_handler_obj = Qnil;
+    }
+
     free(am_db);
     return;
 }
@@ -847,8 +927,9 @@ VALUE am_sqlite3_database_alloc(VALUE klass)
     am_sqlite3*  am_db = ALLOC(am_sqlite3);
     VALUE          obj ;
 
-    am_db->trace_obj   = Qnil;
-    am_db->profile_obj = Qnil;
+    am_db->trace_obj        = Qnil;
+    am_db->profile_obj      = Qnil;
+    am_db->busy_handler_obj = Qnil;
 
     obj = Data_Wrap_Struct(klass, NULL, am_sqlite3_database_free, am_db);
     return obj;
@@ -889,6 +970,7 @@ void Init_amalgalite3_database( )
     rb_define_method(cAS_Database, "remove_function", am_sqlite3_database_remove_function, 2); /* in amalgalite3_database.c */
     rb_define_method(cAS_Database, "define_aggregate", am_sqlite3_database_define_aggregate, 3); /* in amalgalite3_database.c */
     rb_define_method(cAS_Database, "remove_aggregate", am_sqlite3_database_remove_aggregate, 3); /* in amalgalite3_database.c */
+    rb_define_method(cAS_Database, "busy_handler", am_sqlite3_database_busy_handler, 1); /* in amalgalite3_database.c */
 
 
     /*

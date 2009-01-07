@@ -9,6 +9,7 @@ require 'amalgalite/profile_tap'
 require 'amalgalite/type_maps/default_map'
 require 'amalgalite/function'
 require 'amalgalite/aggregate'
+require 'amalgalite/busy_timeout'
 
 module Amalgalite
   #
@@ -38,6 +39,9 @@ module Amalgalite
 
     # Error thrown if there is a failure in a user defined aggregate
     class AggregateError < ::Amalgalite::Error; end
+
+    # Error thrown if there is a failure in defining a busy handler
+    class BusyHandlerError < ::Amalgalite::Error; end
 
     ##
     # container class for holding transaction behavior constants.  These are the
@@ -623,7 +627,7 @@ module Amalgalite
 
     ##
     # call-seq:
-    #   db.remove_aggregate( 'name', MyAggregateClas )
+    #   db.remove_aggregate( 'name', MyAggregateClass )
     #   db.remove_aggregate( 'name' )
     #
     # Remove an aggregate from use in the database.  Since the same aggregate
@@ -658,6 +662,58 @@ module Amalgalite
         @api.remove_aggregate( db_aggregate.name, db_aggregate.arity, db_aggregate )
         @aggregates.delete( db_aggregate.signature )
       end
+    end
+
+    ##
+    # call-seq:
+    #   db.busy_handler( callable )
+    #   db.define_busy_handler do |count|
+    #   end
+    #   db.busy_handler( Amalgalite::BusyTimeout.new( 30 ) )
+    #
+    # Register a busy handler for this database connection, the handler MUST
+    # follow the +to_proc+ protocol indicating that is will 
+    # +respond_to?(:call)+.  This is intrinsic to lambdas and blocks so 
+    # those will work automatically.
+    #
+    # This exposes the sqlite busy handler api to ruby.
+    #
+    # * http://sqlite.org/c3ref/busy_handler.html
+    #
+    # The busy handler's _call(N)_ method may be invoked whenever an attempt is
+    # made to open a database table that another thread or process has locked.
+    # +N+ will be the number of times the _call(N)_ method has been invoked
+    # during this locking event.
+    #
+    # The handler may or maynot be called based upon what SQLite determins.
+    #
+    # If the handler returns _nil_ or _false_ then no more busy handler calls will
+    # be made in this lock event and you are probably going to see an
+    # SQLite::Error in your immediately future in another process or in another
+    # piece of code.
+    #
+    # If the handler returns non-nil or non-false then another attempt will be
+    # made to obtain the lock, lather, rinse, repeat.
+    #
+    # If an Exception happens in a busy handler, it will be the same as if the
+    # busy handler had returned _nil_ or _false_.  The exception itself will not
+    # be propogated further.
+    #
+    def define_busy_handler( callable = nil, &block )
+      handler = ( callable || block ).to_proc
+      a = handler.arity
+      raise BusyHandlerError, "A busy handler expects 1 and only 1 argument, not #{a}" if a != 1
+      @api.busy_handler( handler )
+    end
+    alias :busy_handler :define_busy_handler
+
+    ##
+    # call-seq:
+    #   db.remove_busy_handler
+    #
+    # Remove the busy handler for this database connection.
+    def remove_busy_handler
+      @api.busy_handler( nil )
     end
   end
 end

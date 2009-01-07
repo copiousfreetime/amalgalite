@@ -16,6 +16,7 @@ typedef struct am_sqlite3 {
   sqlite3 *db;
   VALUE    trace_obj;
   VALUE    profile_obj;
+  VALUE    busy_handler_obj;
 } am_sqlite3;
 
 /* wrapper struct around the sqlite3_statement opaque pointer */
@@ -71,6 +72,7 @@ extern VALUE am_sqlite3_database_table_column_metadata(VALUE self, VALUE db_name
 extern VALUE am_sqlite3_database_prepare(VALUE self, VALUE rSQL);
 extern VALUE am_sqlite3_database_register_trace_tap(VALUE self, VALUE tap);
 extern VALUE am_sqlite3_database_register_profile_tap(VALUE self, VALUE tap);
+extern VALUE am_sqlite3_database_busy_handler(VALUE self, VALUE handler);
 
 /*----------------------------------------------------------------------
  * Prototype for Amalgalite::SQLite3::Statement 

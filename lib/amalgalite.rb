@@ -15,8 +15,11 @@ module Amalgalite
   #
   class Error < ::StandardError; end
 end
+
+require 'amalgalite/aggregate'
 require 'amalgalite/blob'
 require 'amalgalite/boolean'
+require 'amalgalite/busy_timeout'
 require 'amalgalite/column'
 require 'amalgalite/database'
 require 'amalgalite/function'
