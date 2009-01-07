@@ -15,6 +15,10 @@ Future Release:
   SQLite Features:
     - virtual file system
     - full text search
+    - expose the sqlite mutex lib
+    - statement status ( sqlite3_stmt_status )
+    - db status ( sqlite3_db_status )
+    - library status ( sqlite3_status )
 
   Drivers:
     - active record driver
