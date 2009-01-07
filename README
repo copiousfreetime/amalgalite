@@ -19,6 +19,9 @@ Look in the examples/ directory to see
 * general usage
 * blob io
 * schema information
+* custom functions
+* custom aggregates
+* requiring ruby code from a database
 
 Also Scroll through Amalgalite::Database for a quick example, and a general
 overview of the API.
