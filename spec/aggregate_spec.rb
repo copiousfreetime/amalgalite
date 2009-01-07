@@ -41,6 +41,42 @@ describe "Aggregate SQL Functions" do
     r.first['a'].should == 242
   end
 
+  it "can remove a custom SQL aggregate by class" do
+    @iso_db.define_aggregate("atest1", AggregateTest1 )
+    @iso_db.aggregates.size.should == 1
+    r = @iso_db.execute("SELECT atest1(id,name) as a, count(*) as c FROM country")
+    r.first['a'].should == r.first['c']
+    r.first['a'].should == 242
+    @iso_db.remove_aggregate( "atest1", AggregateTest1 )
+    @iso_db.aggregates.size.should == 0
+  end
+
+  it "can remove a custom SQL aggregate by arity" do
+    @iso_db.define_aggregate("atest1", AggregateTest1 )
+    @iso_db.aggregates.size.should == 1
+    r = @iso_db.execute("SELECT atest1(id,name) as a, count(*) as c FROM country")
+    r.first['a'].should == r.first['c']
+    r.first['a'].should == 242
+    @iso_db.remove_aggregate( "atest1", -1)
+    @iso_db.aggregates.size.should == 0
+  end
+
+  it "can remove all custom SQL aggregates with the same name" do
+    class AT2 < AggregateTest1
+      def arity() 1; end
+    end
+    @iso_db.define_aggregate("atest1", AggregateTest1 )
+    @iso_db.define_aggregate("atest1", AT2)
+    @iso_db.aggregates.size.should == 2
+    r = @iso_db.execute("SELECT atest1(id,name) as a, atest1(id), count(*) as c FROM country")
+    r.first['a'].should == r.first['c']
+    r.first['a'].should == 242
+    @iso_db.remove_aggregate( "atest1" )
+    @iso_db.aggregates.size.should == 0
+  end
+
+
+
   it "does not allow mixing of arbitrary and mandatory arguments to an SQL function" do
     class AggregateTest2 < AggregateTest1
       def name() "atest2"; end

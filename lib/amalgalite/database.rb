@@ -644,7 +644,7 @@ module Amalgalite
         arity = nil
       else
         klass = klass_or_arity
-        arity = klass_or_arity.new.arity
+        arity = klass.new.arity
       end
       to_remove = []
       if arity then
@@ -653,14 +653,15 @@ module Amalgalite
         raise AggregateError, "db aggregate '#{name}' with arity #{arity} does not appear to be defined" unless db_aggregate
         to_remove << db_aggregate
       else
-        possibles = @aggregates.values.select { |a| a.name == name }
+        possibles = @aggregates.values.select { |a| a.new.name == name }
         raise AggregateError, "no db aggregate '#{name}' appears to be defined" if possibles.empty?
         to_remove = possibles
       end
 
       to_remove.each do |db_aggregate|
-        @api.remove_aggregate( db_aggregate.name, db_aggregate.arity, db_aggregate )
-        @aggregates.delete( db_aggregate.signature )
+        i = db_aggregate.new
+        @api.remove_aggregate( i.name, i.arity, db_aggregate )
+        @aggregates.delete( i.signature )
       end
     end
 
