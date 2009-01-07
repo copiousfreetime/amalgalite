@@ -1,6 +1,14 @@
 = Changelog
 == Version 0.6.0
 
+=== Major Enhancements
+
+* Added ability to define custom SQL functions implemented in Ruby
+* Added ability to define custom SQL aggregates implemented in Ruby
+* Added support for Ruby busy handlers
+* Added database 'interrupt' support
+
+
 === Minor Enhancement
 
 * update to SQLite version 3.6.7

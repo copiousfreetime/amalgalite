@@ -308,4 +308,25 @@ describe Amalgalite::Database do
     end
   end
 
+  it "can interrupt another thread that is also running in this database" do
+    had_error = nil 
+    executions = 0
+    other = Thread.new( @iso_db ) do |db|
+      loop do
+        begin
+          db.execute("select count(id) from country")
+          executions += 1
+        rescue => e
+          had_error = e
+          break
+        end
+      end
+    end
+    sleep 0.01
+    @iso_db.interrupt!
+    other.join
+    executions.should > 10
+    had_error.should be_an_instance_of( ::Amalgalite::SQLite3::Error )
+    had_error.message.should =~ / interrupted/
+  end
 end

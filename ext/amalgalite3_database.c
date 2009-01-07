@@ -832,6 +832,21 @@ VALUE am_sqlite3_database_remove_aggregate( VALUE self, VALUE name, VALUE arity,
 }
 
 
+/**
+ * call-seq:
+ *  database.interrupt!
+ *
+ * Cause another thread with a handle on this database to be interrupted and
+ * return at the earliest opportunity as interrupted.
+ */
+VALUE am_sqlite3_database_interrupt_bang( VALUE self )
+{
+    am_sqlite3  *am_db;
+
+    Data_Get_Struct(self, am_sqlite3, am_db);
+    sqlite3_interrupt( am_db->db );
+    return Qnil;
+}
 
 /**
  * call-seq:
@@ -971,6 +986,7 @@ void Init_amalgalite3_database( )
     rb_define_method(cAS_Database, "define_aggregate", am_sqlite3_database_define_aggregate, 3); /* in amalgalite3_database.c */
     rb_define_method(cAS_Database, "remove_aggregate", am_sqlite3_database_remove_aggregate, 3); /* in amalgalite3_database.c */
     rb_define_method(cAS_Database, "busy_handler", am_sqlite3_database_busy_handler, 1); /* in amalgalite3_database.c */
+    rb_define_method(cAS_Database, "interrupt!", am_sqlite3_database_interrupt_bang, 0); /* in amalgalite3_database.c */
 
 
     /*

@@ -716,6 +716,19 @@ module Amalgalite
     def remove_busy_handler
       @api.busy_handler( nil )
     end
+
+    ##
+    # call-seq:
+    #   db.interrupt!
+    #
+    # Cause another thread with a handle on this database to be interrupted and
+    # return at the earliest opportunity as interrupted.  It is not safe to call
+    # this method if the database might be closed before interrupt! returns.
+    #
+    def interrupt!
+      @api.interrupt!
+    end
+
   end
 end
 
