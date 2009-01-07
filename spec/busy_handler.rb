@@ -34,6 +34,11 @@ describe "Busy Handlers" do
     File.unlink @db_name if File.exist?( @db_name )
   end
 
+  it "raises NotImplemented if #call is not overwritten" do
+    bh = ::Amalgalite::BusyHandler.new
+    lambda { bh.call( 42 ) }.should raise_error( ::NotImplementedError, /The busy handler call\(N\) method must be implemented/ )
+  end
+
   it "can be registered as block" do
     call_count = 0
     @write_db.busy_handler do |x|
@@ -138,12 +143,9 @@ describe "Busy Handlers" do
   it "can remove a busy handler" do
     call_count = 0
     callable = lambda do |x|
+      # this handler should never be invoked
       call_count = x
-      if call_count >= 40 then
-        false
-      else
-        true
-      end
+      call_count >= 40 ? false : true
     end
 
     @write_db.busy_handler( callable )

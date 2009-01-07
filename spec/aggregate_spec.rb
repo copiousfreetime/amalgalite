@@ -34,6 +34,12 @@ describe "Aggregate SQL Functions" do
     File.unlink @iso_db_file if File.exist?( @iso_db_file )
   end
 
+
+  it "must have a finalize method implemented" do
+    ag = ::Amalgalite::Aggregate.new
+    lambda { ag.finalize }.should raise_error( NotImplementedError, /Aggregate#finalize must be implemented/ )
+  end
+
   it "can define a custom SQL aggregate as a class with N params" do
     @iso_db.define_aggregate("atest1", AggregateTest1 )
     r = @iso_db.execute("SELECT atest1(id,name) as a, count(*) as c FROM country")
@@ -49,6 +55,7 @@ describe "Aggregate SQL Functions" do
     r.first['a'].should == 242
     @iso_db.remove_aggregate( "atest1", AggregateTest1 )
     @iso_db.aggregates.size.should == 0
+    lambda{ @iso_db.execute("SELECT atest1(id,name) as a, count(*) as c FROM country") }.should raise_error(::Amalgalite::SQLite3::Error, /no such function: atest1/ )
   end
 
   it "can remove a custom SQL aggregate by arity" do
@@ -59,6 +66,7 @@ describe "Aggregate SQL Functions" do
     r.first['a'].should == 242
     @iso_db.remove_aggregate( "atest1", -1)
     @iso_db.aggregates.size.should == 0
+    lambda{ @iso_db.execute("SELECT atest1(id,name) as a, count(*) as c FROM country") }.should raise_error(::Amalgalite::SQLite3::Error, /no such function: atest1/ )
   end
 
   it "can remove all custom SQL aggregates with the same name" do
@@ -73,6 +81,7 @@ describe "Aggregate SQL Functions" do
     r.first['a'].should == 242
     @iso_db.remove_aggregate( "atest1" )
     @iso_db.aggregates.size.should == 0
+    lambda{ @iso_db.execute("SELECT atest1(id,name) as a, count(*) as c FROM country") }.should raise_error(::Amalgalite::SQLite3::Error, /no such function: atest1/ )
   end
 
 

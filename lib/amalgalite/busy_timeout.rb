@@ -15,7 +15,7 @@ module Amalgalite
     # SQLITE_BUSY for all parties involved in the lock, and anything else if the
     # lock attempt should be tried again.
     def call( count )
-      raise NotImpementedError, "The busy handler call(N) method must be implemented"
+      raise NotImplementedError, "The busy handler call(N) method must be implemented"
     end
   end
 

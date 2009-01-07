@@ -21,9 +21,6 @@ class SpecInfo
       return @new_is_db
     end
 
-    def iso_db_name
-      @iso_db_name ||= File.expand_path( File.join( File.dirname( __FILE__ ), "iso-3166.db" ) )
-    end
   end
 end
 

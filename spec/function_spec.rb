@@ -27,6 +27,10 @@ describe "Scalar SQL Functions" do
     r.first['f'].should == "foo"
   end
 
+  it "has a signature" do
+    ::Amalgalite::Function.new( "testing_name", 42 ).signature.should == "testing_name/42"
+  end
+
   it "can define a custom SQL function as a lambda with 2 param" do
     @iso_db.define_function("foo2", lambda{ |x,y| "foo2 -> #{x} #{y}" } )
     r = @iso_db.execute("SELECT foo2( 'bar', 'baz' ) as f")
