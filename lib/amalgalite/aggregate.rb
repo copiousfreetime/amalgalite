@@ -12,13 +12,13 @@ module Amalgalite
   # If you choose to use Aggregate as a parent class of your SQL scalar function
   # implementation you must:
   #
-  # * implement _initalize()_ with 0 arguments
+  # * implement _initalize_ with 0 arguments
   # * set the @arity data member
   # * set the @name data member 
   # * implement _step_ with arity of +@arity+
   # * implement _finalize_ with arity of 0
   #
-  # For instance to implement a _unique_word_count(X)_ aggregate function you could
+  # For instance to implement a <i>unique_word_count(X)</i> aggregate function you could
   # implement it as:
   #
   #   class UniqueWordCount < ::Amalgalite::Aggregate

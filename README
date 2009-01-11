@@ -5,6 +5,10 @@
 * email jeremy at copiousfreetime dot org
 * git clone url git://github.com/copiousfreetime/amalgalite.git
 
+== Articles
+
+*  {Writing SQL Functions in Ruby}[http://copiousfreetime.org/articles/2009/01/10/writing-sql-functions-in-ruby.html]
+
 == INSTALL
 
 * gem install amalgalite
