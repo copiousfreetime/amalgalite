@@ -559,6 +559,8 @@ module Amalgalite
     #    * The return value of the +callable.to_proc.call+ is the return value
     #      of the SQL function
     #
+    # See also ::Amalgalite::Function
+    #
     def define_function( name, callable = nil, &block ) 
       p = ( callable || block ).to_proc
       raise FunctionError, "Use only mandatory or arbitrary parameters in an SQL Function, not both" if p.arity < -1
