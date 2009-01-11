@@ -1,5 +1,5 @@
 = Changelog
-== Version 0.6.0
+== Version 0.6.0 - 2009-01-10
 
 === Major Enhancements
 
@@ -39,11 +39,11 @@
 
 == Version 0.4.1 - 2008-09-28
 
-=== Minor Enhancement 
+=== Minor Enhancement
 
 * update to SQLite3 version 3.6.3
 * change rdoc template to darkfish
-  
+
 == Version 0.4.0 - 2008-09-14
 
 === Major Enhancements
