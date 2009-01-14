@@ -1,10 +1,13 @@
+Next Release:
+    - Add suppport for nested transactions now that sqlite supports them
+    - global temp directory setting
+
 Future Release:
   SQLite API:
     - authorizers
     - loading of extensions
     - utf-16 integration
     - create_collation 
-    - global temp directory setting
     - encryption key support
     - sqlite3_config
 
