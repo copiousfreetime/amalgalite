@@ -248,7 +248,7 @@ describe Amalgalite::Database do
     it "does not allow outrageous arity" do
       class FunctionTest3 < ::Amalgalite::Function
         def initialize
-          super( 'ftest3', 101 )
+          super( 'ftest3', 128 )
         end
         def call( *args) ; end
       end
@@ -322,9 +322,15 @@ describe Amalgalite::Database do
         end
       end
     end
-    sleep 0.01
-    @iso_db.interrupt!
+
+    rudeness = Thread.new( @iso_db ) do |db|
+      sleep 0.05
+      @iso_db.interrupt!
+    end
+
+    rudeness.join
     other.join
+
     executions.should > 10
     had_error.should be_an_instance_of( ::Amalgalite::SQLite3::Error )
     had_error.message.should =~ / interrupted/
