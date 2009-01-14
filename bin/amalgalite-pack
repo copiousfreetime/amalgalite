@@ -115,7 +115,7 @@ one of the following:
 
 Once one of those is working you can boostrap the Amalgalite library with
 this line in your code:
- 
+
   Amalgalite::Requries::Boostrap.lift( 'dbfile' => '#{dbfile}' )
 
 text
