@@ -123,6 +123,32 @@ describe Amalgalite::Statement do
     stmt.close
   end
 
+  it "can select the rowid from the table" do
+    db = Amalgalite::Database.new( ":memory:" )
+    db.execute( "create table t1(c1,c2,c3)" )
+    db.execute("insert into t1(c1,c2,c3) values (1,2,'abc')")
+    rows = db.execute( "select rowid,* from t1")
+    rows.size.should == 1
+    rows.first['rowid'].should == 1
+    rows.first['c1'].should == 1 
+    rows.first['c3'].should == 'abc'
+  end
+
+  it "shows that the rowid column is rowid column" do
+    db = Amalgalite::Database.new( ":memory:" )
+    db.execute( "create table t1(c1,c2,c3)" )
+    db.execute("insert into t1(c1,c2,c3) values (1,2,'abc')")
+    db.prepare( "select oid,* from t1" ) do |stmt|
+      rows = stmt.execute
+      stmt.should be_using_rowid_column
+    end
+
+    db.prepare( "select * from t1" ) do  |stmt| 
+      stmt.execute
+      stmt.should_not be_using_rowid_column 
+    end
+  end
+
   it "has index based access to the result set" do
     @iso_db.prepare("SELECT * FROM country WHERE id = ? ORDER BY name ") do |stmt|
       all_rows = stmt.execute( 891 )
