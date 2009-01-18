@@ -46,6 +46,11 @@ begin
       options[:merge] = true
     end
 
+    op.on("--require-order", "Dump Amalgalite's require order" ) do |m|
+      puts amalgalite_needs
+      exit 0
+    end
+
     op.on("--self", "pack amalgalite itself into the database") do |d|
       options[:self] = true
     end

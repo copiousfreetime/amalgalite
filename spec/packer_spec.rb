@@ -1,5 +1,6 @@
 require File.expand_path(File.join(File.dirname(__FILE__),"spec_helper.rb"))
 require 'amalgalite/packer'
+require 'gemspec'
 
 describe "Amalgalite::Packer" do
   before( :each ) do
@@ -15,7 +16,7 @@ describe "Amalgalite::Packer" do
     $LOADED_FEATURES.should_not be_include("amalgalite/requires")
   end
 
-  it "packs amalgalite into a bootsrap database" do
+  it "packs amalgalite into a bootstrap database" do
     @packer.pack( Amalgalite::Packer.amalgalite_require_order )
     db = Amalgalite::Database.new( @packer.dbfile )
     db.schema.tables[ @table ].should_not be_nil
@@ -46,5 +47,14 @@ describe "Amalgalite::Packer" do
     zipped = db.execute("SELECT contents FROM #{@table} WHERE filename = 'amalgalite'")
     expanded = Amalgalite::Packer.gunzip( zipped.first['contents'].to_s )
     expanded.should == orig
+  end
+
+  it "has all the lib files in the amalgalite gem" do
+    ro = Amalgalite::Packer.amalgalite_require_order
+    glist = Amalgalite::GEM_SPEC.files.select { |l| l.index("lib/amalgalite") == 0 }
+    glist.map! { |l| l.sub("lib/","") }
+    (glist - ro).each do |l|
+      l.should_not =~ /amalgalite/
+    end
   end
 end

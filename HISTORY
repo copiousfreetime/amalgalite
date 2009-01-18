@@ -1,15 +1,17 @@
 = Changelog
-== Version 0.7.0 - 2009-01-18
+== Version 0.7.1 - 2009-01-18
 
 === Enhancements
 
 * added support for sqlite's nexted transactions which appeared in sqlite 
 * update to SQLite version 3.6.10
 * added ability to set the SQLite temporary directory
+* added amalgalite-pack --require-order
 
 === Bug Fixes
 
 * fix exception when accessing the special 'rowid' column
+* fix internal require order list for use in packing
 
 == Version 0.6.0 - 2009-01-10
 
