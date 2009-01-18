@@ -1,6 +1,5 @@
 Next Release:
     - Add suppport for nested transactions now that sqlite supports them
-    - global temp directory setting
 
 Future Release:
   SQLite API:

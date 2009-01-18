@@ -10,6 +10,7 @@
 
 #include "ruby.h"
 #include "sqlite3.h"
+#include <string.h>
 
 /* wrapper struct around the sqlite3 opaque pointer */
 typedef struct am_sqlite3 {

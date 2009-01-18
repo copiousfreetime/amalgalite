@@ -4,6 +4,7 @@
 === Minor Enhancement
 
 * update to SQLite version 3.6.10
+* added ability to set the SQLite temporary directory
 
 === Bug Fixes
 

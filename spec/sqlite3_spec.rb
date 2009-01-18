@@ -20,4 +20,16 @@ describe "Amalgalite::SQLite3" do
   it "can produce random data" do
     Amalgalite::SQLite3.randomness( 42 ).size.should == 42
   end
+
+  it "has nil for the default sqlite temporary directory" do
+    Amalgalite::SQLite3.temp_directory.should == nil
+  end
+
+  it "can set the temporary directory" do
+    Amalgalite::SQLite3.temp_directory.should == nil
+    Amalgalite::SQLite3.temp_directory = "/tmp/testing"
+    Amalgalite::SQLite3.temp_directory.should == "/tmp/testing"
+    Amalgalite::SQLite3.temp_directory = nil
+    Amalgalite::SQLite3.temp_directory.should == nil
+  end
 end

@@ -38,6 +38,51 @@ VALUE am_sqlite3_threadsafe(VALUE self)
 
 /*
  * call-seq:
+ *  Amalgalite::SQLite.temp_directory -> String or nil
+ *
+ * Return the directory name that all that all the temporary files created by
+ * SQLite creates will be placed.  If _nil_ is returned, then SQLite will search
+ * for an appropriate directory.
+ */
+VALUE am_sqlite3_get_temp_directory( VALUE self )
+{
+    if (NULL == sqlite3_temp_directory) {
+        return Qnil;
+    } else {
+        return rb_str_new2( sqlite3_temp_directory );
+    }
+}
+
+/*
+ * call-seq:
+ *  Amalgalite::SQLite.temp_directory = "/tmp/location"
+ *
+ * Set the temporary directory used by sqlite to store temporary directories.
+ * It is not safe to set this value after a Database has been opened.
+ *
+ */
+VALUE am_sqlite3_set_temp_directory( VALUE self, VALUE new_dir )
+{
+    char *p   = NULL ;
+
+    if ( NULL != sqlite3_temp_directory ) {
+        free( sqlite3_temp_directory );
+    }
+
+    if ( Qnil != new_dir ) {
+        VALUE str = StringValue( new_dir );
+
+        p = calloc( RSTRING(str)->len + 1, sizeof(char) );
+        strncpy( p, RSTRING(str)->ptr, RSTRING(str)->len );
+    }
+
+    sqlite3_temp_directory = p;
+
+    return Qnil;
+}
+
+/*
+ * call-seq:
  *    Amalgalite::SQLite3.complete?( ... , opts = { :utf16 => false }) -> True, False
  *
  * Is the text passed in as a parameter a complete SQL statement?  Or is
@@ -168,6 +213,8 @@ void Init_amalgalite3()
     rb_define_module_function(mAS, "threadsafe?", am_sqlite3_threadsafe, 0);
     rb_define_module_function(mAS, "complete?", am_sqlite3_complete, -2);
     rb_define_module_function(mAS, "randomness", am_sqlite3_randomness,1);
+    rb_define_module_function(mAS, "temp_directory", am_sqlite3_get_temp_directory, 0);
+    rb_define_module_function(mAS, "temp_directory=", am_sqlite3_set_temp_directory, 1);
 
     /*
      * class encapsulating a single Stat
