@@ -1,8 +1,9 @@
 = Changelog
-== Version 0.6.1 - someday soon
+== Version 0.7.0 - someday soon
 
-=== Minor Enhancement
+=== Enhancements
 
+* added support for sqlite's nexted transactions which appeared in sqlite 
 * update to SQLite version 3.6.10
 * added ability to set the SQLite temporary directory
 

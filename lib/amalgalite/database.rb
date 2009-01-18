@@ -492,10 +492,12 @@ module Amalgalite
     #
     # If no block is passed in then you are on your own.
     #
-    # Nested transactions are not supported by SQLite, but they are faked here.
+    # Nesting a transaaction via the _transaction_ method are no-ops.
     # If you call transaction within a transaction, no new transaction is
     # started, the current one is just continued.
-    # 
+    #
+    # True nexted transactions are available through the _savepoint_ method.
+    #
     def transaction( mode = TransactionBehavior::DEFERRED )
       raise Amalgalite::Error, "Invalid transaction behavior mode #{mode}" unless TransactionBehavior.valid?( mode )
 
@@ -521,17 +523,88 @@ module Amalgalite
     end
 
     ##
+    # call-seq: 
+    #   db.savepoint( 'mypoint' ) -> db
+    #   db.savepoint( 'mypoint' ) do |db_in_savepoint|
+    #     ...
+    #   end
+    #
+    # Much of the following documentation is para-phrased from 
+    # http://sqlite.org/lang_savepoint.html
+    #
+    # Savepoints are a method of creating transactions, similar to _transaction_
+    # except that they may be nested.
+    #
+    # * Every savepoint must have a name, +to_s+ is called on the method
+    #   argument
+    # * A savepoint does not need to be initialized inside a _transaction_.  If
+    #   it is not inside a _transaction_ it behaves exactly as if a DEFERRED
+    #   transaction had been started.
+    # * If a block is passed to _saveponit_ then when the block exists, it is
+    #   guaranteed that either a 'RELEASE' or 'ROLLBACK TO name' has been executed.
+    # * If any exception happens during the savepoint transaction, then a
+    #   'ROLLOBACK TO' is issued when the block closes.
+    # * If no exception happens during the transaction then a 'RELEASE name' is
+    #   issued upon leaving the block
+    #
+    # If no block is passed in then you are on your own.
+    #
+    def savepoint( name )
+      point_name = name.to_s.strip
+      raise Amalgalite::Error, "Invalid savepoint name '#{name}'" unless point_name and point_name.length > 1
+      execute( "SAVEPOINT #{point_name};")
+      if block_given? then
+        begin
+          return ( yield self )
+        ensure
+          if $! then
+            rollback_to( point_name )
+            raise $!
+          else
+            release( point_name )
+          end
+        end
+      else
+        return in_transaction?
+      end
+    end
+
+    ##
+    # call-seq:
+    #   db.release( 'mypoint' )
+    #
+    # Release a savepoint.  This is similar to a _commit_ but only for
+    # savepoints.  All savepoints up  the savepoint stack and include the name
+    # savepoint being released are 'committed' to the transaction.  There are
+    # several ways of thinking about release and they are all detailed in the
+    # sqlite documentation: http://sqlite.org/lang_savepoint.html
+    #
+    def release( point_name )
+      execute( "RELEASE SAVEPOINT #{point_name}" ) if in_transaction? 
+    end
+
+    ##
+    # call-seq:
+    #   db.rollback_to( point_name )
+    #
+    # Rollback to a savepoint.  The transaction is not cancelled, the
+    # transaction is restarted.
+    def rollback_to( point_name )
+      execute( "ROLLBACK TO SAVEPOINT #{point_name}" )
+    end
+
+    ##
     # Commit a transaction
     #
     def commit
-      execute( "COMMIT" ) if in_transaction?
+      execute( "COMMIT TRANSACTION" ) if in_transaction?
     end
 
     ##
     # Rollback a transaction
     #
     def rollback
-      execute( "ROLLBACK" ) if in_transaction?
+      execute( "ROLLBACK TRANSACTION" ) if in_transaction?
     end
 
     ##

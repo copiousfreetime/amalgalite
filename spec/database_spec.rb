@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'spec'
+require File.expand_path( File.join( File.dirname(__FILE__), 'spec_helper'))
 
 $: << File.expand_path(File.join(File.dirname(__FILE__),"..","lib"))
 require 'amalgalite'
@@ -334,5 +335,50 @@ describe Amalgalite::Database do
     executions.should > 10
     had_error.should be_an_instance_of( ::Amalgalite::SQLite3::Error )
     had_error.message.should =~ / interrupted/
+  end
+
+  it "savepoints are considered 'in_transaction'" do
+    @iso_db.savepoint( 'test1' ) do |db|
+      db.should be_in_transaction
+    end
+  end
+
+  it "releases a savepoint" do
+    us_sub = @iso_db.execute( "select count(1) as cnt from subcountry where country = 'US'" ).first['cnt']
+    us_sub.should == 57
+    other_sub = @iso_db.execute( "select count(1) as cnt from subcountry where country != 'US'" ).first['cnt']
+
+    @iso_db.transaction
+    @iso_db.savepoint( "t1" ) do |s|
+      s.execute("DELETE FROM subcountry where country = 'US'")
+    end
+
+    all_sub = @iso_db.execute("SELECT count(*) as cnt from subcountry").first['cnt']
+
+    all_sub.should == other_sub;
+    @iso_db.rollback
+    all_sub = @iso_db.execute("SELECT count(*) as cnt from subcountry").first['cnt']
+    all_sub.should == ( us_sub + other_sub )
+
+  end
+  it "rolls back a savepoint" do
+    all_sub = @iso_db.execute("SELECT count(*) as cnt from subcountry").first['cnt']
+    lambda {
+      @iso_db.savepoint( "t1" ) do |s|
+        s.execute("DELETE FROM subcountry where country = 'US'")
+        raise "sample error"
+      end
+    }.should raise_error( StandardError, /sample error/ )
+
+    @iso_db.execute("SELECT count(*) as cnt from subcountry").first['cnt'].should == all_sub
+  end
+
+  it "rolling back the outermost savepoint is still 'in_transaction'" do
+    @iso_db.savepoint( "t1" )
+    @iso_db.execute("DELETE FROM subcountry where country = 'US'")
+    @iso_db.rollback_to( "t1" )
+    @iso_db.should be_in_transaction
+    @iso_db.rollback
+    @iso_db.should_not be_in_transaction
   end
 end
