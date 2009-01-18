@@ -10,6 +10,7 @@ Future Release:
   Non backwards compatible changes:
     - change taps to use to_proc protocol
     - convert type dependency to just use 'call'
+    - integrate transaction and savepoint under the same api
 
   SQLite Features:
     - virtual file system
