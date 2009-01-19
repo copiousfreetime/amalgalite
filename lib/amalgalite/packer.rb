@@ -52,6 +52,7 @@ module Amalgalite
       #
       def amalgalite_require_order
         @require_order ||= %w[
+          amalgalite.rb
           amalgalite/sqlite3/database/function.rb
           amalgalite/aggregate.rb
           amalgalite/blob.rb
@@ -61,9 +62,9 @@ module Amalgalite
           amalgalite/statement.rb
           amalgalite/trace_tap.rb
           amalgalite/profile_tap.rb
+          amalgalite/type_map.rb
           amalgalite/type_maps/storage_map.rb
           amalgalite/type_maps/text_map.rb
-          amalgalite/type_map.rb
           amalgalite/type_maps/default_map.rb
           amalgalite/function.rb
           amalgalite/progress_handler.rb
@@ -82,7 +83,6 @@ module Amalgalite
           amalgalite/taps/io.rb
           amalgalite/taps/console.rb
           amalgalite/taps.rb
-          amalgalite.rb
           amalgalite/packer.rb
           amalgalite/core_ext/kernel/require.rb
           amalgalite/requires.rb
