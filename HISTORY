@@ -15,59 +15,50 @@
 
 == Version 0.6.0 - 2009-01-10
 
-=== Major Enhancements
+=== Enhancements
 
 * Added ability to define custom SQL functions implemented in Ruby
 * Added ability to define custom SQL aggregates implemented in Ruby
 * Added support for Ruby busy handlers
 * Added database 'interrupt' support
 * Added support for Ruby progress handlers
-
-=== Minor Enhancement
-
 * update to SQLite version 3.6.7
 
 == Version 0.5.1 - 2008-11-30
 
-=== Minor Enhancement
+=== Enhancements
 
 * update to SQLite version 3.6.6.2
 
 == Version 0.5.0 - 2008-11-16
 
-=== Major Enhancement
+=== Enhancements
 
 * amalgalite-pack-into-db has been reworked into amalgalite-pack
 * ruby code that is packed into a database for later requiring can now be
   compressed
-
-=== Minor Enhancement
-
 * update to SQLite version 3.6.5
 
 == Version 0.4.2 - 2008-10-12
 
-=== Minor Enhancements
+=== Enhancements
 
 * release of windows gem
 
 == Version 0.4.1 - 2008-09-28
 
-=== Minor Enhancement
+=== Enhancements
 
 * update to SQLite3 version 3.6.3
 * change rdoc template to darkfish
 
 == Version 0.4.0 - 2008-09-14
 
-=== Major Enhancements
+=== Enhancements
 * update to SQLite3 version 3.6.2 and enable the RTree option by default
 * Amalgalite::Requires module allowing ruby code to be 'required' from columns in an SQLite database
 * Amagalite::Requires::Bootstrap extension module enabling low level boot
   strapping of the pure ruby Amalgalite code from an sqlite database
-
-=== Minor Enhancements
-
 * more indepth information about indexes is available via the Index class
 * add support for sqlite3_status and sqlite3_db_status information
 
@@ -108,15 +99,13 @@
 
 == Version 0.2.0 - 2008-07-04
 
-=== Major Enhancements
+=== Enhancements
 * blob support, both incremental access and normal access
-
-=== Minor Enhancements
 * added examples/gem_db.rb script demonstrating taps and prepared statements
 * added examples/schema-info.rb script demonstrating meta information
 * added examples/blob.rb demonstrating incremental blob IO
 * added access to the SQLite3 errcode and errmsg api
-  
+
 === Bugfixes
 * added taps.rb for requiring
 * fixed prepared statement reset
