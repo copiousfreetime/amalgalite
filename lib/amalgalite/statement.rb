@@ -328,7 +328,7 @@ module Amalgalite
           tbl_name = @stmt_api.column_table_name( idx ) 
           col_name = @stmt_api.column_origin_name( idx ) 
 
-          column_meta.schema = ::Amalgalite::Column.new( db_name, tbl_name, col_name )
+          column_meta.schema = ::Amalgalite::Column.new( db_name, tbl_name, col_name, idx )
           column_meta.schema.declared_data_type = @stmt_api.column_declared_type( idx )
 
           # only check for rowid if we have a table name and it is not the

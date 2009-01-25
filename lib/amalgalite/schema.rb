@@ -86,8 +86,9 @@ module Amalgalite
     #
     def load_columns( table )
       cols = {}
+      idx = 0
       @db.execute("PRAGMA table_info(#{@db.quote(table.name)})") do |row|
-        col = Amalgalite::Column.new( "main", table.name, row['name'] )
+        col = Amalgalite::Column.new( "main", table.name, row['name'], row['cid'])
 
         col.default_value = row['dflt_value']
         @db.api.table_column_metadata( "main", table.name, col.name ).each_pair do |key, value|
@@ -95,6 +96,7 @@ module Amalgalite
         end
         col.schema = self
         cols[col.name] = col
+        idx += 1
       end
       cols
     end

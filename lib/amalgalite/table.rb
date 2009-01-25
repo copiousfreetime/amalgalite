@@ -31,6 +31,16 @@ module Amalgalite
       @indexes = {}
       @columns = {}
     end
+
+    # the Columns in original definition order
+    def columns_in_order
+      @columns.values.sort_by { |c| c.order }
+    end
+
+    # the column names in original definition order
+    def column_names
+      columns_in_order.map { |c| c.name }
+    end
   end
 end
 

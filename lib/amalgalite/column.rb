@@ -47,13 +47,18 @@ module Amalgalite
     # true if the column is AUTO INCREMENT, false otherwise
     attr_accessor :auto_increment
 
-    ## 
+    # The index (starting with 0) of this column in the table definition
+    # or result set
+    attr_accessor :order
+
+    ##
     # Create a column with its name and associated table
     #
-    def initialize( db, table, name)
+    def initialize( db, table, name, order)
       @db                 = db
       @name               = name
       @table              = table
+      @order              = Float(order).to_i
       @declared_data_type = nil
       @default_value      = nil
     end

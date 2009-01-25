@@ -3,6 +3,7 @@
 === Enhancements
 
 * added quoting and escaping of text support, used for database drivers
+* added ability to access columns of the schame in original definition order
 
 == Version 0.7.1 - 2009-01-18
 

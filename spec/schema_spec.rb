@@ -36,6 +36,7 @@ describe Amalgalite::Schema do
     ct.name.should == "country"
     ct.columns.size.should == 3
     ct.indexes.size.should == 2
+    ct.column_names.should == %w[ name two_letter id ]
 
     ct.columns['two_letter'].should be_primary_key
     ct.columns['name'].should_not be_nullable
