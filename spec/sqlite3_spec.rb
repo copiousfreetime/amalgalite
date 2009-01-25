@@ -37,7 +37,17 @@ describe "Amalgalite::SQLite3" do
     Amalgalite::SQLite3.escape( "It's a happy day!" ).should == "It''s a happy day!"
   end
 
+  it "can escape a symble into a string" do
+    Amalgalite::SQLite3.escape( :stuff ).should == "stuff"
+    Amalgalite::SQLite3.escape( :"stuff'n" ).should == "stuff''n"
+  end
+
   it "can quote and escape single quoted strings" do
     Amalgalite::SQLite3.quote( "It's a happy day!" ).should == "'It''s a happy day!'"
+  end
+
+  it "can quote and escape symbols" do
+    Amalgalite::SQLite3.quote( :stuff ).should == "'stuff'"
+    Amalgalite::SQLite3.quote( :"stuff'n" ).should == "'stuff''n'"
   end
 end

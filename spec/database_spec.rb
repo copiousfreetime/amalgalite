@@ -390,4 +390,12 @@ describe Amalgalite::Database do
     @iso_db.quote( "It's a happy day!" ).should == "'It''s a happy day!'"
   end
 
+  it "can escape a symbol" do
+    @iso_db.escape( :stuff ).should == "stuff"
+  end
+  
+  it "can quote a symbol" do
+    @iso_db.quote( :stuff ).should == "'stuff'"
+  end
+
 end
