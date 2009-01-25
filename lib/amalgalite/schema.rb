@@ -9,6 +9,23 @@ require 'amalgalite/column'
 require 'amalgalite/view'
 
 module Amalgalite
+
+  class LazySchema< ::Hash
+    attr_accessor :schema
+    attr_accessor :load_method
+
+    def []( name )
+      t = nil
+      if schema then
+        t = fetch( name, nil )
+        unless t
+          t = schema.send( load_method, name )
+          store( name, t )
+        end
+      end
+      return t
+    end
+  end
   #
   # An object view of the schema  in the SQLite database.  If the schema changes
   # after this class is created, it has no knowledge of that.
@@ -28,8 +45,12 @@ module Amalgalite
       @db = db
       @catalog = catalog
       @schema = schema
-
-      load_schema!
+      @tables = LazySchema.new
+      @tables.schema = self
+      @tables.load_method = :load_table
+      @views  = LazySchema.new
+      @views.schema = self
+      @views.load_method = :load_view
     end
 
     #
@@ -44,16 +65,27 @@ module Amalgalite
     #
     def load_tables
       @tables = {}
-      @db.execute("SELECT tbl_name, sql FROM sqlite_master WHERE type = 'table'") do |table_info|
-        table = Amalgalite::Table.new( table_info['tbl_name'], table_info['sql'] )
-        table.columns = load_columns( table )
-        table.schema = self
-        table.indexes = load_indexes( table )
-
+      @db.execute("SELECT tbl_name FROM sqlite_master WHERE type = 'table'") do |table_info|
+        table = load_table( table_info['tbl_name'] )
         @tables[table.name] = table
       end
 
       @tables
+    end
+
+    ##
+    # Load a single table
+    def load_table( table_name )
+      rows = @db.execute("SELECT tbl_name, sql FROM sqlite_master WHERE type = 'table' AND tbl_name = ?", table_name)
+      table_info = rows.first
+      table = nil
+      if table_info then 
+        table = Amalgalite::Table.new( table_info['tbl_name'], table_info['sql'] )
+        table.columns = load_columns( table )
+        table.schema = self
+        table.indexes = load_indexes( table )
+      end
+      return table
     end
 
     ## 
@@ -102,13 +134,23 @@ module Amalgalite
     end
 
     ##
+    # load a single view
+    #
+    def load_view( name )
+      rows = @db.execute("SELECT name, sql FROM sqlite_master WHERE type = 'view' AND name = ?", name )
+      view_info = rows.first
+      view = Amalgalite::View.new( view_info['name'], view_info['sql'] )
+      view.schema = self
+      return view
+    end
+
+    ##
     # load all the views for the database
     #
     def load_views
       @views = {}
       @db.execute("SELECT name, sql FROM sqlite_master WHERE type = 'view'") do |view_info|
-        view = Amalgalite::View.new( view_info['name'], view_info['sql'] )
-        view.schema = self
+        view = load_view( view_info['name'] )
         @views[view.name] = view
       end
       @views

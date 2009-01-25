@@ -20,23 +20,28 @@ describe Amalgalite::Schema do
 
   it "loads the schema of a database" do
     schema = @iso_db.schema
+    schema.load_tables
     schema.tables.size.should == 2
   end
 
   it "loads the views in the database" do
     sql = "CREATE VIEW v1 AS SELECT c.name, c.two_letter, s.name, s.subdivision FROM country AS c JOIN subcountry AS s ON c.two_letter = s.country"
     @iso_db.execute( sql )
+    @iso_db.schema.load_views
     @iso_db.schema.views.size.should == 1
     @iso_db.schema.views["v1"].sql.should == sql
   end
 
   it "loads the tables and columns" do
-    @iso_db.schema.tables.size.should == 2
     ct = @iso_db.schema.tables['country']
     ct.name.should == "country"
     ct.columns.size.should == 3
     ct.indexes.size.should == 2
     ct.column_names.should == %w[ name two_letter id ]
+    @iso_db.schema.tables.size.should == 1
+    @iso_db.schema.load_tables
+    @iso_db.schema.tables.size.should == 2
+
 
     ct.columns['two_letter'].should be_primary_key
     ct.columns['two_letter'].declared_data_type.should == "TEXT"
