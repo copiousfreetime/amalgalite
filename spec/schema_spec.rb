@@ -39,6 +39,7 @@ describe Amalgalite::Schema do
     ct.column_names.should == %w[ name two_letter id ]
 
     ct.columns['two_letter'].should be_primary_key
+    ct.columns['two_letter'].declared_data_type.should == "TEXT"
     ct.columns['name'].should_not be_nullable
     ct.columns['name'].should be_not_null_constraint
     ct.columns['name'].should_not be_has_default_value
