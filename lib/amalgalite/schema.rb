@@ -51,6 +51,7 @@ module Amalgalite
       @views  = LazySchema.new
       @views.schema = self
       @views.load_method = :load_view
+      load_schema!
     end
 
     #
@@ -64,7 +65,6 @@ module Amalgalite
     # load all the tables
     #
     def load_tables
-      @tables = {}
       @db.execute("SELECT tbl_name FROM sqlite_master WHERE type = 'table'") do |table_info|
         table = load_table( table_info['tbl_name'] )
         @tables[table.name] = table
@@ -148,7 +148,6 @@ module Amalgalite
     # load all the views for the database
     #
     def load_views
-      @views = {}
       @db.execute("SELECT name, sql FROM sqlite_master WHERE type = 'view'") do |view_info|
         view = load_view( view_info['name'] )
         @views[view.name] = view

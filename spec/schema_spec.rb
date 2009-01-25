@@ -24,6 +24,15 @@ describe Amalgalite::Schema do
     schema.tables.size.should == 2
   end
 
+  it "lazily loads new table schema" do
+    @iso_db.schema.tables.size.should == 2
+    sql = "CREATE TABLE t1 ( a, b, c )"
+    @iso_db.execute( sql )
+    @iso_db.schema.tables.size.should == 2
+    @iso_db.schema.tables['t1'].column_names.should == %w[ a b c ]
+    @iso_db.schema.tables.size.should == 3
+  end
+
   it "loads the views in the database" do
     sql = "CREATE VIEW v1 AS SELECT c.name, c.two_letter, s.name, s.subdivision FROM country AS c JOIN subcountry AS s ON c.two_letter = s.country"
     @iso_db.execute( sql )
@@ -38,8 +47,6 @@ describe Amalgalite::Schema do
     ct.columns.size.should == 3
     ct.indexes.size.should == 2
     ct.column_names.should == %w[ name two_letter id ]
-    @iso_db.schema.tables.size.should == 1
-    @iso_db.schema.load_tables
     @iso_db.schema.tables.size.should == 2
 
 
