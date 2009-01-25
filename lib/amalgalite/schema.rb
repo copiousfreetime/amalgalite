@@ -68,13 +68,13 @@ module Amalgalite
         end
       end
 
-      @db.execute("PRAGMA index_list( #{table.name} );") do |idx_list|
+      @db.execute("PRAGMA index_list( #{@db.quote(table.name)} );") do |idx_list|
         idx = indexes[idx_list['name']]
         
         idx.sequence_number = idx_list['seq']
         idx.unique          = Boolean.to_bool( idx_list['unique'] )
 
-        @db.execute("PRAGMA index_info( #{idx.name} );") do |col_info|
+        @db.execute("PRAGMA index_info( #{@db.quote(idx.name)} );") do |col_info|
           idx.columns << table.columns[col_info['name']]
         end
       end
@@ -86,7 +86,7 @@ module Amalgalite
     #
     def load_columns( table )
       cols = {}
-      @db.execute("PRAGMA table_info(#{table.name})") do |row|
+      @db.execute("PRAGMA table_info(#{@db.quote(table.name)})") do |row|
         col = Amalgalite::Column.new( "main", table.name, row['name'] )
 
         col.default_value = row['dflt_value']
