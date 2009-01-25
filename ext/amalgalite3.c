@@ -81,6 +81,44 @@ VALUE am_sqlite3_set_temp_directory( VALUE self, VALUE new_dir )
     return Qnil;
 }
 
+VALUE amalgalite_format_string( char* pattern, VALUE string )
+{
+    VALUE str = StringValue( string );
+    char *p   = sqlite3_mprintf(pattern, RSTRING(str)->ptr);
+    VALUE rv  = Qnil;
+    if ( NULL != p ) {
+        rv  = rb_str_new2( p );
+        sqlite3_free( p );
+    } else {
+        rb_raise( rb_eNoMemError, "Unable to quote string" );
+    } 
+
+    return rv;
+}
+/*
+ * call-seq:
+ *  Amalgalite::SQLite.escape( string ) => escaped_string
+ *
+ * Takes the input string and escapes each ' (single quote) character by
+ * doubling it.
+ */
+VALUE am_sqlite3_escape( VALUE self, VALUE string )
+{ 
+    return ( Qnil == string ) ? Qnil : amalgalite_format_string( "%q", string );
+}
+
+/*
+ * call-seq:
+ *  Amalgalite::SQLite.quote( string ) => quoted-escaped string
+ *
+ * Takes the input string and surrounds it with single quotes, it also escapes
+ * each embedded single quote with double quotes.
+ */
+VALUE am_sqlite3_quote( VALUE self, VALUE string )
+{
+    return ( Qnil == string ) ? Qnil : amalgalite_format_string( "%Q", string );
+}
+
 /*
  * call-seq:
  *    Amalgalite::SQLite3.complete?( ... , opts = { :utf16 => false }) -> True, False
@@ -215,6 +253,9 @@ void Init_amalgalite3()
     rb_define_module_function(mAS, "randomness", am_sqlite3_randomness,1);
     rb_define_module_function(mAS, "temp_directory", am_sqlite3_get_temp_directory, 0);
     rb_define_module_function(mAS, "temp_directory=", am_sqlite3_set_temp_directory, 1);
+
+    rb_define_module_function(mAS, "escape", am_sqlite3_escape, 1);
+    rb_define_module_function(mAS, "quote", am_sqlite3_quote, 1);
 
     /*
      * class encapsulating a single Stat

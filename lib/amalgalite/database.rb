@@ -74,11 +74,11 @@ module Amalgalite
         VALID.include? mode
       end
     end
-    
-   include Amalgalite::SQLite3::Constants
 
-   # list of valid modes for opening an Amalgalite::Database
-   VALID_MODES = {
+    include Amalgalite::SQLite3::Constants
+
+    # list of valid modes for opening an Amalgalite::Database
+    VALID_MODES = {
       "r"  => Open::READONLY,
       "r+" => Open::READWRITE,
       "w+" => Open::READWRITE | Open::CREATE,
@@ -179,6 +179,20 @@ module Amalgalite
     #
     def last_insert_rowid
       @api.last_insert_rowid
+    end
+
+    ##
+    # SQL escape the input string
+    #
+    def escape( s )
+      Amalgalite::SQLite3.escape( s )
+    end
+
+    ##
+    # Surround the give string with single-quotes and escape any single-quotes
+    # in the string
+    def quote( s )
+      Amalgalite::SQLite3.quote( s )
     end
 
     ##
@@ -842,7 +856,6 @@ module Amalgalite
     end
     alias :progress_handler :define_progress_handler
 
-
     ##
     # call-seq:
     #   db.remove_progress_handler
@@ -851,6 +864,6 @@ module Amalgalite
     def remove_progress_handler
       @api.progress_handler( nil, nil )
     end
- end
+  end
 end
 

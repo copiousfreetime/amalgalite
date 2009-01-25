@@ -32,4 +32,12 @@ describe "Amalgalite::SQLite3" do
     Amalgalite::SQLite3.temp_directory = nil
     Amalgalite::SQLite3.temp_directory.should == nil
   end
+
+  it "can escape quoted strings" do
+    Amalgalite::SQLite3.escape( "It's a happy day!" ).should == "It''s a happy day!"
+  end
+
+  it "can quote and escape single quoted strings" do
+    Amalgalite::SQLite3.quote( "It's a happy day!" ).should == "'It''s a happy day!'"
+  end
 end

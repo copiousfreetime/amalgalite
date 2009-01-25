@@ -381,4 +381,13 @@ describe Amalgalite::Database do
     @iso_db.rollback
     @iso_db.should_not be_in_transaction
   end
+
+  it "can escape quoted strings" do
+    @iso_db.escape( "It's a happy day!" ).should == "It''s a happy day!"
+  end
+
+  it "can quote and escape single quoted strings" do
+    @iso_db.quote( "It's a happy day!" ).should == "'It''s a happy day!'"
+  end
+
 end
