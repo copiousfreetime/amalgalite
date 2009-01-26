@@ -57,6 +57,7 @@ module Amalgalite
     def load_tables
       @db.execute("SELECT tbl_name FROM sqlite_master WHERE type = 'table'") do |table_info|
         table = load_table( table_info['tbl_name'] )
+        table.indexes = load_indexes( table )
         @tables[table.name] = table
       end
       return @tables
@@ -74,6 +75,7 @@ module Amalgalite
         table.schema = self
         table.indexes = load_indexes( table )
       end
+      @tables[table.name] = table
       return table
     end
 
