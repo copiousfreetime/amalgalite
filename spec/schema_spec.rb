@@ -29,6 +29,7 @@ describe Amalgalite::Schema do
     sql = "CREATE TABLE t1 ( a, b, c )"
     @iso_db.execute( sql )
     @iso_db.schema.tables.size.should == 2
+    @iso_db.schema.dirty!
     @iso_db.schema.tables['t1'].column_names.should == %w[ a b c ]
     @iso_db.schema.tables.size.should == 3
   end

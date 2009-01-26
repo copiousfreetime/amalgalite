@@ -9,23 +9,6 @@ require 'amalgalite/column'
 require 'amalgalite/view'
 
 module Amalgalite
-
-  class LazySchema< ::Hash
-    attr_accessor :schema
-    attr_accessor :load_method
-
-    def []( name )
-      t = nil
-      if schema then
-        t = fetch( name, nil )
-        unless t
-          t = schema.send( load_method, name )
-          store( name, t )
-        end
-      end
-      return t
-    end
-  end
   #
   # An object view of the schema  in the SQLite database.  If the schema changes
   # after this class is created, it has no knowledge of that.
@@ -34,8 +17,7 @@ module Amalgalite
 
     attr_reader :catalog
     attr_reader :schema 
-    attr_reader :tables
-    attr_reader :views
+    attr_writer :dirty
     attr_reader :db
 
     #
@@ -45,20 +27,28 @@ module Amalgalite
       @db = db
       @catalog = catalog
       @schema = schema
-      @tables = LazySchema.new
-      @tables.schema = self
-      @tables.load_method = :load_table
-      @views  = LazySchema.new
-      @views.schema = self
-      @views.load_method = :load_view
+      @tables = {}
+      @views  = {}
+      @dirty  = true
       load_schema!
     end
+
+    def dirty?() @dirty; end
+    def dirty!() @dirty = true; end
 
     #
     # load the schema from the database
     def load_schema!
       load_tables
       load_views
+      @dirty = false
+    end
+
+    ##
+    # return the tables, reloading if dirty
+    def tables
+      load_schema! if dirty?
+      return @tables
     end
 
     ##
@@ -69,8 +59,7 @@ module Amalgalite
         table = load_table( table_info['tbl_name'] )
         @tables[table.name] = table
       end
-
-      @tables
+      return @tables
     end
 
     ##
@@ -102,7 +91,7 @@ module Amalgalite
 
       @db.execute("PRAGMA index_list( #{@db.quote(table.name)} );") do |idx_list|
         idx = indexes[idx_list['name']]
-        
+
         idx.sequence_number = idx_list['seq']
         idx.unique          = Boolean.to_bool( idx_list['unique'] )
 
@@ -130,7 +119,15 @@ module Amalgalite
         cols[col.name] = col
         idx += 1
       end
-      cols
+      return cols
+    end
+
+    ##
+    # return the views, reloading if dirty
+    #
+    def views
+      reload_schema! if dirty?
+      return @views
     end
 
     ##
@@ -152,7 +149,7 @@ module Amalgalite
         view = load_view( view_info['name'] )
         @views[view.name] = view
       end
-      @views
+      return @views
     end
   end
 end
