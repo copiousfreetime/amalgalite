@@ -14,7 +14,6 @@ module Amalgalite
     include ::Amalgalite::SQLite3::Constants
 
     attr_reader :db
-    attr_reader :sql
     attr_reader :api
 
     class << self
@@ -34,6 +33,7 @@ module Amalgalite
       @stmt_api        = @db.api.send( prepare_method, sql )
       @blobs_to_write  = []
       @rowid_index     = nil
+      @result_meta     = nil
     end
 
     ##
