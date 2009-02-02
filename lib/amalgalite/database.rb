@@ -276,8 +276,13 @@ module Amalgalite
     # If called with a block and there are result rows, then they are iteratively
     # yielded to the block.
     #
-    # If no block passed and there are results, then a ResultSet is returned.
-    # Otherwise nil is returned.  On an error an exception is thrown.
+    # If no block is passed, then all the results are returned as an arrayfields
+    # instance.  This is an array with field name access.
+    #
+    # If no block is passed, and there are no results, then an empty Array is
+    # returned.
+    #
+    # On an error an exception is thrown
     #
     # This is just a wrapper around the preparation of an Amalgalite Statement and
     # iterating over the results.
