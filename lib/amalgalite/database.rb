@@ -138,7 +138,7 @@ module Amalgalite
       @type_map       = ::Amalgalite::TypeMaps::DefaultMap.new
       @functions      = Hash.new 
       @aggregates     = Hash.new
-      @utf16          = nil
+      @utf16          = false
 
       unless VALID_MODES.keys.include?( mode ) 
         raise InvalidModeError, "#{mode} is invalid, must be one of #{VALID_MODES.keys.join(', ')}" 
@@ -201,10 +201,11 @@ module Amalgalite
     # UTF-8.  Database can only be UTF-8 or UTF-16, and the default is UTF-8
     #
     def utf16?
-      if @utf16.nil?
-        @utf16 = (encoding != "UTF-8") 
-      end
       return @utf16
+      #if @utf16.nil?
+      #  @utf16 = (encoding != "UTF-8") 
+      #end
+      #return @utf16
     end
 
     ## 

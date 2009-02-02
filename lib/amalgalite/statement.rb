@@ -28,7 +28,8 @@ module Amalgalite
     #
     def initialize( db, sql )
       @db = db
-      prepare_method   =  @db.utf16? ? :prepare16 : :prepare
+      #prepare_method   =  @db.utf16? ? :prepare16 : :prepare
+      prepare_method   =  :prepare
       @param_positions = {}
       @stmt_api        = @db.api.send( prepare_method, sql )
       @blobs_to_write  = []
