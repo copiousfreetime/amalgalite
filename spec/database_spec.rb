@@ -398,4 +398,25 @@ describe Amalgalite::Database do
     @iso_db.quote( :stuff ).should == "'stuff'"
   end
 
+  it "returns the first row of results as a convenience" do
+    row =  @iso_db.first_row_from("SELECT c.name, c.two_letter, count(*) AS count 
+                                     FROM country c
+                                     JOIN subcountry sc
+                                       ON c.two_letter  = sc.country 
+                                 GROUP BY c.name, c.two_letter
+                                 ORDER BY count DESC")
+    row.length.should == 3
+    row[0].should == "United Kingdom"
+    row[1].should == "GB"
+    row[2].should == 232
+    row['name'].should == "United Kingdom"
+    row['two_letter'].should == "GB"
+    row['count'].should == 232
+  end
+
+  it "returns the first value of results as a conveinience" do
+    val = @iso_db.first_value_from("SELECT count(*) from subcountry ")
+    val.should == 3995
+  end
+
 end

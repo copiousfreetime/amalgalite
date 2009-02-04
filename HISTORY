@@ -2,7 +2,9 @@
 == Version 0.7.3 - 2009-02-04
 
 === Enhancements
-*
+
+* added Database#first_row_from
+* added Database#first_value_from
 
 === Bug Fixes
 

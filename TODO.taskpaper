@@ -1,7 +1,3 @@
-Next Release:
-    - add in get_first_row
-    - add in get_first_value
-
 Future Release:
   SQLite API:
     - authorizers
