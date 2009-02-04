@@ -1,4 +1,14 @@
 = Amalgalite Changelog
+== Version 0.7.3 - 2009-02-04
+
+=== Enhancements
+*
+
+=== Bug Fixes
+
+* clean up ruby warnings when run with -w
+* fix documenation on Database#execute
+
 == Version 0.7.2 - 2009-01-24
 === Enhancements
 

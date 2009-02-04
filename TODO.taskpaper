@@ -1,7 +1,4 @@
 Next Release:
-    - fix ruby warnings
-    - update execute() documentation about returning nil
-    - update execute() documentation about returning ResultSet
     - add in get_first_row
     - add in get_first_value
 
