@@ -330,7 +330,6 @@ describe Amalgalite::Database do
     end
 
     rudeness.join
-    other.join
 
     executions.should > 10
     had_error.should be_an_instance_of( ::Amalgalite::SQLite3::Error )
