@@ -8,9 +8,8 @@ if rdoc_config = Configuration.for_if_exist?('rdoc') then
 
   namespace :doc do
 
+    require 'rdoc'
     require 'rake/rdoctask'
-    #gem 'darkfish-rdoc'
-    #require 'darkfish-rdoc'
 
     # generating documentation locally
     Rake::RDocTask.new do |rdoc|
@@ -19,7 +18,7 @@ if rdoc_config = Configuration.for_if_exist?('rdoc') then
       rdoc.rdoc_files = rdoc_config.files
       rdoc.title      = rdoc_config.title
       rdoc.main       = rdoc_config.main_page
-    end 
+    end
 
     if rubyforge_config = Configuration.for_if_exist?('rubyforge') then
       desc "Deploy the RDoc documentation to #{rubyforge_config.rdoc_location}"
