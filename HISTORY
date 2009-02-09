@@ -1,4 +1,11 @@
 = Amalgalite Changelog
+== Version 0.7.4 - 2009-02-08
+
+=== Bug Fixes
+
+* fix Database#first_row_from not behaving the same as Database#execute() when
+  there are no results. [reported by James Edward Gray II]
+
 == Version 0.7.3 - 2009-02-08
 
 === Enhancements

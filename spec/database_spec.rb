@@ -122,6 +122,11 @@ describe Amalgalite::Database do
     db.execute_batch( @schema ).should == 5
   end
 
+  it "returns an empty array when there are no results" do
+    row = @iso_db.execute("SELECT * from subcountry where country = 'Antarctica'")
+    row.should be_empty
+  end
+
   it "traces the execution of code" do
     db = Amalgalite::Database.new( SpecInfo.test_db )
     sql = "CREATE TABLE trace_test( x, y, z)"
@@ -360,6 +365,7 @@ describe Amalgalite::Database do
     all_sub.should == ( us_sub + other_sub )
 
   end
+
   it "rolls back a savepoint" do
     all_sub = @iso_db.execute("SELECT count(*) as cnt from subcountry").first['cnt']
     lambda {
@@ -411,6 +417,16 @@ describe Amalgalite::Database do
     row['name'].should == "United Kingdom"
     row['two_letter'].should == "GB"
     row['count'].should == 232
+  end
+
+  it "returns and empty row if there are no results for the first row" do
+    row = @iso_db.first_row_from("SELECT * from subcountry where country = 'Antarctica'")
+    row.should be_empty
+  end
+
+  it "returns nil if there is no value in the first value" do
+    val = @iso_db.first_value_from("select * from subcountry where country = 'Antarctica'" )
+    val.should == nil
   end
 
   it "returns the first value of results as a conveinience" do

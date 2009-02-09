@@ -334,21 +334,21 @@ module Amalgalite
     ##
     # Execute a sql statment, and only return the first row of results.  This
     # is a shorthand method when you only want a single row of results from a
-    # query.
+    # query.  If there is no result, then return an empty array
     #
     # It is in all other was, exactly like #execute()
     #
     def first_row_from( sql, *bind_params ) 
       stmt = prepare( sql )
       stmt.bind( *bind_params)
-      row = stmt.next_row
+      row = stmt.next_row || []
       stmt.close
       return row
     end
 
     ##
     # Execute an sql statement, and return only the first column of the first
-    # row.  
+    # row.  If there is no result, return nil.
     #
     # It is in all other ways, exactly like #first_row_from()
     #
