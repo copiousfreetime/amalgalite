@@ -30,7 +30,7 @@ module Amalgalite
       #
       def to_bool( val )
         return false if val.nil?
-        unless @to_bool
+        unless defined? @to_bool
           @to_bool = {}
           true_values.each  { |t| @to_bool[t] = true  }
           false_values.each { |f| @to_bool[f] = false }

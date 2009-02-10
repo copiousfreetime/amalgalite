@@ -212,10 +212,7 @@ module Amalgalite
     # return the encoding of the database
     #
     def encoding
-      unless @encoding
-        @encoding = pragma( "encoding" ).first['encoding']
-      end
-      return @encoding
+      @encoding ||= pragma( "encoding" ).first['encoding']
     end
 
     ## 

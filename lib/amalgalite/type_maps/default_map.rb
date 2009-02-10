@@ -34,7 +34,7 @@ module Amalgalite::TypeMaps
       # say what method to call to convert an sql type to a ruby type
       #
       def sql_to_method( sql_type  ) # :nodoc:
-        unless @sql_to_method
+        unless defined? @sql_to_method
           @sql_to_method = {}
           methods_handling_sql_types.each_pair do |method, sql_types|
             sql_types.each { |t| @sql_to_method[t] = method }

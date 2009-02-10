@@ -1,4 +1,11 @@
 = Amalgalite Changelog
+== Version 0.7.5 - 2009-02-11
+
+=== Bug Fixes
+
+* another ruby -w pass to clear up warnings
+* force all tests to run with -w turned on
+
 == Version 0.7.4 - 2009-02-08
 
 === Bug Fixes

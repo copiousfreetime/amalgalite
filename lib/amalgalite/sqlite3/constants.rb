@@ -12,7 +12,7 @@ module Amalgalite::SQLite3
       # constant. this is a helper method used by some of the other modules
       #
       def name_from_value( value )
-        unless @const_map_from_value
+        unless defined? @const_map_from_value
           @const_map_from_value = {}
           constants.each do |const_name|
             c_int = const_get( const_name )
@@ -27,7 +27,7 @@ module Amalgalite::SQLite3
       # some of the other modules
       #
       def value_from_name( name )
-        unless @const_map_from_name
+        unless defined? @const_map_from_name
           @const_map_from_name = {}
           constants.each do |const_name|
             c_int = const_get( const_name )

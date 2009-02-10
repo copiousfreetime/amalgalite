@@ -74,7 +74,7 @@ Configuration.for('rcov') {
   output_dir  "coverage"
   libs        %w[ lib ]
   rcov_opts   %w[ --html ]
-  ruby_opts   %w[ ]
+  ruby_opts   %w[ -w ]
   test_files  Configuration.for('packaging').files.test
 }
 #
