@@ -64,7 +64,7 @@ Configuration.for('test') {
   mode      "spec"
   files     Configuration.for("packaging").files.test
   options   %w[ --format progress --color ]
-  ruby_opts %w[ ]
+  ruby_opts %w[ -w ]
 }
 
 #-----------------------------------------------------------------------
