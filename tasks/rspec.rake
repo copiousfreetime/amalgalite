@@ -26,7 +26,6 @@ if spec_config = Configuration.for_if_exist?("test") then
           r.rcov_opts = rcov_config.rcov_opts
         end
       end
-      STDERR.puts rs.inspect
 
       task :spec => 'ext:build'
     end

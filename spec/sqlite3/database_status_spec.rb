@@ -30,7 +30,7 @@ describe "Amalgalite::SQLite3::Database::Status" do
     stat.reset!
     after = stat.highwater
 
-    after.should == 0
-    after.should_not == before
+    after.should eql(0)
+    after.should_not eql(before)
   end
 end

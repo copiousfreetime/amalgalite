@@ -80,7 +80,7 @@ describe "Progress Handlers" do
     @iso_db.progress_handler( 5, ph )
     qt = query_thread( @iso_db )
     qt.join
-    ph.call_count.should == 25
+    ph.call_count.should eql(25)
     qt[:exception].should be_instance_of( ::Amalgalite::SQLite3::Error )
     qt[:exception].message.should =~ /interrupted/
   end
@@ -97,7 +97,7 @@ describe "Progress Handlers" do
     @iso_db.remove_progress_handler
     qt = query_thread( @iso_db )
     qt.join
-    ph.call_count.should == 0
+    ph.call_count.should eql(0)
     qt[:exception].should be_nil
   end
 end

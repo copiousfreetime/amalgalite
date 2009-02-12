@@ -13,7 +13,7 @@ describe Amalgalite::TraceTap do
     s = StringIO.new
     tt = ::Amalgalite::TraceTap.new( s, 'puts' )
     tt.trace('test trace')
-    s.string.should == "test trace\n"
+    s.string.should eql("test trace\n")
   end
   
   it "raises an error if an the wrapped object does not respond to the indicated method"  do
@@ -51,9 +51,9 @@ describe Amalgalite::ProfileSampler do
     s.sample( 84 )
     s.sample( 21 )
     h = s.to_h
-    h['min'].should == 21
-    h['max'].should == 84
-    h['mean'].should == 49
-    h['n'].should == 3
+    h['min'].should eql(21)
+    h['max'].should eql(84)
+    h['mean'].should eql(49.0)
+    h['n'].should eql(3)
   end
 end

@@ -38,8 +38,6 @@ Configuration.for('packaging') {
     all       bin + ext + examples + lib + test + data + rdoc + tasks 
   }
 
-  puts "ext files = #{files.ext}"
-
   # ways to package the results
   formats {
     tgz true
