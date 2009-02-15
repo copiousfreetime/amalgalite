@@ -1,3 +1,10 @@
+Next Release:
+    - James's transaction in rescue clause bug
+    - easy transaction methods
+    - Think about moving from arrayfields to ordered hash?
+    - type conversion for manifest typing? how to allow it through?
+    - table name and column name in a type map?
+
 Future Release:
   SQLite API:
     - authorizers

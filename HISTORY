@@ -1,4 +1,14 @@
 = Amalgalite Changelog
+== Version 0.7.6 - 2009-02-15
+
+=== Enhancements
+
+
+=== Bug Fixes
+
+* incorrectly raise an exception if a transaction is started when rescuing an
+  exception [reported by James Edwared Gray II]
+
 == Version 0.7.5 - 2009-02-12
 
 === Bug Fixes

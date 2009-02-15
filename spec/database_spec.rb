@@ -240,6 +240,36 @@ describe Amalgalite::Database do
     end
   end
 
+  it "commits if an exception happens during a transaction block but is rescued within the block" do
+    @iso_db.transaction do |db|
+      begin
+        r = db.execute("SELECT count(1) as cnt FROM country");
+        r.first['cnt'].should eql(242)
+        db.execute("DELETE FROM country")
+        db.in_transaction?.should eql(true)
+        raise "testing rollback"
+      rescue => e
+        e.message.should == "testing rollback"
+      end
+      $!.should == nil
+    end
+    @iso_db.in_transaction?.should eql(false)
+    @iso_db.first_value_from("select count(1) as cnt from country").should eql(0)
+  end
+
+  it "does not reraise an exception that exits before the transaction starts" do
+    class MyExceptionTest < RuntimeError; end
+    db = Amalgalite::Database.new( ":memory:" )
+
+    lambda {
+      begin
+        raise MyExceptionTest, "James pointed this out"
+      rescue MyExceptionTest
+        db.transaction("EXCLUSIVE") { }
+      end
+    }.should_not raise_error( MyExceptionTest )
+  end
+
   describe "#define_function" do
    it "does not allow mixing of arbitrary and mandatory arguments to an SQL function" do
       class FunctionTest2 < ::Amalgalite::Function

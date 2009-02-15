@@ -551,9 +551,10 @@ module Amalgalite
 
       if block_given? then
         begin
+          previous_exception = $!
           return ( yield self )
         ensure
-          if $! then
+          if $! and ($! != previous_exception) then
             rollback
             raise $!
           else
