@@ -4,6 +4,7 @@ Next Release:
     - Think about moving from arrayfields to ordered hash?
     - type conversion for manifest typing? how to allow it through?
     - table name and column name in a type map?
+    - implement backup api
 
 Future Release:
   SQLite API:

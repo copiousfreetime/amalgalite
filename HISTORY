@@ -1,8 +1,9 @@
 = Amalgalite Changelog
-== Version 0.7.6 - 2009-02-15
+== Version 0.8.0 - 2009-02-XX
 
 === Enhancements
 
+* Update to SQLite 6.8.11
 
 === Bug Fixes
 
