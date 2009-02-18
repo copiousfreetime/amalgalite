@@ -165,6 +165,7 @@ module Amalgalite
     def close
       if open? then
         @api.close
+        @open = false
       end
     end
 

@@ -594,18 +594,18 @@ int amalgalite_xProgress( void *pArg )
 VALUE am_sqlite3_database_progress_handler( VALUE self, VALUE op_count, VALUE handler )
 {
     am_sqlite3   *am_db;
-    int           op_codes = FIX2INT( op_count );
 
     Data_Get_Struct(self, am_sqlite3, am_db);
 
     /* Removing a progress handler, remove it from sqlite and then remove it
      * from the garbage collector if it existed */
     if ( Qnil == handler ) {
-        sqlite3_progress_handler( am_db->db, 0, NULL, (void*)NULL );
+        sqlite3_progress_handler( am_db->db, -1, NULL, (void*)NULL );
         if ( Qnil != am_db->progress_handler_obj ) {
             rb_gc_unregister_address( &(am_db->progress_handler_obj) );
         }
     } else {
+        int  op_codes = FIX2INT( op_count );
         /* installing a progress handler
          * - register it with sqlite
          * - keep a reference for ourselves with our database handle

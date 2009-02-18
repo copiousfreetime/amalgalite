@@ -35,6 +35,14 @@ module Amalgalite
       @blobs_to_write  = []
       @rowid_index     = nil
       @result_meta     = nil
+      @open            = true
+    end
+
+    ##
+    # is the statement open for business
+    #
+    def open?
+      @open
     end
 
     ##
@@ -288,8 +296,10 @@ module Amalgalite
         row = nil
         write_blobs
       else
-        raise Amalgalite::SQLite3::Error, 
-              "SQLITE ERROR #{rc} (#{Amalgalite::SQLite3::Constants::ResultCode.name_from_value( rc )}) : #{@db.api.last_error_message}"
+        self.close # must close so that the error message is guaranteed to be pushed into the database handler
+                   # and we can can call last_error_message on it
+        msg = "SQLITE ERROR #{rc} (#{Amalgalite::SQLite3::Constants::ResultCode.name_from_value( rc )}) : #{@db.api.last_error_message}"
+        raise Amalgalite::SQLite3::Error, msg
       end
       return row
     end
@@ -396,7 +406,10 @@ module Amalgalite
     # has been closed.
     #
     def close
-      @stmt_api.close
+      if open?
+        @stmt_api.close
+        @open = false
+      end
     end
   end
 end
