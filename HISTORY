@@ -7,6 +7,7 @@
 
 === Bug Fixes
 
+* fix issues with the wrong error message appearing in statement closing
 * incorrectly raise an exception if a transaction is started when rescuing an
   exception [reported by James Edwared Gray II]
 
