@@ -1,9 +1,15 @@
 = Amalgalite Changelog
+== Version 0.7.7 - 2009-03-03
+
+=== Bug Fixes
+
+* roll back to SQLite 3.6.10 because of substr() bug in 3.6.11
+
 == Version 0.7.6 - 2009-03-02
 
 === Enhancements
 
-* Update to SQLite 6.8.11
+* Update to SQLite 3.6.11
 
 === Bug Fixes
 
