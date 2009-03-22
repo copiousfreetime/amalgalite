@@ -59,6 +59,19 @@ describe Amalgalite::Schema do
     ct.columns['id'].should_not be_auto_increment
   end
 
+  it "knows what the primary key of a table is" do
+    ct = @iso_db.schema.tables['country']
+    ct.primary_key.should == [ ct.columns['two_letter'] ]
+  end
+
+  it "knows what the primary key of a table is when it is a multiple column primary key" do
+    sql = "CREATE TABLE m ( id1, id2, PRIMARY KEY (id2, id1) )"
+    @iso_db.execute( sql )
+    @iso_db.schema.dirty!
+    mt = @iso_db.schema.tables['m']
+    mt.primary_key.should == [ mt.columns['id2'], mt.columns['id1'] ]
+  end
+
   it "loads the indexes" do
     c = @iso_db.schema.tables['country']
     c.indexes.size.should == 2

@@ -18,7 +18,7 @@ if spec_config = Configuration.for_if_exist?("test") then
                           Amalgalite::Paths.root_dir ]
         r.spec_files  = spec_config.files 
         r.spec_opts   = spec_config.options
-        r.warning     = true
+        #r.warning     = true
 
         if rcov_config = Configuration.for_if_exist?('rcov') then
           r.rcov      = true
