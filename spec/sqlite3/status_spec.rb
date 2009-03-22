@@ -13,6 +13,6 @@ describe "Amalgalite::SQLite3::Status" do
     Amalgalite::SQLite3.status.memory_used.reset!
     Amalgalite::SQLite3.status.memory_used.highwater.should > 0
     after = Amalgalite::SQLite3.status.memory_used.highwater
-    after.should_not == before
+    after.should_not eql(before)
   end
 end

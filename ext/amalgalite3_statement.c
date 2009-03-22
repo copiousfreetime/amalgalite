@@ -530,18 +530,27 @@ VALUE am_sqlite3_statement_sql(VALUE self)
  *    stmt.close -> nil
  *
  * Closes the statement.  If there is a problem closing the statement then an
- * error is raised.
+ * error is raised.  Closing a statement when there is an existing error is
+ * perfectly fine.
+ *
  */
 VALUE am_sqlite3_statement_close( VALUE self )
 {
 
     am_sqlite3_stmt   *am_stmt;
-    int                rc;
+    int                rc, existing_errcode;
 
     Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
+
+    /* check the current error code to see if one exists, we could be
+     * closing a statement that has an error, and in that case we do not want to
+     * raise an additional error, we want to let the existing error stand
+     */
+    existing_errcode = sqlite3_errcode( sqlite3_db_handle( am_stmt->stmt ) );
     rc = sqlite3_finalize( am_stmt->stmt );
-    if ( SQLITE_OK != rc ) {
-        rb_raise(eAS_Error, "Failure to close statment : [SQLITE_ERROR %d] : %s\n",
+
+    if ( (SQLITE_OK != rc) && (rc != existing_errcode) ) {
+        rb_raise(eAS_Error, "Failure to close statement : [SQLITE_ERROR %d] : %s\n",
                 rc, sqlite3_errmsg( sqlite3_db_handle( am_stmt->stmt) ));
     }
 
@@ -574,6 +583,8 @@ VALUE am_sqlite3_statement_alloc(VALUE klass)
 {
     am_sqlite3_stmt  *wrapper = ALLOC(am_sqlite3_stmt);
     VALUE             obj     = (VALUE)NULL;
+
+    wrapper->remaining_sql = Qnil;
 
     obj = Data_Wrap_Struct(klass, NULL, am_sqlite3_statement_free, wrapper);
     return obj;

@@ -1,5 +1,23 @@
 = Amalgalite Changelog
-== Version 0.7.5 - 2009-02-11
+== Version 0.7.7 - 2009-03-03
+
+=== Bug Fixes
+
+* roll back to SQLite 3.6.10 because of substr() bug in 3.6.11
+
+== Version 0.7.6 - 2009-03-02
+
+=== Enhancements
+
+* Update to SQLite 3.6.11
+
+=== Bug Fixes
+
+* fix issues with the wrong error message appearing in statement closing
+* incorrectly raise an exception if a transaction is started when rescuing an
+  exception [reported by James Edwared Gray II]
+
+== Version 0.7.5 - 2009-02-12
 
 === Bug Fixes
 

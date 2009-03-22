@@ -38,8 +38,6 @@ Configuration.for('packaging') {
     all       bin + ext + examples + lib + test + data + rdoc + tasks 
   }
 
-  puts "ext files = #{files.ext}"
-
   # ways to package the results
   formats {
     tgz true
@@ -74,7 +72,7 @@ Configuration.for('rcov') {
   output_dir  "coverage"
   libs        %w[ lib ]
   rcov_opts   %w[ --html ]
-  ruby_opts   %w[ -w ]
+  ruby_opts   %w[  ]
   test_files  Configuration.for('packaging').files.test
 }
 #

@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'spec'
+require File.expand_path( File.join( File.dirname( __FILE__ ), "spec_helper.rb" ) )
 
-$: << File.expand_path(File.join(File.dirname(__FILE__),"..","lib"))
 require 'amalgalite'
 require 'amalgalite/database'
 class PH < ::Amalgalite::ProgressHandler
@@ -80,8 +80,10 @@ describe "Progress Handlers" do
     @iso_db.progress_handler( 5, ph )
     qt = query_thread( @iso_db )
     qt.join
-    ph.call_count.should == 25
+    ph.call_count.should eql(25)
     qt[:exception].should be_instance_of( ::Amalgalite::SQLite3::Error )
+    @iso_db.api.last_error_code.should == 9
+    @iso_db.api.last_error_message.should  =~ /interrupted/
     qt[:exception].message.should =~ /interrupted/
   end
 
@@ -97,7 +99,7 @@ describe "Progress Handlers" do
     @iso_db.remove_progress_handler
     qt = query_thread( @iso_db )
     qt.join
-    ph.call_count.should == 0
+    ph.call_count.should eql(0)
     qt[:exception].should be_nil
   end
 end

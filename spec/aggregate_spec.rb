@@ -1,7 +1,8 @@
 require 'rubygems'
 require 'spec'
 
-$: << File.expand_path(File.join(File.dirname(__FILE__),"..","lib"))
+require File.expand_path( File.join( File.dirname( __FILE__ ), "spec_helper.rb" ) )
+
 require 'amalgalite'
 require 'amalgalite/database'
 
@@ -43,29 +44,29 @@ describe "Aggregate SQL Functions" do
   it "can define a custom SQL aggregate as a class with N params" do
     @iso_db.define_aggregate("atest1", AggregateTest1 )
     r = @iso_db.execute("SELECT atest1(id,name) as a, count(*) as c FROM country")
-    r.first['a'].should == r.first['c']
-    r.first['a'].should == 242
+    r.first['a'].should eql(r.first['c'])
+    r.first['a'].should eql(242)
   end
 
   it "can remove a custom SQL aggregate by class" do
     @iso_db.define_aggregate("atest1", AggregateTest1 )
-    @iso_db.aggregates.size.should == 1
+    @iso_db.aggregates.size.should eql(1)
     r = @iso_db.execute("SELECT atest1(id,name) as a, count(*) as c FROM country")
-    r.first['a'].should == r.first['c']
-    r.first['a'].should == 242
+    r.first['a'].should eql(r.first['c'])
+    r.first['a'].should eql(242)
     @iso_db.remove_aggregate( "atest1", AggregateTest1 )
-    @iso_db.aggregates.size.should == 0
+    @iso_db.aggregates.size.should eql(0)
     lambda{ @iso_db.execute("SELECT atest1(id,name) as a, count(*) as c FROM country") }.should raise_error(::Amalgalite::SQLite3::Error, /no such function: atest1/ )
   end
 
   it "can remove a custom SQL aggregate by arity" do
     @iso_db.define_aggregate("atest1", AggregateTest1 )
-    @iso_db.aggregates.size.should == 1
+    @iso_db.aggregates.size.should eql(1)
     r = @iso_db.execute("SELECT atest1(id,name) as a, count(*) as c FROM country")
-    r.first['a'].should == r.first['c']
-    r.first['a'].should == 242
+    r.first['a'].should eql(r.first['c'])
+    r.first['a'].should eql(242)
     @iso_db.remove_aggregate( "atest1", -1)
-    @iso_db.aggregates.size.should == 0
+    @iso_db.aggregates.size.should eql(0)
     lambda{ @iso_db.execute("SELECT atest1(id,name) as a, count(*) as c FROM country") }.should raise_error(::Amalgalite::SQLite3::Error, /no such function: atest1/ )
   end
 
@@ -75,12 +76,12 @@ describe "Aggregate SQL Functions" do
     end
     @iso_db.define_aggregate("atest1", AggregateTest1 )
     @iso_db.define_aggregate("atest1", AT2)
-    @iso_db.aggregates.size.should == 2
+    @iso_db.aggregates.size.should eql(2)
     r = @iso_db.execute("SELECT atest1(id,name) as a, atest1(id), count(*) as c FROM country")
-    r.first['a'].should == r.first['c']
-    r.first['a'].should == 242
+    r.first['a'].should eql(r.first['c'])
+    r.first['a'].should eql(242)
     @iso_db.remove_aggregate( "atest1" )
-    @iso_db.aggregates.size.should == 0
+    @iso_db.aggregates.size.should eql(0)
     lambda{ @iso_db.execute("SELECT atest1(id,name) as a, count(*) as c FROM country") }.should raise_error(::Amalgalite::SQLite3::Error, /no such function: atest1/ )
   end
 

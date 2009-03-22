@@ -165,6 +165,7 @@ module Amalgalite
     def close
       if open? then
         @api.close
+        @open = false
       end
     end
 
@@ -551,9 +552,10 @@ module Amalgalite
 
       if block_given? then
         begin
+          previous_exception = $!
           return ( yield self )
         ensure
-          if $! then
+          if $! and ($! != previous_exception) then
             rollback
             raise $!
           else

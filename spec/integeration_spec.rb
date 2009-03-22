@@ -50,12 +50,12 @@ describe "Integration specifications" do
         db.execute "CREATE TABLE t( c #{sql_type} )"
         db.execute "insert into t (c) values ( ? )", ruby_info[:value]
         rows = db.execute "select * from t"
-        rows.first['c'].class.should == ruby_info[:klass]
+        rows.first['c'].class.should eql(ruby_info[:klass])
 
         if [ DateTime, Time ].include?( ruby_info[:klass] ) then
-          rows.first['c'].strftime("%Y-%m-%d %H:%M:%S").should == ruby_info[:value].strftime("%Y-%m-%d %H:%M:%S")
+          rows.first['c'].strftime("%Y-%m-%d %H:%M:%S").should eql(ruby_info[:value].strftime("%Y-%m-%d %H:%M:%S"))
         else
-          rows.first['c'].should == ruby_info[:value]
+          rows.first['c'].should eql(ruby_info[:value])
         end
         db.close
       end
@@ -79,7 +79,7 @@ describe "Integration specifications" do
         db.execute "CREATE TABLE t( c #{sql_type} )"
         db.execute "insert into t (c) values ( ? )", ruby_info[:value]
         rows = db.execute "select * from t"
-        rows.first['c'].should == ruby_info[:result]
+        rows.first['c'].should eql(ruby_info[:result])
         db.close
       end
     end
@@ -102,7 +102,7 @@ describe "Integration specifications" do
         db.execute "CREATE TABLE t( c #{sql_type} )"
         db.execute "insert into t (c) values ( ? )", ruby_info[:value]
         rows = db.execute "select * from t"
-        rows.first['c'].should == ruby_info[:result]
+        rows.first['c'].should eql(ruby_info[:result])
         db.close
       end
     end

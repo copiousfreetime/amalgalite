@@ -46,27 +46,27 @@ describe Amalgalite::Blob do
 
       it "and retrieves the data as a single value" do
         all_rows = @db.execute("SELECT name,data FROM blobs")
-        all_rows.size.should == 1;
-        all_rows.first['name'].should == DATA_FILE
+        all_rows.size.should eql(1)
+        all_rows.first['name'].should eql(DATA_FILE)
         all_rows.first['data'].should_not be_incremental
-        all_rows.first['data'].to_string_io.string.should == IO.read( DATA_FILE )
+        all_rows.first['data'].to_string_io.string.should eql(IO.read( DATA_FILE ))
       end
 
       it "and retrieves the data using incremental IO" do
         all_rows = @db.execute("SELECT * FROM blobs")
-        all_rows.size.should == 1;
-        all_rows.first['name'].should == DATA_FILE
+        all_rows.size.should eql(1)
+        all_rows.first['name'].should eql(DATA_FILE)
         all_rows.first['data'].should be_incremental
-        all_rows.first['data'].to_string_io.string.should == IO.read( DATA_FILE )
+        all_rows.first['data'].to_string_io.string.should eql(IO.read( DATA_FILE ))
       end
 
       it "writes the data to a file " do
         all_rows = @db.execute("SELECT * FROM blobs")
-        all_rows.size.should == 1;
-        all_rows.first['name'].should == DATA_FILE
+        all_rows.size.should eql(1)
+        all_rows.first['name'].should eql(DATA_FILE)
         all_rows.first['data'].should be_incremental
         all_rows.first['data'].write_to_file( @junk_file )
-        IO.read( @junk_file).should == IO.read( DATA_FILE )
+        IO.read( @junk_file).should eql(IO.read( DATA_FILE ))
       end
     end
   end
