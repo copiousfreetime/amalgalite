@@ -42,6 +42,14 @@ describe Amalgalite::Schema do
     @iso_db.schema.views["v1"].sql.should eql(sql)
   end
 
+  it "removes quotes from around default values in columns" do
+    sql = "CREATE TABLE t1( d1 default 't' )"
+    @iso_db.execute( sql )
+    @iso_db.schema.dirty!
+    tt = @iso_db.schema.tables['t1']
+    tt.columns['d1'].default_value.should == "t"
+  end
+
   it "loads the tables and columns" do
     ct = @iso_db.schema.tables['country']
     ct.name.should eql("country")
