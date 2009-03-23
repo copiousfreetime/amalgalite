@@ -74,8 +74,8 @@ module Amalgalite
         table.columns = load_columns( table )
         table.schema = self
         table.indexes = load_indexes( table )
+        @tables[table.name] = table 
       end
-      @tables[table.name] = table
       return table
     end
 
