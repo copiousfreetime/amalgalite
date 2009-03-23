@@ -61,20 +61,29 @@ module Amalgalite
     # we do this instead of just looking for the columns where primary key is
     # true because we want the columns in primary key order
     def primary_key
-      @primary_key ||= (
+      unless @primary_key
         pk_column_names = Set.new( primary_key_columns.collect { |c| c.name } )
         unique_indexes  = indexes.values.find_all { |i| i.unique? }
-        pk_columns = []
+
+        pk_result = []
+
         unique_indexes.each do |idx|
           idx_column_names = Set.new( idx.columns.collect { |c| c.name } )
           r = idx_column_names ^ pk_column_names
-          if r.size == 0
-            pk_columns = idx.columns
+          if r.size == 0 then
+            pk_result = idx.columns
             break
           end
         end
-        pk_columns
-      )
+
+        # no joy, see about just using all the columns that say the are primary
+        # keys
+        if pk_result.empty? then
+          pk_result = self.primary_key_columns
+        end
+        @primary_key = pk_result
+      end
+      return @primary_key
     end
   end
 end

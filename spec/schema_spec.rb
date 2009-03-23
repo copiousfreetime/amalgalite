@@ -72,6 +72,14 @@ describe Amalgalite::Schema do
     ct.primary_key.should == [ ct.columns['two_letter'] ]
   end
 
+  it "knows the primary key of a table even without an explicity unique index" do
+    sql = "CREATE TABLE u( id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL , other text )"
+    @iso_db.execute( sql )
+    @iso_db.schema.dirty!
+    ut = @iso_db.schema.tables['u']
+    ut.primary_key.should == [ ut.columns['id'] ]
+  end
+
   it "knows what the primary key of a table is when it is a multiple column primary key" do
     sql = "CREATE TABLE m ( id1, id2, PRIMARY KEY (id2, id1) )"
     @iso_db.execute( sql )
