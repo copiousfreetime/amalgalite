@@ -55,7 +55,8 @@ module Amalgalite
     # load all the tables
     #
     def load_tables
-      @db.execute("SELECT tbl_name FROM sqlite_master WHERE type = 'table'") do |table_info|
+      @tables = {}
+      @db.execute("SELECT tbl_name FROM sqlite_master WHERE type = 'table' AND name != 'sqlite_sequence'") do |table_info|
         table = load_table( table_info['tbl_name'] )
         table.indexes = load_indexes( table )
         @tables[table.name] = table
@@ -103,6 +104,9 @@ module Amalgalite
 
       @db.execute("PRAGMA index_list( #{@db.quote(table.name)} );") do |idx_list|
         idx = indexes[idx_list['name']]
+        if idx.nil? then
+          raise "#{idx_list['name']} is not in the list of indexes for #{indexes.keys}"
+        end
 
         idx.sequence_number = idx_list['seq']
         idx.unique          = Boolean.to_bool( idx_list['unique'] )
