@@ -93,4 +93,12 @@ describe Amalgalite::Schema do
     subc.indexes.size.should eql(3)
     subc.indexes['subcountry_country'].columns.first.should eql(@iso_db.schema.tables['subcountry'].columns['country'])
   end
+
+  it "can load the schema of a temporary table" do
+    @iso_db.execute "CREATE TEMPORARY TABLE tt( a, b, c )"
+    @iso_db.schema.dirty!
+    @iso_db.schema.tables['tt'].should be_nil
+    @iso_db.schema.load_table('tt').should_not be_nil
+    @iso_db.schema.tables['tt'].should be_temporary
+  end
 end

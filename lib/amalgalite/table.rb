@@ -25,12 +25,18 @@ module Amalgalite
     # in this table.  keys are the column names
     attr_accessor :columns
 
-    def initialize( name, sql ) 
+    def initialize( name, sql = nil ) 
       @name    = name
       @sql     = sql
       @indexes = {}
       @columns = {}
     end
+
+    # Is the table a temporary table or not
+    def temporary?
+      !sql
+    end
+
 
     # the Columns in original definition order
     def columns_in_order

@@ -75,6 +75,16 @@ module Amalgalite
         table.schema = self
         table.indexes = load_indexes( table )
         @tables[table.name] = table 
+      else
+        # might be a temporary table
+        table = Amalgalite::Table.new( table_name, nil )
+        cols = load_columns( table )
+        if cols.size > 0 then
+          table.columns = cols
+          table.schema = self
+          table.indexes = load_indexes( table )
+          @tables[table.name] = table
+        end
       end
       return table
     end
@@ -124,8 +134,10 @@ module Amalgalite
           end
         end
 
-        @db.api.table_column_metadata( "main", table.name, col.name ).each_pair do |key, value|
-          col.send("#{key}=", value)
+        unless table.temporary? then
+          @db.api.table_column_metadata( "main", table.name, col.name ).each_pair do |key, value|
+            col.send("#{key}=", value)
+          end
         end
         col.schema = self
         cols[col.name] = col
