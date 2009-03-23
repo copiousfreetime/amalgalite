@@ -158,11 +158,11 @@ module Amalgalite
       check_parameter_count!( params.size )
       params.each_pair do | param, value |
         position = param_position_of( param )
-      if position > 0 then
-        bind_parameter_to( position, value )
-      else
-        raise Amalgalite::Error, "Unable to find parameter '#{param}' in SQL statement [#{sql}]"
-      end
+        if position > 0 then
+          bind_parameter_to( position, value )
+        else
+          raise Amalgalite::Error, "Unable to find parameter '#{param}' in SQL statement [#{sql}]"
+        end
       end
     end
 
@@ -280,7 +280,7 @@ module Amalgalite
                                                                            col.schema.table,
                                                                            col.schema.name,
                                                                            @stmt_api.column_int64( @rowid_index ),
-                                                                          "r"),
+                                                                           "r"),
                                             :column => col.schema)
             else
               value = Amalgalite::Blob.new( :string => @stmt_api.column_blob( idx ), :column => col.schema )
