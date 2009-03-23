@@ -80,6 +80,14 @@ describe Amalgalite::Schema do
     ut.primary_key.should == [ ut.columns['id'] ]
   end
 
+  it "knows the primary key of a temporary table" do
+    @iso_db.execute "CREATE TEMPORARY TABLE tt( a, b INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, c )"
+    @iso_db.schema.dirty!
+    tt = @iso_db.schema.load_table( 'tt' )
+    tt.primary_key.should == [ tt.columns['b'] ]
+
+  end
+
   it "knows what the primary key of a table is when it is a multiple column primary key" do
     sql = "CREATE TABLE m ( id1, id2, PRIMARY KEY (id2, id1) )"
     @iso_db.execute( sql )

@@ -38,15 +38,6 @@ module Amalgalite
     # the collation sequence name of the column
     attr_accessor :collation_sequence_name
 
-    # true if the column has a NOT NULL constraint, false otherwise
-    attr_accessor :not_null_constraint
-
-    # true if the column is part of a primary key, false otherwise
-    attr_accessor :primary_key
-
-    # true if the column is AUTO INCREMENT, false otherwise
-    attr_accessor :auto_increment
-
     # The index (starting with 0) of this column in the table definition
     # or result set
     attr_accessor :order
@@ -70,22 +61,37 @@ module Amalgalite
 
     # true if the column may have a NULL value
     def nullable?
-      not_null_constraint == false
+      @not_null_constraint == false
+    end
+
+    # set whether or not the column has a not null constraint
+    def not_null_constraint=( other )
+      @not_null_constraint = Boolean.to_bool( other )
     end
 
     # true if the column as a NOT NULL constraint
     def not_null_constraint?
-      not_null_constraint
+      @not_null_constraint
+    end
+
+    # set whether or not the column is a primary key column
+    def primary_key=( other )
+      @primary_key = Boolean.to_bool( other )
     end
 
     # true if the column is a primary key column
     def primary_key?
-      primary_key
+      @primary_key
+    end
+
+    # set whether or not the column is auto increment
+    def auto_increment=( other )
+      @auto_increment = Boolean.to_bool( other )
     end
 
     # true if the column is auto increment
     def auto_increment?
-      auto_increment
+      @auto_increment
     end
   end
 end
