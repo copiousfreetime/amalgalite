@@ -123,7 +123,11 @@ module Amalgalite
       @db.execute("PRAGMA table_info(#{@db.quote(table.name)})") do |row|
         col = Amalgalite::Column.new( "main", table.name, row['name'], row['cid'])
 
-        col.default_value = row['dflt_value']
+        col.default_value       = row['dflt_value']
+
+        col.declared_data_type  = row['type']
+        col.not_null_constraint = row['notnull']
+        col.primary_key         = row['pk']
 
         # need to remove leading and trailing ' or " from the default value
         if col.default_value and col.default_value.kind_of?( String ) and ( col.default_value.length >= 2 ) then
@@ -135,6 +139,7 @@ module Amalgalite
         end
 
         unless table.temporary? then
+          # get more exact information
           @db.api.table_column_metadata( "main", table.name, col.name ).each_pair do |key, value|
             col.send("#{key}=", value)
           end

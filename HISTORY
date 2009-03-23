@@ -1,4 +1,11 @@
 = Amalgalite Changelog
+== Version 0.7.9 - 2009-03-22
+
+== Enhancements
+
+* Add in support for obtaining limited schema information on temporary tables
+* Add support for returning the primary key columns of a table
+
 == Version 0.7.7 - 2009-03-03
 
 === Bug Fixes
