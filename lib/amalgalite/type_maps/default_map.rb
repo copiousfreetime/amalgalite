@@ -7,6 +7,7 @@ require 'amalgalite/type_map'
 require 'amalgalite3'
 require 'time'
 require 'date'
+require 'parsedate'
 
 module Amalgalite::TypeMaps
   ##
@@ -116,10 +117,14 @@ module Amalgalite::TypeMaps
     end
 
     ##
-    # convert a string to a datetime
+    # convert a string to a datetime, if no timzone is found in the parsed
+    # string, set it to the local offset.  
     #
     def datetime( str )
-      DateTime.parse( str )
+      parts = ParseDate.parsedate( str )
+      parts[6] ||= tz_offset()  # set the timezone if it isn't set
+      parts.pop                 # remove the weekday
+      DateTime.new( *parts )
     end
 
     ##
@@ -162,6 +167,13 @@ module Amalgalite::TypeMaps
     #
     def blob( str )
       ::Amalgalite::Blob.new( :string => str )
+    end
+
+    #####
+    private
+    #####
+    def tz_offset
+      DateTime.now.offset
     end
   end
 end

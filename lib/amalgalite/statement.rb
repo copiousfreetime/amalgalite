@@ -406,7 +406,7 @@ module Amalgalite
     # has been closed.
     #
     def close
-      if open?
+      if open? then
         @stmt_api.close
         @open = false
       end
