@@ -104,8 +104,11 @@ module Amalgalite
 
       @db.execute("PRAGMA index_list( #{@db.quote(table.name)} );") do |idx_list|
         idx = indexes[idx_list['name']]
+
+        # temporary indexes do not show up in the previous list
         if idx.nil? then
-          raise "#{idx_list['name']} is not in the list of indexes for #{indexes.keys}"
+          idx = Amalgalite::Index.new( idx_list['name'], nil, table )
+          indexes[idx_list['name']] = idx
         end
 
         idx.sequence_number = idx_list['seq']
