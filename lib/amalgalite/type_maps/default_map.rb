@@ -164,12 +164,5 @@ module Amalgalite::TypeMaps
     def blob( str )
       ::Amalgalite::Blob.new( :string => str )
     end
-
-    #####
-    private
-    #####
-    def tz_offset
-      DateTime.now.offset
-    end
   end
 end
