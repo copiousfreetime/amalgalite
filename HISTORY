@@ -1,10 +1,12 @@
 = Amalgalite Changelog
-== Version 0.7.9 - 2009-03-22
+== Version 0.8.0 - 2009-03-23
 
 == Enhancements
 
 * Add in support for obtaining limited schema information on temporary tables
+  and indexes
 * Add support for returning the primary key columns of a table
+* Other miscellaneous items to support the ActiveRecord adapter
 
 == Version 0.7.7 - 2009-03-03
 
