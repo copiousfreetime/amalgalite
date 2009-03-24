@@ -7,7 +7,6 @@ require 'amalgalite/type_map'
 require 'amalgalite3'
 require 'time'
 require 'date'
-require 'parsedate'
 
 module Amalgalite::TypeMaps
   ##
@@ -121,10 +120,7 @@ module Amalgalite::TypeMaps
     # string, set it to the local offset.  
     #
     def datetime( str )
-      parts = ParseDate.parsedate( str )
-      parts[6] ||= tz_offset()  # set the timezone if it isn't set
-      parts.pop                 # remove the weekday
-      DateTime.new( *parts )
+      DateTime.parse( str )
     end
 
     ##
