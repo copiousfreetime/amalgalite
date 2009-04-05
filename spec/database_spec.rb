@@ -464,4 +464,26 @@ describe Amalgalite::Database do
     val.should eql(3995)
   end
 
+  it "replicates a database to memory" do
+    mem_db = @iso_db.replicate_to( ":memory:" )
+    @iso_db.close
+    val = mem_db.first_value_from("SELECT count(*) from subcountry" )
+    val.should eql(3995)
+  end
+
+  it "replicates a database to a database file" do
+    all_sub = @iso_db.execute("SELECT count(*) as cnt from subcountry").first['cnt']
+
+    fdb = Amalgalite::Database.new( SpecInfo.test_db )
+    @iso_db.replicate_to( fdb )
+    @iso_db.close
+
+    File.exist?( SpecInfo.test_db ).should == true
+    fdb.execute("SELECT count(*) as cnt from subcountry").first['cnt'].should == all_sub
+  end
+
+  it "raises an error if it is given an invalid location to replicate to" do
+    lambda { @iso_db.replicate_to( false ) }.should raise_error( ArgumentError, /must be a String or a Database/ )
+  end
+
 end

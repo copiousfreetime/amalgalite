@@ -1,9 +1,8 @@
 Next Release:
+    - implement backup api
     - easy transaction methods
-    - Think about moving from arrayfields to ordered hash?
     - type conversion for manifest typing? how to allow it through?
     - table name and column name in a type map?
-    - implement backup api
 
 Future Release:
   SQLite API:
@@ -33,6 +32,7 @@ Future Release:
     - sequel driver
 
   Features:
+    - Think about moving from arrayfields to ordered hash?
     - add to command line which directory to pack into a rubylibs table
     - amalgalite command line tool
     - use ruby's ALLOC_N and hook into sqlite3_mem_methods

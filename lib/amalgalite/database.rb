@@ -895,6 +895,38 @@ module Amalgalite
     def remove_progress_handler
       @api.progress_handler( nil, nil )
     end
+
+    ##
+    # call-seq:
+    #   db.replicate_to( ":memory:" ) -> new_db
+    #   db.replicate_to( "/some/location/my.db" ) -> new_db
+    #   db.replicate_to( Amalgalite::Database.new( "/my/backup.db" ) ) -> new_db
+    #
+    # replicate_to() takes a single argument, either a String or an
+    # Amalgalite::Database.  It returns the replicated database object.  If
+    # given a String, it will truncate that database if it already exists.
+    #
+    # Replicate the current database to another location, this can be used for a
+    # number of purposes:
+    #
+    # * load an sqlite database from disk into memory
+    # * snaphost an in memory db and save it to disk
+    # * backup on sqlite database to another location
+    # 
+    def replicate_to( location )
+      to_db = nil
+      case location 
+      when String
+        to_db = Amalgalite::Database.new( location )
+      when Amalgalite::Database
+        to_db = location
+      else
+        raise ArgumentError, "replicate_to( #{location} ) must be a String or a Database" 
+      end
+
+      @api.replicate_to( to_db.api )
+      return to_db
+    end
   end
 end
 

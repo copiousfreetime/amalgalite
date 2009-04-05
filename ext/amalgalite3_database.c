@@ -913,6 +913,56 @@ VALUE am_sqlite3_database_interrupt_bang( VALUE self )
 
 /**
  * call-seq:
+ *  database.replicate_to( other_db  ) -> other_db
+ *
+ * Replicates the current database to the database passed in using the
+ * sqlite3_backup api
+ *
+ */
+VALUE am_sqlite3_database_replicate_to( VALUE self, VALUE other )
+{
+    am_sqlite3  *am_src_db;
+    am_sqlite3  *am_dest_db;
+
+    sqlite3_backup *backup;
+    sqlite3        *src;
+    sqlite3        *dest;
+
+    int             rc_s;
+    int             rc_f;
+
+    /* source database */
+    Data_Get_Struct(self, am_sqlite3, am_src_db);
+    src = am_src_db->db;
+
+    /* destination database */
+    Data_Get_Struct(other, am_sqlite3, am_dest_db);
+    dest = am_dest_db->db;
+
+    backup = sqlite3_backup_init( dest, "main", src, "main" );
+    if ( NULL == backup ) {
+        rb_raise(eAS_Error, "Failure to initialize replication:  [SQLITE_ERROR %d] : %s\n",
+                 sqlite3_errcode( dest ), sqlite3_errmsg( dest ));
+    }
+
+    rc_s = sqlite3_backup_step( backup, -1 ); /* copy the whole thing at once */
+    rc_f = sqlite3_backup_finish( backup ); 
+
+    /* report the rc_s error if that one is bad, 
+     * else raise the rc_f error, or nothing */
+    if ( SQLITE_DONE != rc_s ) {
+        rb_raise(eAS_Error, "Failure in replication : [SQLITE_ERROR %d] : %s\n",
+                sqlite3_errcode( dest ), sqlite3_errmsg( dest ) );
+    } else if ( SQLITE_OK != rc_f ) {
+        rb_raise(eAS_Error, "Failure in finishing replication: [SQLITE_ERROR %d] : %s\n",
+                sqlite3_errcode( dest ), sqlite3_errmsg( dest ) );
+    } 
+
+    return other;
+}
+
+/**
+ * call-seq:
  *    database.table_column_metadata( db_name, table_name, column_name) -> Hash
  *
  * Returns a hash containing the meta information about the column.  The
@@ -1059,6 +1109,7 @@ void Init_amalgalite3_database( )
     rb_define_method(cAS_Database, "busy_handler", am_sqlite3_database_busy_handler, 1); /* in amalgalite3_database.c */
     rb_define_method(cAS_Database, "progress_handler", am_sqlite3_database_progress_handler, 2); /* in amalgalite3_database.c */
     rb_define_method(cAS_Database, "interrupt!", am_sqlite3_database_interrupt_bang, 0); /* in amalgalite3_database.c */
+    rb_define_method(cAS_Database, "replicate_to", am_sqlite3_database_replicate_to, 1); /* in amalgalite3_database.c */
 
 
     /*

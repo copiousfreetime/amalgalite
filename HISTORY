@@ -1,7 +1,14 @@
 = Amalgalite Changelog
+== Version 0.9.0 - 2009-04-05
+
+=== Enhancements
+
+* Update to SQLite 3.6.12
+* Added support for the SQLite Backup API, see Database#replicate_to
+
 == Version 0.8.0 - 2009-03-23
 
-== Enhancements
+=== Enhancements
 
 * Add in support for obtaining limited schema information on temporary tables
   and indexes
