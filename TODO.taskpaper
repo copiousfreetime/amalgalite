@@ -1,6 +1,4 @@
 Next Release:
-    - implement backup api
-    - easy transaction methods
     - type conversion for manifest typing? how to allow it through?
     - table name and column name in a type map?
 

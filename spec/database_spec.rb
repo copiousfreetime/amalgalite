@@ -199,9 +199,11 @@ describe Amalgalite::Database do
     r.should eql(42)
   end
 
-  it "returns the result of the transaction when a block is yielded" do
-    db = Amalgalite::Database.new( SpecInfo.test_db )
-    (db.transaction { 42 }).should eql(42)
+  %w[ transaction deferred_transaction immediate_transaction exclusive_transaction ].each do |trans|
+    it "returns the result of the #{trans} when a block is yielded" do
+      db = Amalgalite::Database.new( SpecInfo.test_db )
+      (db.send( trans ){ 42 }).should eql(42)
+    end
   end
 
   it "#reload_schema!" do

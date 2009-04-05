@@ -542,7 +542,7 @@ module Amalgalite
     #
     # True nexted transactions are available through the _savepoint_ method.
     #
-    def transaction( mode = TransactionBehavior::DEFERRED )
+    def transaction( mode = TransactionBehavior::DEFERRED, &block )
       raise Amalgalite::Error, "Invalid transaction behavior mode #{mode}" unless TransactionBehavior.valid?( mode )
 
       # if already in a transaction, no need to start a new one.
@@ -565,6 +565,17 @@ module Amalgalite
       else
         return in_transaction?
       end
+    end
+    alias :deferred_transaction :transaction
+
+    # helper for an immediate transaction
+    def immediate_transaction( &block )
+      transaction( TransactionBehavior::IMMEDIATE, &block )
+    end
+
+    # helper for an exclusive transaction
+    def exclusive_transaction( &block )
+      transaction( TransactionBehavior::EXCLUSIVE, &block )
     end
 
     ##
