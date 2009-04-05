@@ -25,7 +25,6 @@ Future Release:
     - library status ( sqlite3_status )
 
   Drivers:
-    - active record driver
     - data mapper driver
     - sequel driver
 
