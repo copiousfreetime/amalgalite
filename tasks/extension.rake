@@ -31,7 +31,6 @@ if ext_config = Configuration.for_if_exist?('extension') then
         conf  = parts.last
         Dir.chdir(path.dirname) do |d| 
           ruby conf.to_s
-          #sh "rake default"
           sh "make"
         end
       end
@@ -50,6 +49,20 @@ if ext_config = Configuration.for_if_exist?('extension') then
           sh "make"
           rm_f "rbconfig.rb"
         end
+      end
+    end
+
+    desc "Build the extension for ruby1.9"
+    task :build19 => :clobber do
+      ext_config.configs.each do |extension|
+        path = Pathname.new( extension )
+        parts = path.split
+        conf = parts.last
+        Dir.chdir( path.dirname ) do |d|
+          sh "ruby1.9 -I. extconf.rb"
+          sh "make"
+        end
+ 
       end
     end
 

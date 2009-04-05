@@ -37,15 +37,15 @@ VALUE am_sqlite3_blob_initialize( VALUE self, VALUE db, VALUE db_name, VALUE tab
     Data_Get_Struct(db, am_sqlite3, am_db);
 
     /* make sure that the flags are valid, only 'r' or 'w' are allowed */
-    if ( ( RSTRING( flag_str )->len != 1) || 
-         ( ( 'r' != RSTRING( flag_str )->ptr[0] ) && 
-           ( 'w' != RSTRING( flag_str )->ptr[0] ))) {
+    if ( ( RSTRING_LEN( flag_str ) != 1) || 
+         ( ( 'r' != RSTRING_PTR( flag_str )[0] ) && 
+           ( 'w' != RSTRING_PTR( flag_str )[0] ))) {
         rb_raise( eAS_Error, "Error opening Blob in db = %s, table = %s, column = %s, rowid = %lu.  Invalid flag '%s'.  Must be either 'w' or 'r'\n",
-                             zDb, zTable, zColumn, (unsigned long)iRow, RSTRING( flag_str )->ptr);
+                             zDb, zTable, zColumn, (unsigned long)iRow, RSTRING_PTR( flag_str ));
     }
 
     /* switch to write mode */
-    if ( 'w' == RSTRING( flag_str )->ptr[0] ) { 
+    if ( 'w' == RSTRING_PTR( flag_str )[0] ) { 
         flags = 1;
     }
 
@@ -161,12 +161,12 @@ VALUE am_sqlite3_blob_write( VALUE self, VALUE buf )
     am_sqlite3_blob *am_blob;
     int              rc;
     VALUE            str = StringValue( buf );
-    int              n   = RSTRING( str )->len;
+    int              n   = RSTRING_LEN( str );
     char            *chk_buf = NULL;
 
     Data_Get_Struct(self, am_sqlite3_blob, am_blob);
 
-    rc = sqlite3_blob_write( am_blob->blob, RSTRING(str)->ptr, n, am_blob->current_offset); 
+    rc = sqlite3_blob_write( am_blob->blob, RSTRING_PTR(str), n, am_blob->current_offset); 
 
     if ( rc  != SQLITE_OK ) {
         rb_raise(eAS_Error, "Error writing %d bytes blob at offset %d: [SQLITE_ERROR %d] %s\n",

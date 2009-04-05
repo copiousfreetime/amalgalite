@@ -73,7 +73,7 @@ VALUE am_sqlite3_statement_bind_blob( VALUE self, VALUE position, VALUE blob )
     int               rc;
 
     Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
-    rc = sqlite3_bind_blob( am_stmt->stmt, pos, RSTRING( str )->ptr, RSTRING( str )->len, SQLITE_TRANSIENT);
+    rc = sqlite3_bind_blob( am_stmt->stmt, pos, RSTRING_PTR( str ), RSTRING_LEN( str ), SQLITE_TRANSIENT);
     if ( SQLITE_OK != rc ) {
         rb_raise(eAS_Error, "Error binding blob at position %d in statement: [SQLITE_ERROR %d] : %s\n",
                 pos,
@@ -100,9 +100,9 @@ VALUE am_sqlite3_statement_bind_double(VALUE self, VALUE position, VALUE value)
     Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
     rc = sqlite3_bind_double( am_stmt->stmt, pos, v );
     if ( SQLITE_OK != rc ) {
-        rb_raise(eAS_Error, "Error binding [%s] to double at position %d in statement: [SQLITE_ERROR %d] : %s\n",
-                value, pos,
-                rc, sqlite3_errmsg( sqlite3_db_handle( am_stmt->stmt) ));
+        rb_raise(eAS_Error, "Error binding [%lf] to double at position %d in statement: [SQLITE_ERROR %d] : %s\n",
+                v, pos,
+                rc, (char*)sqlite3_errmsg( sqlite3_db_handle( am_stmt->stmt) ));
     }
 
     return INT2FIX(rc);
@@ -125,7 +125,7 @@ VALUE am_sqlite3_statement_bind_int(VALUE self, VALUE position, VALUE value)
     Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
     rc = sqlite3_bind_int( am_stmt->stmt, pos, v );
     if ( SQLITE_OK != rc ) {
-        rb_raise(eAS_Error, "Error binding [%s] to int at position %d in statement: [SQLITE_ERROR %d] : %s\n",
+        rb_raise(eAS_Error, "Error binding [%d] to int at position %d in statement: [SQLITE_ERROR %d] : %s\n",
                 v, pos,
                 rc, sqlite3_errmsg( sqlite3_db_handle( am_stmt->stmt) ));
     }
@@ -150,7 +150,7 @@ VALUE am_sqlite3_statement_bind_int64(VALUE self, VALUE position, VALUE value)
     Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
     rc = sqlite3_bind_int64( am_stmt->stmt, pos, v );
     if ( SQLITE_OK != rc ) {
-        rb_raise(eAS_Error, "Error binding [%s] to int64 at position %d in statement: [SQLITE_ERROR %d] : %s\n",
+        rb_raise(eAS_Error, "Error binding [%lld] to int64 at position %d in statement: [SQLITE_ERROR %d] : %s\n",
                 v, pos,
                 rc, sqlite3_errmsg( sqlite3_db_handle( am_stmt->stmt) ));
     }
@@ -173,10 +173,10 @@ VALUE am_sqlite3_statement_bind_text(VALUE self, VALUE position, VALUE value)
     int               rc;
 
     Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
-    rc = sqlite3_bind_text( am_stmt->stmt, pos, RSTRING(str)->ptr, RSTRING(str)->len, SQLITE_TRANSIENT);
+    rc = sqlite3_bind_text( am_stmt->stmt, pos, RSTRING_PTR(str), RSTRING_LEN(str), SQLITE_TRANSIENT);
     if ( SQLITE_OK != rc ) {
         rb_raise(eAS_Error, "Error binding [%s] to text at position %d in statement: [SQLITE_ERROR %d] : %s\n",
-                RSTRING(str)->ptr, pos,
+                RSTRING_PTR(str), pos,
                 rc, sqlite3_errmsg( sqlite3_db_handle( am_stmt->stmt) ));
     }
 

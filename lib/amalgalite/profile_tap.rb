@@ -56,6 +56,7 @@ module Amalgalite
     #
     def stddev
       begin
+        return 0.0 if ( 1 == @n )
         Math.sqrt( (@sumsq - ( @sum * @sum / @n)) / (@n-1) )
       rescue Errno::EDOM
         return 0.0
@@ -82,7 +83,7 @@ module Amalgalite
     # return a string containing the sampler summary
     #
     def to_s
-      "[%s] => sum: %d, sumsq: %d, n: %d, mean: %0.6f, stddev: %0.6f, min: %d, max: %d" % to_a
+      "[%s] => sum: %d, sumsq: %d, n: %d, mean: %0.6f, stddev: %0.6f, min: %d, max: %d" % self.to_a
     end
 
   end

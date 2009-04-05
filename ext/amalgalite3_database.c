@@ -80,7 +80,7 @@ VALUE am_sqlite3_database_open16(VALUE class, VALUE rFilename)
     rc = sqlite3_extended_result_codes( am_db->db, 1);
     if ( SQLITE_OK != rc ) {
         rb_raise(eAS_Error, "Failure to set extended result codes on UTF-16 database %s : [SQLITE_ERROR %d] : %s\n",
-                filename, rc, sqlite3_errmsg16(am_db->db));
+                filename, rc, (char*)sqlite3_errmsg16(am_db->db));
     }
 
     return self;
@@ -281,11 +281,11 @@ VALUE am_sqlite3_database_prepare(VALUE self, VALUE rSQL)
     Data_Get_Struct(self, am_sqlite3, am_db);
 
     Data_Get_Struct(stmt, am_sqlite3_stmt, am_stmt);
-    rc = sqlite3_prepare_v2( am_db->db, RSTRING(sql)->ptr, RSTRING(sql)->len,
+    rc = sqlite3_prepare_v2( am_db->db, RSTRING_PTR(sql), RSTRING_LEN(sql),
                             &(am_stmt->stmt), &tail);
     if ( SQLITE_OK != rc) {
         rb_raise(eAS_Error, "Failure to prepare statement %s : [SQLITE_ERROR %d] : %s\n",
-                RSTRING(sql)->ptr, rc, sqlite3_errmsg(am_db->db));
+                RSTRING_PTR(sql), rc, sqlite3_errmsg(am_db->db));
         am_sqlite3_statement_free( am_stmt );
     }
 
@@ -444,7 +444,7 @@ void amalgalite_set_context_result( sqlite3_context* context, VALUE result )
             sqlite3_result_int64( context, 0);
             break;
         case T_STRING:
-            sqlite3_result_text( context, RSTRING(result)->ptr, RSTRING(result)->len, NULL);
+            sqlite3_result_text( context, RSTRING_PTR(result), RSTRING_LEN(result), NULL);
             break;
         default:
             sqlite3_result_error( context, "Unable to convert ruby object to an SQL function result", -1 );
@@ -651,7 +651,7 @@ void amalgalite_xFunc( sqlite3_context* context, int argc, sqlite3_value** argv 
     /* check the results */
     if ( state ) {
         VALUE msg = ERROR_INFO_MESSAGE();
-        sqlite3_result_error( context, RSTRING(msg)->ptr, RSTRING(msg)->len );
+        sqlite3_result_error( context, RSTRING_PTR(msg), RSTRING_LEN(msg) );
     } else {
         amalgalite_set_context_result( context, result );
     }
@@ -670,7 +670,7 @@ VALUE am_sqlite3_database_define_function( VALUE self, VALUE name, VALUE proc_li
     am_sqlite3   *am_db;
     int           rc;
     VALUE         arity = rb_funcall( proc_like, rb_intern( "arity" ), 0 );
-    char*         zFunctionName = RSTRING(name)->ptr;
+    char*         zFunctionName = RSTRING_PTR(name);
     int           nArg = FIX2INT( arity );
 
     Data_Get_Struct(self, am_sqlite3, am_db);
@@ -698,7 +698,7 @@ VALUE am_sqlite3_database_remove_function( VALUE self, VALUE name, VALUE proc_li
     am_sqlite3    *am_db;
     int            rc;
     VALUE         arity = rb_funcall( proc_like, rb_intern( "arity" ), 0 );
-    char*         zFunctionName = RSTRING(name)->ptr;
+    char*         zFunctionName = RSTRING_PTR(name);
     int           nArg = FIX2INT( arity );
 
     Data_Get_Struct(self, am_sqlite3, am_db);
@@ -757,7 +757,7 @@ void amalgalite_xStep( sqlite3_context* context, int argc, sqlite3_value** argv 
         rb_gc_register_address( aggregate_context );
         if ( state ) {
             VALUE msg = ERROR_INFO_MESSAGE();
-            sqlite3_result_error( context, RSTRING(msg)->ptr, RSTRING(msg)->len);
+            sqlite3_result_error( context, RSTRING_PTR(msg), RSTRING_LEN(msg));
             rb_iv_set( *aggregate_context, "@_exception", rb_gv_get("$!" ));
             return;
         } else {
@@ -783,7 +783,7 @@ void amalgalite_xStep( sqlite3_context* context, int argc, sqlite3_value** argv 
     /* check the results, if there is an error, set the @exception ivar */
     if ( state ) {
         VALUE msg = ERROR_INFO_MESSAGE();
-        sqlite3_result_error( context, RSTRING(msg)->ptr, RSTRING(msg)->len);
+        sqlite3_result_error( context, RSTRING_PTR(msg), RSTRING_LEN(msg));
         rb_iv_set( *aggregate_context, "@_exception", rb_gv_get("$!" ));
     }
 
@@ -818,13 +818,13 @@ void amalgalite_xFinal( sqlite3_context* context )
         /* check the results */
         if ( state ) {
             VALUE msg = ERROR_INFO_MESSAGE();
-            sqlite3_result_error( context, RSTRING(msg)->ptr, RSTRING(msg)->len );
+            sqlite3_result_error( context, RSTRING_PTR(msg), RSTRING_LEN(msg) );
         } else {
             amalgalite_set_context_result( context, result );
         }
     } else {
         VALUE msg = rb_obj_as_string( exception );
-        sqlite3_result_error( context, RSTRING(msg)->ptr, RSTRING(msg)->len );
+        sqlite3_result_error( context, RSTRING_PTR(msg), RSTRING_LEN(msg) );
     }
 
 
@@ -847,7 +847,7 @@ VALUE am_sqlite3_database_define_aggregate( VALUE self, VALUE name, VALUE arity,
 {
     am_sqlite3   *am_db;
     int           rc;
-    char*         zFunctionName = RSTRING(name)->ptr;
+    char*         zFunctionName = RSTRING_PTR(name);
     int           nArg = FIX2INT( arity );
 
     Data_Get_Struct(self, am_sqlite3, am_db);
@@ -876,7 +876,7 @@ VALUE am_sqlite3_database_remove_aggregate( VALUE self, VALUE name, VALUE arity,
 {
     am_sqlite3    *am_db;
     int            rc;
-    char*         zFunctionName = RSTRING(name)->ptr;
+    char*         zFunctionName = RSTRING_PTR(name);
     int           nArg = FIX2INT( arity );
 
     Data_Get_Struct(self, am_sqlite3, am_db);

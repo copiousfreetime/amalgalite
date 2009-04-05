@@ -32,7 +32,7 @@ describe Amalgalite::Taps::StringIO do
     s = ::Amalgalite::Taps::StringIO.new
     s.profile( 'test', 42 )
     s.dump_profile
-    s.string.should eql("42 : test\ntest[test] => sum: 42, sumsq: 1764, n: 1, mean: 42.000000, stddev: 0.000000, min: 42, max: 42\n")
+    s.string.should eql("42 : test\n[test] => sum: 42, sumsq: 1764, n: 1, mean: 42.000000, stddev: 0.000000, min: 42, max: 42\n")
   end
 
   it "has a stdout tap" do

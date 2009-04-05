@@ -3,8 +3,9 @@
 
 === Enhancements
 
+* Ruby 1.9 compatibilit
 * Update to SQLite 3.6.12
-* Added support for the SQLite Backup API, see Database#replicate_to
+* Added support for the new SQLite Backup API, see Database#replicate_to
 * Added exclusive/immediate/deferred transaction helpers
 
 == Version 0.8.0 - 2009-03-23

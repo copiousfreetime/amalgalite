@@ -9,12 +9,12 @@ describe "Amalgalite::SQLite3" do
 
   it "knows if an SQL statement is complete" do
     Amalgalite::SQLite3.complete?("SELECT * FROM sometable;").should eql(true)
-    Amalgalite::SQLite3.complete?("SELECT * FROM sometable;", :utf16 => true).should eql(true)
+    #Amalgalite::SQLite3.complete?("SELECT * FROM sometable;", :utf16 => true).should eql(true)
   end
   
   it "knows if an SQL statement is not complete" do
     Amalgalite::SQLite3.complete?("SELECT * FROM sometable ").should eql(false)
-    Amalgalite::SQLite3.complete?("SELECT * FROM sometable WHERE ", :utf16 => true).should eql(false)
+    #Amalgalite::SQLite3.complete?("SELECT * FROM sometable WHERE ", :utf16 => true).should eql(false)
   end
 
   it "can produce random data" do

@@ -297,15 +297,19 @@ describe Amalgalite::Database do
 
   describe "#remove_function" do
     it "unregisters a single function by name and arity" do
-      @iso_db.define_function( "rtest" ) do
-        "rtest called"
+      @iso_db.define_function( "rtest1" ) do
+        "rtest1 called"
       end
+
       @iso_db.functions.size.should eql(1 )
 
-      r = @iso_db.execute( "select rtest() AS r" )
-      r.first['r'].should eql("rtest called")
-      @iso_db.remove_function("rtest", -1)
-      lambda { @iso_db.execute( "select rtest() as r" )}.should raise_error( ::Amalgalite::SQLite3::Error, /no such function: rtest/ )
+      r = @iso_db.execute( "select rtest1() AS r" )
+      r.first['r'].should eql("rtest1 called")
+      #@iso_db.remove_function("rtest1", -1)
+      # the arity of rtest1 is different in 1.9 vs. 1.8 
+      @iso_db.remove_function("rtest1")
+
+      lambda { @iso_db.execute( "select rtest1() as r" )}.should raise_error( ::Amalgalite::SQLite3::Error, /no such function: rtest1/ )
       @iso_db.functions.size.should eql(0)
     end
 
@@ -347,7 +351,6 @@ describe Amalgalite::Database do
   end
 
   it "can interrupt another thread that is also running in this database" do
-    had_error = nil 
     executions = 0
     other = Thread.new( @iso_db ) do |db|
       loop do
@@ -355,7 +358,7 @@ describe Amalgalite::Database do
           db.execute("select count(id) from country")
           executions += 1
         rescue => e
-          had_error = e
+          Thread.current[:had_error] = e
           break
         end
       end
@@ -369,8 +372,8 @@ describe Amalgalite::Database do
     rudeness.join
 
     executions.should > 10
-    had_error.should be_an_instance_of( ::Amalgalite::SQLite3::Error )
-    had_error.message.should =~ / interrupted/
+    other[:had_error].should be_an_instance_of( ::Amalgalite::SQLite3::Error )
+    other[:had_error].message.should =~ / interrupted/
   end
 
   it "savepoints are considered 'in_transaction'" do

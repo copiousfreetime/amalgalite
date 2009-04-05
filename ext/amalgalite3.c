@@ -72,8 +72,8 @@ VALUE am_sqlite3_set_temp_directory( VALUE self, VALUE new_dir )
     if ( Qnil != new_dir ) {
         VALUE str = StringValue( new_dir );
 
-        p = calloc( RSTRING(str)->len + 1, sizeof(char) );
-        strncpy( p, RSTRING(str)->ptr, RSTRING(str)->len );
+        p = calloc( RSTRING_LEN(str) + 1, sizeof(char) );
+        strncpy( p, RSTRING_PTR(str), RSTRING_LEN(str) );
     }
 
     sqlite3_temp_directory = p;
@@ -85,7 +85,7 @@ VALUE amalgalite_format_string( char* pattern, VALUE string )
 {
     VALUE to_s= rb_funcall( string, rb_intern("to_s"), 0 );
     VALUE str = StringValue( to_s );
-    char *p   = sqlite3_mprintf(pattern, RSTRING(str)->ptr);
+    char *p   = sqlite3_mprintf(pattern, RSTRING_PTR(str));
     VALUE rv  = Qnil;
     if ( NULL != p ) {
         rv  = rb_str_new2( p );

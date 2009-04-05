@@ -1,7 +1,6 @@
 require 'mkmf'
 require 'rbconfig'
 
-# $CFLAGS += " -Wall"
 # make available table and column meta data api
 $CFLAGS += " -DSQLITE_ENABLE_COLUMN_METADATA=1"  
 $CFLAGS += " -DSQLITE_ENABLE_RTREE=1"
@@ -16,5 +15,9 @@ end
 
 # remove the -g if it exists
 $CFLAGS = $CFLAGS.gsub(/-g/,'')
+
+# remove -Wall if it exists
+$CFLAGS = $CFLAGS.gsub(/-Wall/,'')
+#$CFLAGS += " -Wall"
 
 create_makefile('amalgalite3')

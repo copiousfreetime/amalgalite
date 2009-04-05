@@ -41,8 +41,8 @@ module Amalgalite
       end
 
       def dump_profile
-        samplers.each do |s|
-          io.puts s.to_s
+        samplers.each_pair do |k,v|
+          io.puts v.to_s
         end
       end
 
