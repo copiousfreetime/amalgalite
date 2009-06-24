@@ -101,7 +101,7 @@ describe "Aggregate SQL Functions" do
       def name() "atest3"; end
       def arity() 128; end
     end
-    lambda { @iso_db.define_aggregate("atest3", AggregateTest3 ) }.should raise_error( ::Amalgalite::SQLite3::Error, /SQLITE_ERROR .* bad parameters/ )
+    lambda { @iso_db.define_aggregate("atest3", AggregateTest3 ) }.should raise_error( ::Amalgalite::SQLite3::Error, /SQLITE_ERROR .* Library used incorrectly/ )
   end
 
   it "does not allow registering a function which does not match the defined name " do

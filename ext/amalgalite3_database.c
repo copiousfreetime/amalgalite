@@ -680,8 +680,21 @@ VALUE am_sqlite3_database_define_function( VALUE self, VALUE name, VALUE proc_li
                                   (void *)proc_like, amalgalite_xFunc,
                                   NULL, NULL);
     if ( SQLITE_OK != rc ) {
-       rb_raise(eAS_Error, "Failure defining SQL function '%s' with arity '%d' : [SQLITE_ERROR %d] : %s\n",
+        /* in the case of SQLITE_MISUSE the error message in the database may
+         * not be set.  In this case, hardcode the error. 
+         * http://sqlite.org/c3ref/errcode.html
+         *
+         * This is a result of 3.6.15 which has sqlite3_create_function return
+         * SQLITE_MISUSE intead of SQLITE_ERROR if called with incorrect
+         * parameters.
+         */
+       if ( SQLITE_MISUSE == rc ) { 
+         rb_raise(eAS_Error, "Failure defining SQL function '%s' with arity '%d' : [SQLITE_ERROR %d] : Library used incorrectly\n",
+                zFunctionName, nArg, rc);
+       } else {
+         rb_raise(eAS_Error, "Failure defining SQL function '%s' with arity '%d' : [SQLITE_ERROR %d] : %s\n",
                 zFunctionName, nArg, rc, sqlite3_errmsg( am_db->db ));
+       }
     }
     rb_gc_register_address( &proc_like );
     return Qnil;
@@ -858,8 +871,21 @@ VALUE am_sqlite3_database_define_aggregate( VALUE self, VALUE name, VALUE arity,
                                   amalgalite_xStep,
                                   amalgalite_xFinal);
     if ( SQLITE_OK != rc ) {
-       rb_raise(eAS_Error, "Failure defining SQL aggregate '%s' with arity '%d' : [SQLITE_ERROR %d] : %s\n",
+        /* in the case of SQLITE_MISUSE the error message in the database may
+         * not be set.  In this case, hardcode the error. 
+         * http://sqlite.org/c3ref/errcode.html
+         *
+         * This is a result of 3.6.15 which has sqlite3_create_function return
+         * SQLITE_MISUSE intead of SQLITE_ERROR if called with incorrect
+         * parameters.
+         */
+       if ( SQLITE_MISUSE == rc ) { 
+         rb_raise(eAS_Error, "Failure defining SQL function '%s' with arity '%d' : [SQLITE_ERROR %d] : Library used incorrectly\n",
+                zFunctionName, nArg, rc);
+       } else {
+         rb_raise(eAS_Error, "Failure defining SQL function '%s' with arity '%d' : [SQLITE_ERROR %d] : %s\n",
                 zFunctionName, nArg, rc, sqlite3_errmsg( am_db->db ));
+       }
     }
     rb_gc_register_address( &klass );
     return Qnil;

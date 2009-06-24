@@ -65,6 +65,14 @@ describe "Scalar SQL Functions" do
     end
   end
 
+  it "does not allow outrageous arity" do
+    class FunctionTest3 < ::Amalgalite::Function
+      def name() "ftest3"; end
+      def arity() 128; end
+    end
+    lambda { @iso_db.define_aggregate("ftest3", FunctionTest3) }.should raise_error( ::Amalgalite::SQLite3::Error, /SQLITE_ERROR .* Library used incorrectly/ )
+  end
+
   it "raises an error if the function returns a complex Ruby object" do
     l = lambda { Hash.new }
     @iso_db.define_function("htest", l)
