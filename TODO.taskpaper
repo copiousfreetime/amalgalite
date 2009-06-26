@@ -27,7 +27,7 @@ Future Release:
 
   Drivers:
     - data mapper driver
-    - sequel driver
+    - sequel driver optimization
 
   Features:
     - Think about moving from arrayfields to ordered hash?
