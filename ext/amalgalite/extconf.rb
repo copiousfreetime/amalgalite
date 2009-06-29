@@ -20,4 +20,4 @@ $CFLAGS = $CFLAGS.gsub(/-g/,'')
 $CFLAGS = $CFLAGS.gsub(/-Wall/,'')
 #$CFLAGS += " -Wall"
 
-create_makefile('amalgalite3')
+create_makefile('amalgalite/amalgalite3')

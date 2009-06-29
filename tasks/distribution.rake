@@ -33,7 +33,7 @@ if pkg_config = Configuration.for_if_exist?("packaging") then
 
     desc "dump gemspec for win"
     task :gemspec_win do
-      puts Hitimes::GEM_SPEC_WIN.to_ruby
+      puts Amalgalite::GEM_SPEC_WIN.to_ruby
     end
 
     desc "reinstall gem"
@@ -55,8 +55,15 @@ if pkg_config = Configuration.for_if_exist?("packaging") then
       mv Dir["*.gem"].first, "pkg"
     end
 
+    task :clobber do
+      rm_rf 'lib/amalgalite/1.8'
+      rm_rf 'lib/amalgalite/1.9'
+    end
+
+    task :prep => [:clean, :package, :package_win ]
+
     desc "distribute copiously"
-    task :copious => [:package, :package_win] do
+    task :copious => :prep do
       gems = Amalgalite::SPECS.collect { |s| "#{s.full_name}.gem" }
       Rake::SshFilePublisher.new('jeremy@copiousfreetime.org',
                                '/var/www/vhosts/www.copiousfreetime.org/htdocs/gems/gems',

@@ -2,8 +2,6 @@
 # Copyright (c) 2008 Jeremy Hinegardner
 # All rights reserved.  See LICENSE and/or COPYING for details.
 #++
-
-require 'amalgalite/amalgalite3'
 module Amalgalite::SQLite3
   module Constants
     module Helpers

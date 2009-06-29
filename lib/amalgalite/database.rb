@@ -2,7 +2,6 @@
 # Copyright (c) 2008 Jeremy Hinegardner
 # All rights reserved.  See LICENSE and/or COPYING for details.
 #++
-require 'amalgalite/amalgalite3'
 require 'amalgalite/statement'
 require 'amalgalite/trace_tap'
 require 'amalgalite/profile_tap'

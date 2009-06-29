@@ -24,7 +24,7 @@ if ext_config = Configuration.for_if_exist?('extension') then
     end
 
     desc "Build the SQLite extension version #{current_sqlite_version}"
-    task :build do
+    task :build => :clean do
       ext_config.configs.each do |extension|
         path  = Pathname.new(extension)
         parts = path.split

@@ -1,5 +1,4 @@
 Next Release:
-    - fat binary for 1.8/1.9 dual compatibility
     - type conversion for manifest typing? how to allow it through?
     - table name and column name in a type map?
 
