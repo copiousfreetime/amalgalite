@@ -25,6 +25,7 @@ Amalgalite::GEM_SPEC = Gem::Specification.new do |spec|
   spec.add_development_dependency("rake", "~> 0.8.4")
   spec.add_development_dependency("configuration", "~> 0.0.5")
   spec.add_development_dependency("rspec", "~> 1.2.2")
+  spec.add_development_dependency("rake-compiler", "~> 0.5.0")
 
   if ext_conf = Configuration.for_if_exist?("extension") then
     spec.extensions <<  ext_conf.configs
@@ -51,6 +52,5 @@ end
 Amalgalite::GEM_SPEC_WIN = Amalgalite::GEM_SPEC.clone
 Amalgalite::GEM_SPEC_WIN.platform = ::Gem::Platform.new( "i386-mswin32_60" )
 Amalgalite::GEM_SPEC_WIN.extensions = []
-Amalgalite::GEM_SPEC_WIN.files +=  ["lib/amalgalite3.so"]
 
 Amalgalite::SPECS = [ Amalgalite::GEM_SPEC, Amalgalite::GEM_SPEC_WIN ]

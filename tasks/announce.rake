@@ -17,11 +17,11 @@ namespace :announce do
       mail.puts
       mail.puts info[:title]
       mail.puts
-      mail.puts "    #{info[:urls]}"
-      mail.puts
       mail.puts "{{ Release notes for Version #{Amalgalite::VERSION} }}"
-      mail.puts 
+      mail.puts
       mail.puts info[:release_notes]
+      mail.puts 
+      mail.puts "    #{info[:urls]}"
       mail.puts
       mail.puts "=== Installation"
       mail.puts

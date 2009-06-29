@@ -36,33 +36,35 @@ if ext_config = Configuration.for_if_exist?('extension') then
       end
     end
 
-    desc "Build the extensions for windows"
-    task :build_win => :clobber do
-      ext_config.configs.each do |extension|
-        path = Pathname.new( extension )
+    def build_win( version = "1.8.6" )
+      ext_config = Configuration.for("extension")
+      rbconfig = ext_config.cross_rbconfig["rbconfig-#{version}"]
+      raise ArgumentError, "No cross compiler for version #{version}, we have #{ext_config.cross_rbconfig.keys.join(",")}" unless rbconfig
+      ruby_exe = if version =~ /1\.8/ then
+                   "ruby"
+                 else
+                   "ruby1.9"
+                 end
+      Amalgalite::GEM_SPEC.extensions.each do |extension|
+        path = Pathname.new(extension)
         parts = path.split
         conf = parts.last
-        mingw_rbconfig = path.dirname.parent.realpath + "rbconfig-mingw.rb"
-        Dir.chdir( path.dirname ) do |d|
-          cp mingw_rbconfig, "rbconfig.rb"
-          sh "ruby -I. extconf.rb"
+        Dir.chdir(path.dirname) do |d| 
+          cp "#{rbconfig}", "rbconfig.rb"
+          sh "#{ruby_exe} -I. extconf.rb"
           sh "make"
-          rm_f "rbconfig.rb"
         end
       end
     end
 
-    desc "Build the extension for ruby1.9"
-    task :build19 => :clobber do
-      ext_config.configs.each do |extension|
-        path = Pathname.new( extension )
-        parts = path.split
-        conf = parts.last
-        Dir.chdir( path.dirname ) do |d|
-          sh "ruby1.9 -I. extconf.rb"
-          sh "make"
-        end
- 
+    win_builds = []
+    ext_config.cross_rbconfig.keys.each do |v|
+      s = v.split("-").last
+      desc "Build the extension for windows version #{s}"
+      win_bname = "build_win-#{s}"
+      win_builds << win_bname
+      task win_bname => :clean do
+        build_win( s )
       end
     end
 
@@ -72,8 +74,9 @@ if ext_config = Configuration.for_if_exist?('extension') then
         parts = path.split
         conf  = parts.last
         Dir.chdir(path.dirname) do |d| 
-          #sh "rake clean"
-          sh "make clean"
+          if File.exist?( "Makfeile" ) then
+            sh "make clean"
+          end
           rm_f "rbconfig.rb"
         end
       end
@@ -85,7 +88,6 @@ if ext_config = Configuration.for_if_exist?('extension') then
         parts = path.split
         conf  = parts.last
         Dir.chdir(path.dirname) do |d| 
-          #sh "rake clobber"
           if File.exist?( "Makefile") then
             sh "make distclean"
           end

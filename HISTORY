@@ -1,7 +1,7 @@
 = Amalgalite Changelog
-== Version 
+== Version 0.10.0 
 
-=== Enhacnements 
+=== Enhancements 
 
 * Update to Sqlite 3.6.15
 ** fix errors returned by define_aggregate and define_function based upon 3.6.15 update

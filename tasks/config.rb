@@ -27,7 +27,7 @@ Configuration.for('packaging') {
   proj_conf = Configuration.for('project')
   files {
     bin       FileList["bin/*"]
-    ext       FileList["ext/*.{c,h,rb}"]
+    ext       FileList["ext/amalgalite/*.{c,h,rb}"]
     examples  FileList["examples/*"]
     lib       FileList["lib/**/*.rb"]
     test      FileList["spec/**/*.rb", "test/**/*.rb"]
@@ -91,8 +91,8 @@ Configuration.for('rdoc') {
 # Extensions
 #-----------------------------------------------------------------------
 Configuration.for('extension') {
-  #configs   Configuration.for('packaging').files.ext.find_all { |x| %w[ mkrf_conf.rb extconf.rb ].include?(File.basename(x)) }
   configs   Configuration.for('packaging').files.ext.find_all { |x| %w[ extconf.rb ].include?(File.basename(x)) }
+  cross_rbconfig YAML.load_file( File.expand_path("~/.rake-compiler/config.yml"))
 }
 
 #-----------------------------------------------------------------------
