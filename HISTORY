@@ -5,8 +5,8 @@
 
 * windows gem is now a fat binary to support installing into ruby 1.8 and 1.9 
   from the same gem
-* Update to Sqlite 3.6.16
-** fix errors returned by define_aggregate and define_function based upon 3.6.15 update
+* Update to Sqlite 3.6.16 and fix errors returned by define_aggregate and 
+  define_function based upon update
 
 == Version 0.9.0 - 2009-04-05
 
