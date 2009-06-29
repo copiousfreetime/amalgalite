@@ -50,6 +50,9 @@ if ext_config = Configuration.for_if_exist?('extension') then
         parts = path.split
         conf = parts.last
         Dir.chdir(path.dirname) do |d| 
+          if File.exist?( "Makefile" ) then
+            sh "make clean distclean"
+          end
           cp "#{rbconfig}", "rbconfig.rb"
           sh "#{ruby_exe} -I. extconf.rb"
           sh "make"

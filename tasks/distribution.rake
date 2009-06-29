@@ -60,7 +60,7 @@ if pkg_config = Configuration.for_if_exist?("packaging") then
       rm_rf 'lib/amalgalite/1.9'
     end
 
-    task :prep => [:clean, :package, :package_win ]
+    task :prep => [:clobber, :package, :package_win ]
 
     desc "distribute copiously"
     task :copious => :prep do

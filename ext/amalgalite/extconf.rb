@@ -20,4 +20,17 @@ $CFLAGS = $CFLAGS.gsub(/-g/,'')
 $CFLAGS = $CFLAGS.gsub(/-Wall/,'')
 #$CFLAGS += " -Wall"
 
+# there are issues with the mingw compiler and compiling sqlite with debugging
+# on.  You will get lots of warnings of the sort 
+#
+#   Warning: .stabs: description field '16274' too big, try a different debug format
+#
+# it appears to be a known issue and has no affect on the normal usage of sqlite
+#
+# warnflags and debugflags appear to be 1.9 constructs
+#
+if CONFIG['arch'] =~ /(mswin|mingw)/i then
+  CONFIG['debugflags'] = CONFIG['debugflags'].gsub(/-g/,'') if CONFIG['debugflags']
+  CONFIG['warnflags'] = CONFIG['warnflags'].gsub(/-Wall/,'') if CONFIG['warnflags']
+end
 create_makefile('amalgalite/amalgalite3')
