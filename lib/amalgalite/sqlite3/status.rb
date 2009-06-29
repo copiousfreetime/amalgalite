@@ -1,4 +1,4 @@
-require 'amalgalite3'
+require 'amalgalite/amalgalite3'
 require 'amalgalite/sqlite3/constants'
 module Amalgalite::SQLite3
 

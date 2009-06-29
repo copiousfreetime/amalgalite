@@ -116,7 +116,7 @@ Packing complete.  To utilize the bootstrapping in #{dbfile} you must do
 one of the following:
 
   * statically compile the amalgalite C extension into your application
-  * require 'amalgalite3'
+  * require 'amalgalite/amalgalite3'
 
 Once one of those is working you can boostrap the Amalgalite library with
 this line in your code:

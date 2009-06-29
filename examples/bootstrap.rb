@@ -13,7 +13,7 @@
 
 # Require "ONLY" then binary extension, do not +require+ the ruby based code
 $: << "../ext"
-require 'amalgalite3'
+require 'amalgalite/amalgalite3'
 
 # See what the load path is, notice that it is very small
 puts "Before $\" : #{$LOADED_FEATURES.inspect}"

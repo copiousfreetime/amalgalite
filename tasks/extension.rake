@@ -116,7 +116,7 @@ if ext_config = Configuration.for_if_exist?('extension') then
           tar.each_entry do |entry|
             bname = File.basename( entry.full_name )
             if upstream_files.include?( bname ) then
-              dest_file = File.join( "ext", bname )
+              dest_file = File.join( "ext", "amalgalite", bname )
               puts "updating #{ dest_file }"
               File.open( dest_file, "wb" ) do |df|
                 while bytes = entry.read do

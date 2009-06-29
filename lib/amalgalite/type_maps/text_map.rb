@@ -4,7 +4,6 @@
 #++
 #
 require 'amalgalite/type_map'
-require 'amalgalite3'
 
 module Amalgalite::TypeMaps
   ##

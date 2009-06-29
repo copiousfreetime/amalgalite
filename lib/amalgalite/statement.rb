@@ -3,7 +3,7 @@
 # All rights reserved.  See LICENSE and/or COPYING for details.
 #++
 #
-require 'amalgalite3'
+require 'amalgalite/amalgalite3'
 require 'date'
 require 'arrayfields'
 require 'ostruct'
