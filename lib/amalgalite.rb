@@ -16,12 +16,11 @@ module Amalgalite
   class Error < ::StandardError; end
 end
 
-# support for fat binaries on windows
-if RUBY_PLATFORM =~ /(mswin|mingw)/i then
-  require "amalgalite/#{RUBY_VERSION.sub(/\.\d$/,'')}/amalgalite3"
-else
-  require "amalgalite/amalgalite3"
-end
+# use a version subdirectory for extensions, initially to support windows, but
+# why make a special case, it doesn't hurt anyone to have an extra subdir
+# someplace 
+require "amalgalite/#{RUBY_VERSION.sub(/\.\d$/,'')}/amalgalite3"
+
 require 'amalgalite/aggregate'
 require 'amalgalite/blob'
 require 'amalgalite/boolean'

@@ -33,4 +33,5 @@ if CONFIG['arch'] =~ /(mswin|mingw)/i then
   CONFIG['debugflags'] = CONFIG['debugflags'].gsub(/-g/,'') if CONFIG['debugflags']
   CONFIG['warnflags'] = CONFIG['warnflags'].gsub(/-Wall/,'') if CONFIG['warnflags']
 end
-create_makefile('amalgalite/amalgalite3')
+subdir = RUBY_VERSION.sub(/\.\d$/,'')
+create_makefile("amalgalite/#{subdir}/amalgalite3")
