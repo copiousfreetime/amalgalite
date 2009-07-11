@@ -77,7 +77,7 @@ if ext_config = Configuration.for_if_exist?('extension') then
         parts = path.split
         conf  = parts.last
         Dir.chdir(path.dirname) do |d| 
-          if File.exist?( "Makfeile" ) then
+          if File.exist?( "Makefile" ) then
             sh "make clean"
           end
           rm_f "rbconfig.rb"
