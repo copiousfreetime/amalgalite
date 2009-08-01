@@ -1,5 +1,5 @@
 = Amalgalite Changelog
-== Version 0.10.1
+== Version 0.10.1 - 2009-08-01
 
 * Add version subdirectory for extension on all platforms for building locally
   on gem install.

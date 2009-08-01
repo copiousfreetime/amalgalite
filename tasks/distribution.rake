@@ -33,7 +33,7 @@ if pkg_config = Configuration.for_if_exist?("packaging") then
 
     desc "dump gemspec for win"
     task :gemspec_win do
-      puts Amalgalite::GEM_SPEC_WIN.to_ruby
+      puts Amalgalite::GEM_SPEC_MINGW32.to_ruby
     end
 
     desc "reinstall gem"
