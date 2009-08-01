@@ -1,11 +1,23 @@
 = Amalgalite Changelog
+== Version 0.10.2
+
+=== Bug Fixes
+
+* Statement#execute was not expanding an Array passed in to the positional
+  #bind parameters.
+
 == Version 0.10.1 - 2009-08-01
+
+=== Enhancements
 
 * Add version subdirectory for extension on all platforms for building locally
   on gem install.
-* Small documentation change for Amalgalite::Database#new
 * Add gem for x86-ming32 platform  
 * Add specs to validate the R*Tree index is compiled correctly
+
+=== Bug Fixes
+
+* Small documentation change for Amalgalite::Database#new
 
 == Version 0.10.0 - 2009-06-28
 

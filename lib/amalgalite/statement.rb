@@ -145,6 +145,8 @@ module Amalgalite
 
       if params.first.instance_of?( Hash ) then
         bind_named_parameters( params.first )
+      elsif params.first.instance_of?( Array ) then
+        bind_positional_parameters( *params )
       else
         bind_positional_parameters( params )
       end

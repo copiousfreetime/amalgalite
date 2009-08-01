@@ -1,4 +1,5 @@
 Next Release:
+    - On execute, if an array is passed in, should it be auto exploaded?
     - type conversion for manifest typing? how to allow it through?
     - table name and column name in a type map?
 
