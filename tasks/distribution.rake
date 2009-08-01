@@ -49,10 +49,13 @@ if pkg_config = Configuration.for_if_exist?("packaging") then
         cp "ext/amalgalite/amalgalite3.so", "lib/amalgalite/#{s}/", :verbose => true
       end
 
-      Amalgalite::GEM_SPEC_WIN.files += FileList["lib/amalgalite/{1.8,1.9}/**.{dll,so}"]
-      Gem::Builder.new( Amalgalite::GEM_SPEC_WIN ).build 
-      mkdir "pkg" unless File.directory?( 'pkg' )
-      mv Dir["*.gem"].first, "pkg"
+      Amalgalite::SPECS.each do |spec|
+        next if spec.platform == "ruby"
+        spec.files +=  FileList["lib/amalgalite/{1.8,1.9}/**.{dll,so}"]
+        Gem::Builder.new( spec ).build 
+        mkdir "pkg" unless File.directory?( 'pkg' )
+        mv Dir["*.gem"].first, "pkg"
+      end
     end
 
     task :clobber do

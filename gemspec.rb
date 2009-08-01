@@ -49,8 +49,12 @@ Amalgalite::GEM_SPEC = Gem::Specification.new do |spec|
   end 
 end
 
-Amalgalite::GEM_SPEC_WIN = Amalgalite::GEM_SPEC.clone
-Amalgalite::GEM_SPEC_WIN.platform = ::Gem::Platform.new( "i386-mswin32_60" )
-Amalgalite::GEM_SPEC_WIN.extensions = []
+Amalgalite::GEM_SPEC_MSWIN32 = Amalgalite::GEM_SPEC.clone
+Amalgalite::GEM_SPEC_MSWIN32.platform = ::Gem::Platform.new( "i386-mswin32" )
+Amalgalite::GEM_SPEC_MSWIN32.extensions = []
 
-Amalgalite::SPECS = [ Amalgalite::GEM_SPEC, Amalgalite::GEM_SPEC_WIN ]
+Amalgalite::GEM_SPEC_MINGW32= Amalgalite::GEM_SPEC.clone
+Amalgalite::GEM_SPEC_MINGW32.platform = ::Gem::Platform.new( "i386-mingw32" )
+Amalgalite::GEM_SPEC_MINGW32.extensions = []
+
+Amalgalite::SPECS = [ Amalgalite::GEM_SPEC, Amalgalite::GEM_SPEC_MSWIN32, Amalgalite::GEM_SPEC_MINGW32 ]
