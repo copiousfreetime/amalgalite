@@ -4,7 +4,7 @@
 === Bug Fixes
 
 * Statement#execute was not expanding an Array passed in to the positional
-  #bind parameters.
+  #bind parameters (reported by Steven Harris).
 
 == Version 0.10.1 - 2009-08-01
 
