@@ -2,8 +2,8 @@ pkg/*
 doc/*
 coverage/*
 tags
-lib/amalgalite/1.8/amalgalite3.so
-lib/amalgalite/1.9/amalgalite3.so
+lib/amalgalite/1.8
+lib/amalgalite/1.9
 ext/amalgalite/Makefile
 ext/amalgalite/rbconfig.rb
 examples/*.db

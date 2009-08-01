@@ -32,6 +32,12 @@ if ext_config = Configuration.for_if_exist?('extension') then
         Dir.chdir(path.dirname) do |d| 
           ruby conf.to_s
           sh "make"
+
+          # install into requireable location so specs will run
+          subdir = "amalgalite/#{RUBY_VERSION.sub(/\.\d$/,'')}"
+          dest_dir = Amalgalite::Paths.lib_path( subdir )
+          mkdir_p dest_dir, :verbose => true
+          cp "amalgalite3.#{Config::CONFIG['DLEXT']}", dest_dir, :verbose => true
         end
       end
     end
