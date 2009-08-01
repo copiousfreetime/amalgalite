@@ -10,3 +10,4 @@ examples/*.db
 tmp/*
 *~
 *.swp
+email.txt

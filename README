@@ -30,6 +30,10 @@ Look in the examples/ directory to see
 Also Scroll through Amalgalite::Database for a quick example, and a general
 overview of the API.
 
+Amalgalite adds in the following additional non-default SQLite extension(s):
+
+* {R*Tree index extension}[http://sqlite.org/rtree.html]
+
 == CREDITS
 
 * Jamis Buck for the first {ruby sqlite implementation}[http://www.rubyforge.org/projects/sqlite-ruby]
