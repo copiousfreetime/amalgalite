@@ -15,7 +15,7 @@ module Amalgalite
   #
   # The encapsulation of a connection to an SQLite3 database.  
   #
-  # Example opening and possibly creating a new daabase
+  # Example opening and possibly creating a new database
   #
   #   db = Amalgalite::Database.new( "mydb.db" )
   #   db.execute( "SELECT * FROM table" ) do |row|
@@ -28,6 +28,9 @@ module Amalgalite
   #
   #   db = Amalgalite::Database.new( "mydb.db", "r" )
   #
+  # Open an in-memory database:
+  #
+  #   db = Amalgalite::Database.new( ":memory:" )
   #
   class Database
 
@@ -108,7 +111,9 @@ module Amalgalite
     # :call-seq:
     #   Amalgalite::Database.new( filename, "w+", opts = {}) -> Database
     #
-    # The first parameter is the filename of the sqlite database.  
+    # The first parameter is the filename of the sqlite database.  Specifying
+    # ":memory:" as the filename creates an in-memory database.
+    #
     # The second parameter is the standard file modes of how to open a file.
     #
     # The modes are:
