@@ -3,7 +3,7 @@
  * All rights reserved.  See LICENSE and/or COPYING for details.
  *
  * vim: shiftwidth=4 
- */ 
+:*/ 
 
 #include "amalgalite3.h"
 
@@ -234,6 +234,16 @@ VALUE am_sqlite3_libversion_number(VALUE self)
     return INT2FIX(sqlite3_libversion_number());
 }
 
+/*
+ * call-seq:
+ *   Return the sqlite3_version[] constant as a ruby string
+ *
+ */
+VALUE am_sqlite3_version(VALUE self)
+{
+    return rb_str_new2( sqlite3_version );
+}
+
 /**
  * Document-class: Amalgalite::SQLite3
  *
@@ -275,6 +285,7 @@ void Init_amalgalite3()
     mASV = rb_define_module_under(mAS, "Version");
     rb_define_module_function(mASV, "to_s", am_sqlite3_libversion, 0); /* in amalgalite3.c */
     rb_define_module_function(mASV, "to_i", am_sqlite3_libversion_number, 0); /* in amalgalite3.c */
+    rb_define_module_function(mASV, "version_string", am_sqlite3_version, 0 ); /* in amalgalite3.c */
 
     /*
      * Initialize the rest of the module
