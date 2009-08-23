@@ -1,11 +1,15 @@
 = Amalgalite Changelog
-== Version 0.10.3
+== Version 0.11.0 - 2009-08-23
+
+=== Bug Fixes
+
+* Add compiletime vs. runtime library checking.
+* Fix missing datatypes to typemap (reported by Jay Godse) 
 
 === Enhancements
 
 * Update to SQLite 3.6.17
-* Add compiletime vs. runtime library checking.
-* Add additional datatypes to typemaps.
+
 
 == Version 0.10.2 - 2009-08-10
 

@@ -8,8 +8,8 @@ module Amalgalite
   module Version
 
     MAJOR   = 0
-    MINOR   = 10
-    BUILD   = 3
+    MINOR   = 11
+    BUILD   = 0
 
     #
     # return the Version as an array of MAJOR, MINOR, BUILD
