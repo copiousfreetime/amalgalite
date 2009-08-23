@@ -44,7 +44,13 @@ unless Amalgalite::SQLite3::Version.compiled_matches_runtime? then
 You are seeing something odd.  The compiled version of SQLite that
 is embedded in this extension is for some reason, not being used.
 The version in the extension is #{Amalgalite::SQLite3::Version.compiled_version} and the version that
-as been loaded as a shared library is #{Amalgalite::SQLite::Version.runtime_version}.  These versions
+as been loaded as a shared library is #{Amalgalite::SQLite3::Version.runtime_version}.  These versions
 should be the same, but they are not.
+
+One known issue is if you are using this libary in conjunction with
+Hitimes on Mac OS X.  You should make sure that "require 'amalgalite'"
+appears before "require 'hitimes'" in your ruby code.
+
+This is a non-trivial problem, and I am working on it.
 eom
 end
