@@ -22,9 +22,9 @@ module Amalgalite::TypeMaps
           'date'      => %w[ date ],
           'datetime'  => %w[ datetime ],
           'time'      => %w[ timestamp time ],
-          'float'     => %w[ double real numeric decimal ],
+          'float'     => %w[ double float real numeric decimal ],
           'integer'   => %w[ integer tinyint smallint int int2 int4 int8 bigint serial bigserial ],
-          'string'    => %w[ text char varchar character ],
+          'string'    => %w[ text char string varchar character ],
           'boolean'   => %w[ bool boolean ],
           'blob'      => %w[ binary blob ],
         }

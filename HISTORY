@@ -4,6 +4,8 @@
 === Enhancements
 
 * Update to SQLite 3.6.17
+* Add compiletime vs. runtime library checking.
+* Add additional datatypes to typemaps.
 
 == Version 0.10.2 - 2009-08-10
 

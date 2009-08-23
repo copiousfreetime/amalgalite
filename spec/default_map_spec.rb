@@ -62,6 +62,10 @@ describe Amalgalite::TypeMaps::DefaultMap do
       @map.result_value_of( "double", "3.14" ).should be_kind_of(Float)
     end
     
+    it "Float is returned for declared types of 'float'" do
+      @map.result_value_of( "float", "3.14" ).should be_kind_of(Float)
+    end
+
     it "Integer is returned for declared types of 'int'" do
       @map.result_value_of( "int", "42" ).should be_kind_of(Integer)
     end
@@ -70,9 +74,13 @@ describe Amalgalite::TypeMaps::DefaultMap do
       @map.result_value_of( "bool", "True" ).should == true
     end
 
-    it "Blob is returned for declated types of 'blob'" do
+    it "Blob is returned for declared types of 'blob'" do
       blob = @map.result_value_of( "blob", "stuff")
       blob.to_s.should == "stuff"
+    end
+
+    it "String is returned for delcared types of 'string'" do
+      @map.result_value_of( "string", "stuff").should == "stuff"
     end
 
     it "raises and error if an unknown sql type is returned" do
