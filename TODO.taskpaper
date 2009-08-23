@@ -10,6 +10,7 @@ Future Release:
     - create_collation 
     - encryption key support
     - sqlite3_config
+    - expose sqlite3_strnicmp
 
   Non backwards compatible changes:
     - change taps to use to_proc protocol
