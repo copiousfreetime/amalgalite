@@ -28,8 +28,8 @@ module Amalgalite
         [ MAJOR, MINOR, RELEASE ]
       end
 
-      def self.is_3_6_17?
-        "3.6.17" == self.version_string
+      def self.compiled_matches_runtime?
+        self.compiled_version == self.runtime_version
       end
     end
 
@@ -39,10 +39,12 @@ module Amalgalite
   Version.freeze
 end
 
-unless Amalgalite::SQLite3::Version.is_3_6_17? then
-  warn <<-eom
-You are seeing something odd.  The SQLite library that is embedded in this 
-gem is being supersceeded by a shared lib of sqlite3 that is somewhere on 
-your system.  The version that has been loaded is #{Amalgalite::SQLite3::Version.to_s}
-  eom
+unless Amalgalite::SQLite3::Version.compiled_matches_runtime? then
+  warn <<eom
+You are seeing something odd.  The compiled version of SQLite that
+is embedded in this extension is for some reason, not being used.
+The version in the extension is #{Amalgalite::SQLite3::Version.compiled_version} and the version that
+as been loaded as a shared library is #{Amalgalite::SQLite::Version.runtime_version}.  These versions
+should be the same, but they are not.
+eom
 end

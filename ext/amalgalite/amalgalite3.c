@@ -217,7 +217,7 @@ VALUE am_sqlite3_randomness(VALUE self, VALUE num_bytes)
  * Return the SQLite C library version number as a string
  *
  */
-VALUE am_sqlite3_libversion(VALUE self)
+VALUE am_sqlite3_runtime_version(VALUE self)
 {
     return rb_str_new2(sqlite3_libversion());
 }
@@ -229,19 +229,34 @@ VALUE am_sqlite3_libversion(VALUE self)
  * Return the SQLite C library version number as an integer
  *
  */
-VALUE am_sqlite3_libversion_number(VALUE self)
+VALUE am_sqlite3_runtime_version_number(VALUE self)
 {
     return INT2FIX(sqlite3_libversion_number());
 }
 
 /*
  * call-seq:
- *   Return the sqlite3_version[] constant as a ruby string
+ *   Amalgalite::SQLite::Version.compiled_version -> String
+ *
+ * Return the compiletime version number as a string.
  *
  */
-VALUE am_sqlite3_version(VALUE self)
+VALUE am_sqlite3_compiled_version(VALUE self)
 {
-    return rb_str_new2( sqlite3_version );
+    return rb_str_new2( SQLITE_VERSION );
+}
+
+/*
+ * call-seql:
+ *   Amalgalite::SQLite::Version.compiled_version_number -> Fixnum
+ *
+ * Return the compiletime library version from the 
+ * embedded version of sqlite3.
+ *
+ */
+VALUE am_sqlite3_compiled_version_number( VALUE self )
+{
+    return INT2FIX( SQLITE_VERSION_NUMBER );
 }
 
 /**
@@ -283,9 +298,12 @@ void Init_amalgalite3()
      * Encapsulation of the SQLite C library version
      */
     mASV = rb_define_module_under(mAS, "Version");
-    rb_define_module_function(mASV, "to_s", am_sqlite3_libversion, 0); /* in amalgalite3.c */
-    rb_define_module_function(mASV, "to_i", am_sqlite3_libversion_number, 0); /* in amalgalite3.c */
-    rb_define_module_function(mASV, "version_string", am_sqlite3_version, 0 ); /* in amalgalite3.c */
+    rb_define_module_function(mASV, "to_s", am_sqlite3_runtime_version, 0); /* in amalgalite3.c */
+    rb_define_module_function(mASV, "runtime_version", am_sqlite3_runtime_version, 0); /* in amalgalite.c */
+    rb_define_module_function(mASV, "to_i", am_sqlite3_runtime_version_number, 0); /* in amalgalite3.c */
+    rb_define_module_function(mASV, "runtime_version_number", am_sqlite3_runtime_version_number, 0); /* in amalgalite3.c */
+    rb_define_module_function(mASV, "compiled_version", am_sqlite3_compiled_version, 0 ); /* in amalgalite3.c */
+    rb_define_module_function(mASV, "compiled_version_number", am_sqlite3_compiled_version_number, 0 ); /* in amalgalite3.c */
 
     /*
      * Initialize the rest of the module
