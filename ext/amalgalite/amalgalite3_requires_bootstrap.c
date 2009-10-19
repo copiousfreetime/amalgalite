@@ -21,7 +21,7 @@ VALUE eARB_Error;
 void am_bootstrap_cleanup_and_raise( char* msg, sqlite3* db, sqlite3_stmt* stmt )
 {
 
-    if ( NULL != stmt ) { sqlite3_finalize( stmt ); }
+    if ( NULL != stmt ) { sqlite3_finalize( stmt ); stmt = NULL; }
     if ( NULL != db   ) { sqlite3_close( db ); }
 
     free( msg );

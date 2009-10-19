@@ -242,12 +242,16 @@ VALUE am_sqlite3_statement_reset(VALUE self)
     int               rc;
     
     Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
-    rc = sqlite3_reset( am_stmt->stmt );
-    if ( rc != SQLITE_OK ) {
-        rb_raise(eAS_Error, "Error resetting statement: [SQLITE_ERROR %d] : %s\n",
-                rc, sqlite3_errmsg( sqlite3_db_handle( am_stmt->stmt) ));
+    if ( am_stmt->stmt ) {
+        rc = sqlite3_reset( am_stmt->stmt );
+        if ( rc != SQLITE_OK ) {
+            rb_raise(eAS_Error, "Error resetting statement: [SQLITE_ERROR %d] : %s\n",
+                    rc, sqlite3_errmsg( sqlite3_db_handle( am_stmt->stmt) ));
+        }
+        return Qnil;
+    } else {
+        rb_raise(eAS_Error, "Attempting to free a non-existent statement");
     }
-    return Qnil;
 }
 
 /**
@@ -553,6 +557,7 @@ VALUE am_sqlite3_statement_close( VALUE self )
         rb_raise(eAS_Error, "Failure to close statement : [SQLITE_ERROR %d] : %s\n",
                 rc, sqlite3_errmsg( sqlite3_db_handle( am_stmt->stmt) ));
     }
+    am_stmt->stmt = NULL;
 
     return Qnil;
 }
@@ -572,6 +577,10 @@ void am_sqlite3_statement_free(am_sqlite3_stmt* wrapper)
         rb_gc_unregister_address( &(wrapper->remaining_sql) );
         wrapper->remaining_sql = Qnil;
     }
+    if ( NULL != wrapper->stmt ) {
+        sqlite3_finalize( wrapper->stmt );
+        wrapper->stmt = NULL;
+    }
     free(wrapper);
     return;
 }
@@ -585,6 +594,7 @@ VALUE am_sqlite3_statement_alloc(VALUE klass)
     VALUE             obj     = (VALUE)NULL;
 
     wrapper->remaining_sql = Qnil;
+    wrapper->stmt          = NULL;
 
     obj = Data_Wrap_Struct(klass, NULL, am_sqlite3_statement_free, wrapper);
     return obj;
