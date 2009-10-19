@@ -268,6 +268,8 @@ VALUE am_sqlite3_compiled_version_number( VALUE self )
 
 void Init_amalgalite3()
 {
+    int rc = 0;
+
     /*
      * top level module encapsulating the entire Amalgalite library
      */
@@ -313,6 +315,14 @@ void Init_amalgalite3()
     Init_amalgalite3_statement( );
     Init_amalgalite3_blob( );
     Init_amalgalite3_requires_bootstrap( );
+
+    /*
+     * initialize sqlite itself
+     */
+    rc = sqlite3_initialize();
+    if ( SQLITE_OK != rc ) {
+        rb_raise(eAS_Error, "Failure to initialize the sqlite3 library : [SQLITE_ERROR %d]\n", rc);
+    }
 
  }
 
