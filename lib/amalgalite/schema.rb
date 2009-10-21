@@ -17,6 +17,7 @@ module Amalgalite
 
     attr_reader :catalog
     attr_reader :schema 
+    attr_reader :schema_version
     attr_writer :dirty
     attr_reader :db
 
@@ -27,21 +28,27 @@ module Amalgalite
       @db = db
       @catalog = catalog
       @schema = schema
+      @schema_version = nil
       @tables = {}
       @views  = {}
-      @dirty  = true
       load_schema!
     end
 
-    def dirty?() @dirty; end
-    def dirty!() @dirty = true; end
+    def dirty?() 
+      return (@schema_version != self.current_version)
+    end
+
+    def current_version
+      @db.first_value_from("PRAGMA schema_version")
+    end
 
     #
     # load the schema from the database
     def load_schema!
       load_tables
       load_views
-      @dirty = false
+      @schema_version = self.current_version
+      nil
     end
 
     ##

@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'spec'
 
+require File.expand_path( File.join( File.dirname(__FILE__), 'spec_helper'))
 $: << File.expand_path(File.join(File.dirname(__FILE__),"..","lib"))
 require 'amalgalite'
 require 'amalgalite/schema'
@@ -24,28 +25,21 @@ describe Amalgalite::Schema do
     schema.tables.size.should eql(2)
   end
 
-  it "lazily loads new table schema" do
-    @iso_db.schema.tables.size.should eql(2)
-    sql = "CREATE TABLE t1 ( a, b, c )"
-    @iso_db.execute( sql )
-    @iso_db.schema.tables.size.should eql(2)
-    @iso_db.schema.dirty!
-    @iso_db.schema.tables['t1'].column_names.should eql(%w[ a b c ])
-    @iso_db.schema.tables.size.should eql(3)
-  end
-
   it "loads the views in the database" do
+    s = @iso_db.schema
     sql = "CREATE VIEW v1 AS SELECT c.name, c.two_letter, s.name, s.subdivision FROM country AS c JOIN subcountry AS s ON c.two_letter = s.country"
     @iso_db.execute( sql )
+    s.dirty?.should == true
     @iso_db.schema.load_views
     @iso_db.schema.views.size.should eql(1)
     @iso_db.schema.views["v1"].sql.should eql(sql)
   end
 
   it "removes quotes from around default values in columns" do
+    s = @iso_db.schema
     sql = "CREATE TABLE t1( d1 default 't' )"
     @iso_db.execute( sql )
-    @iso_db.schema.dirty!
+    s.dirty?.should == true
     tt = @iso_db.schema.tables['t1']
     tt.columns['d1'].default_value.should == "t"
   end
@@ -73,16 +67,16 @@ describe Amalgalite::Schema do
   end
 
   it "knows the primary key of a table even without an explicity unique index" do
+    s = @iso_db.schema
     sql = "CREATE TABLE u( id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL , other text )"
     @iso_db.execute( sql )
-    @iso_db.schema.dirty!
+    s.dirty?.should == true
     ut = @iso_db.schema.tables['u']
     ut.primary_key.should == [ ut.columns['id'] ]
   end
 
   it "knows the primary key of a temporary table" do
     @iso_db.execute "CREATE TEMPORARY TABLE tt( a, b INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, c )"
-    @iso_db.schema.dirty!
     tt = @iso_db.schema.load_table( 'tt' )
     tt.primary_key.should == [ tt.columns['b'] ]
 
@@ -90,8 +84,9 @@ describe Amalgalite::Schema do
 
   it "knows what the primary key of a table is when it is a multiple column primary key" do
     sql = "CREATE TABLE m ( id1, id2, PRIMARY KEY (id2, id1) )"
+    s = @iso_db.schema
     @iso_db.execute( sql )
-    @iso_db.schema.dirty!
+    s.dirty?.should == true
     mt = @iso_db.schema.tables['m']
     mt.primary_key.should == [ mt.columns['id2'], mt.columns['id1'] ]
   end
@@ -110,9 +105,31 @@ describe Amalgalite::Schema do
     subc.indexes['subcountry_country'].columns.first.should eql(@iso_db.schema.tables['subcountry'].columns['country'])
   end
 
+  it "knows the schema is dirty when a table is created" do
+    s = @iso_db.schema
+    c = s.tables['country']
+    s.dirty?.should == false
+    @iso_db.execute( "create table x1( a, b )" )
+    s.dirty?.should == true
+  end
+
+  it "knows the schema is dirty when a table is dropped" do
+    s = @iso_db.schema
+    c = s.tables['country']
+    @iso_db.execute( "create table x1( a, b )" )
+    s.dirty?.should == true
+
+    @iso_db.schema.load_schema!
+    s = @iso_db.schema
+
+    s.dirty?.should == false
+    @iso_db.execute("drop table x1")
+    s.dirty?.should == true
+  end
+
+
   it "can load the schema of a temporary table" do
     @iso_db.execute "CREATE TEMPORARY TABLE tt( a, b, c )"
-    @iso_db.schema.dirty!
     @iso_db.schema.tables['tt'].should be_nil
     @iso_db.schema.load_table('tt').should_not be_nil
     @iso_db.schema.tables['tt'].should be_temporary

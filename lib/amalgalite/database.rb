@@ -491,6 +491,10 @@ module Amalgalite
     #
     def schema( dbname = "main" ) 
       @schema ||= ::Amalgalite::Schema.new( self, dbname )
+      if @schema and @schema.dirty?
+        reload_schema!( dbname )
+      end
+      return @schema
     end
 
     ##
