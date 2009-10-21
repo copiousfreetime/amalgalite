@@ -322,7 +322,7 @@ module Amalgalite
     # column.  The origin column is the original database.table.column the value
     # comes from.
     #
-    # The full meta information from teh origin column is also obtained for help
+    # The full meta information from the origin column is also obtained for help
     # in doing type conversion.
     #
     # As iteration over the row meta informatio happens, record if the special
