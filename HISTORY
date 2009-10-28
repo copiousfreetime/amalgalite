@@ -1,5 +1,5 @@
 = Amalgalite Changelog
-== Version 0.12.0 - 2009-10-XX
+== Version 0.12.0 - 2009-10-29
 
 === Enhancements
 
@@ -12,6 +12,7 @@
 * Ensure the initialization of the underlying sqlite3 library
 * Fix a segmentation fault that happend in Sequel tests
 * Fix tracking of highwater memory usage
+* Fix testing interruptability of sqlite3 commands
 
 == Version 0.11.0 - 2009-08-23
 
