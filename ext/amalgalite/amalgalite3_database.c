@@ -99,6 +99,7 @@ VALUE am_sqlite3_database_close(VALUE self)
 
     Data_Get_Struct(self, am_sqlite3, am_db);
     rc = sqlite3_close( am_db->db );
+    am_db->db = NULL;
     if ( SQLITE_OK != rc ) {
         rb_raise(eAS_Error, "Failure to close database : [SQLITE_ERROR %d] : %s\n",
                 rc, sqlite3_errmsg( am_db->db ));
@@ -1050,7 +1051,7 @@ VALUE am_sqlite3_database_table_column_metadata(VALUE self, VALUE db_name, VALUE
 
 /*
  * garbage collector free method for the am_data structure.  Make sure to un
- * registere the trace and profile objects if they are not Qnil
+ * register the trace and profile objects if they are not Qnil
  */
 void am_sqlite3_database_free(am_sqlite3* am_db)
 {
@@ -1073,8 +1074,7 @@ void am_sqlite3_database_free(am_sqlite3* am_db)
         rb_gc_unregister_address( &(am_db->progress_handler_obj) );
         am_db->progress_handler_obj = Qnil;
     }
-
-
+    am_db->db = NULL;
 
     free(am_db);
     return;
@@ -1092,6 +1092,7 @@ VALUE am_sqlite3_database_alloc(VALUE klass)
     am_db->profile_obj          = Qnil;
     am_db->busy_handler_obj     = Qnil;
     am_db->progress_handler_obj = Qnil;
+    am_db->db                   = NULL;
 
     obj = Data_Wrap_Struct(klass, NULL, am_sqlite3_database_free, am_db);
     return obj;
