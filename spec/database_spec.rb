@@ -352,26 +352,48 @@ describe Amalgalite::Database do
 
   it "can interrupt another thread that is also running in this database" do
     executions = 0
+    control_queue = Queue.new
     other = Thread.new( @iso_db ) do |db|
+      looping_sent = false
+      c = 0
       loop do
         begin
-          db.execute("select count(id) from country")
+          db.execute("select count(*) from subcountry")
           executions += 1
+          if not looping_sent then
+            control_queue.enq :looping 
+            looping_sent = true
+          end
+          if c > 20000 then
+            break
+          end
+          c += 1
         rescue => e
-          Thread.current[:had_error] = e
+          Thread.current[:loop_count] = c
+          Thread.current[:had_error] = e.dup
+          control_queue.enq :boom
           break
         end
       end
     end
 
     rudeness = Thread.new( @iso_db ) do |db|
-      sleep 0.05
-      @iso_db.interrupt!
+      sent = control_queue.deq
+      count = 0
+      loop do
+        @iso_db.interrupt!
+        break unless control_queue.empty?
+        if count > 20000 then
+          break
+        end
+        count += 1
+      end
     end
 
     rudeness.join
+    other.join
 
-    executions.should > 10
+    #$stdout.puts " looped #{other[:loop_count]} times"
     other[:had_error].should be_an_instance_of( ::Amalgalite::SQLite3::Error )
     other[:had_error].message.should =~ / interrupted/
   end
