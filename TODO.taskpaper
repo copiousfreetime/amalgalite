@@ -1,7 +1,3 @@
-Next Release:
-    - type conversion for manifest typing? how to allow it through?
-    - table name and column name in a type map?
-
 Future Release:
   SQLite API:
     - authorizers
@@ -11,6 +7,8 @@ Future Release:
     - encryption key support
     - sqlite3_config
     - expose sqlite3_strnicmp
+    - table name and column name in a type map?
+    - type conversion for manifest typing? how to allow it through?
 
   Non backwards compatible changes:
     - change taps to use to_proc protocol
@@ -18,8 +16,13 @@ Future Release:
     - integrate transaction and savepoint under the same api
 
   SQLite Features:
+    - activate SQLITE_ENABLE_STAT2 option
+    - activate SQLITE_ENABLE_ICU extension
+    - activate SQLITE_ENABLE_LOCKING_STYLE
+    - activate SQLITE_ENABLE_UNLOCK_NOTIFY
+    - expose PRAGMA foreign_keys
     - virtual file system
-    - full text search
+    - full text search (FTS3)
     - expose the sqlite mutex lib
     - statement status ( sqlite3_stmt_status )
     - db status ( sqlite3_db_status )
