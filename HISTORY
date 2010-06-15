@@ -1,4 +1,10 @@
 = Amalgalite Changelog
+== Version 0.13.0 - 2010-06-13
+
+== Enhancements
+
+* Update to sqlite 3.2.23.1
+
 == Version 0.12.1 - 2010-02-17
 
 === Enhancements
