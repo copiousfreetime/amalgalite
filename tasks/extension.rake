@@ -58,7 +58,7 @@ if ext_config = Configuration.for_if_exist?('extension') then
           cp "#{rbconfig}", "rbconfig.rb"
           rubylib = ENV['RUBYLIB']
           ENV['RUBYLIB'] = "."
-          sh "#{ruby_exe} -I. extconf.rb"
+          sh %[ #{rvm} #{version} -S extconf.rb ]
           ENV['RUBYLIB'] = rubylib
           sh "make"
         end
