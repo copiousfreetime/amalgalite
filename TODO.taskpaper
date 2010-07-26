@@ -9,6 +9,7 @@ Future Release:
     - expose sqlite3_strnicmp
     - table name and column name in a type map?
     - type conversion for manifest typing? how to allow it through?
+    - explicit pragma handler
 
   Non backwards compatible changes:
     - change taps to use to_proc protocol
