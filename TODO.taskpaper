@@ -5,7 +5,6 @@ Future Release:
     - utf-16 integration
     - create_collation 
     - encryption key support
-    - sqlite3_config
     - expose sqlite3_strnicmp
     - table name and column name in a type map?
     - type conversion for manifest typing? how to allow it through?
@@ -38,3 +37,12 @@ Future Release:
     - add to command line which directory to pack into a rubylibs table
     - amalgalite command line tool
     - use ruby's ALLOC_N and hook into sqlite3_mem_methods
+
+  Functions to possibly expose:
+    - sqlite3_backup_remaining, sqlite3_backup_pagecount
+    - sqlite3_compileoption_used, sqlite3_compileoption_get
+    - sqlite3_config
+    - sqlite3_data_count - returns number of colums in the result set of a
+      prepared statement
+    - sqlite_sourceid, sqlite_source_id
+    - sqlite3_strnicmp

@@ -49,11 +49,9 @@ Core 'Objects'
   TODO: int sqlite3_rekey(sqlite3* db, const void *pKey, int nKey);
 
 
-  // BLOB
-  TODO: int sqlite3_blob_open(sqlite3*, *db, *table, *column, rowid, flags, **blob);
   
   TODO: int   sqlite3_busy_timeout(sqlite3*)
-  TODO: void  sqlite3_progress_hander(sqlite3*, int, int(*)(void*), void*)
+  *done* void  sqlite3_progress_hander(sqlite3*, int, int(*)(void*), void*)
 
   *done* tracing should be an IO object, if it is true then send it to STDERR
   *done* tracing should also yield a block like a transaction so that during the block the db has tracing turned on.
@@ -116,16 +114,18 @@ Core 'Objects'
 
   # binding by name or index, if passed in an array to the bind() method then
   # bind by index, if passed in a hash, bind by name, using hte keys of the hash
-  sqlite3_bind_blob(sqlite3_stmt*, int, const void *, int n, void(*)(void*));
-  sqlite3_bind_zeroblob(sqlite3_stmt*, int, int n);
+  *done* sqlite3_bind_blob(sqlite3_stmt*, int, const void *, int n, void(*)(void*));
+  *done* sqlite3_bind_zeroblob(sqlite3_stmt*, int, int n);
 
 
   sqlite3_blob
   ------------
-  sqlite3_blob_close(sqlite3_blob*)
-  sqlite3_blob_bytes(sqlite3_blob*)
-  sqlite3_blob_read(sqlite3_blob*, *to_buffer, bytes_to_read, starting_at_offset); 
-  sqlite3_blob_write(sqlite3_blob*, *from_buffer, bytes_to_write, starting_at_offset);
+  // BLOB
+  *done* sqlite3_blob_open(sqlite3*, *db, *table, *column, rowid, flags, **blob);
+  *done* sqlite3_blob_close(sqlite3_blob*)
+  *done* sqlite3_blob_bytes(sqlite3_blob*)
+  *done* sqlite3_blob_read(sqlite3_blob*, *to_buffer, bytes_to_read, starting_at_offset); 
+  *done* sqlite3_blob_write(sqlite3_blob*, *from_buffer, bytes_to_write, starting_at_offset);
 
 Result Codes
 ============
