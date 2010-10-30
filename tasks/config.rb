@@ -30,8 +30,8 @@ Configuration.for('packaging') {
     ext       FileList["ext/amalgalite/*.{c,h,rb}"]
     examples  FileList["examples/*"]
     lib       FileList["lib/**/*.rb"]
-    test      FileList["spec/**/*.rb", "test/**/*.rb"]
-    data      FileList["data/**/*"]
+    test      FileList["spec/**/*.rb", "test/**/*.rb",  ]
+    data      FileList["data/**/*", "spec/data/*.{sql,txt,sh}"]
     tasks     FileList["tasks/**/*.r{ake,b}"]
     rdoc      FileList[proj_conf.readme, proj_conf.history,
                        proj_conf.license] + lib + FileList["ext/amalgalite3*.c"]

@@ -11,13 +11,17 @@ class SpecInfo
       @test_db ||=  File.expand_path(File.join(File.dirname(__FILE__), "test.db"))
     end
 
+    def country_data_file
+      @country_data_file ||= File.expand_path( File.join( File.dirname(__FILE__), "data", "iso-3166-country.txt" ) )
+    end
+
     def test_schema_file
-      @test_schema_file ||= File.expand_path(File.join(File.dirname(__FILE__),"iso-3166-schema.sql"))
+      @test_schema_file ||= File.expand_path(File.join(File.dirname(__FILE__), "data", "iso-3166-schema.sql"))
     end
 
     def make_iso_db
-      @iso_db ||= File.expand_path(File.join(File.dirname(__FILE__), "iso-3166.db"))
-      @new_is_db =  File.expand_path(File.join(File.dirname(__FILE__), "iso-3166-testing.db"))
+      @iso_db ||= File.expand_path(File.join(File.dirname(__FILE__), "data", "iso-3166.db"))
+      @new_is_db =  File.expand_path(File.join(File.dirname(__FILE__), "data", "iso-3166-testing.db"))
       FileUtils.cp @iso_db, @new_is_db
       return @new_is_db
     end
