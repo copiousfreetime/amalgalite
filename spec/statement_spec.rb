@@ -1,24 +1,12 @@
-require 'rubygems'
-require 'spec'
-
 require File.expand_path( File.join( File.dirname( __FILE__ ), "spec_helper.rb" ) )
-
-require 'amalgalite'
 
 describe Amalgalite::Statement do
   before(:each) do
     @db = Amalgalite::Database.new( SpecInfo.test_db )
-    @schema_sql = IO.read( SpecInfo.test_schema_file )
-    @iso_db_file = SpecInfo.make_iso_db
-    @iso_db = Amalgalite::Database.new( SpecInfo.make_iso_db )
   end
 
   after(:each) do
     @db.close
-    File.unlink SpecInfo.test_db if File.exist?( SpecInfo.test_db )
-    
-    @iso_db.close
-    File.unlink @iso_db_file if File.exist?( @iso_db_file )
   end
 
   it "a statement has a copy of the sql it was prepared with" do
@@ -138,7 +126,7 @@ describe Amalgalite::Statement do
 
   it "can execute a single sql command and say if there is remaining sql to execute" do
     db = Amalgalite::Database.new( SpecInfo.test_db )
-    stmt = @db.prepare( @schema_sql )
+    stmt = @db.prepare( @schema )
     stmt.execute
     stmt.remaining_sql.size.should > 0
     stmt.close

@@ -1,9 +1,5 @@
-require 'rubygems'
-require 'spec'
 require File.expand_path( File.join( File.dirname( __FILE__ ), "spec_helper.rb" ) )
 
-require 'amalgalite'
-require 'amalgalite/database'
 class PH < ::Amalgalite::ProgressHandler
   attr_reader :call_count
   def initialize( max = nil )
@@ -32,15 +28,6 @@ def query_thread( db )
 end
 
 describe "Progress Handlers" do
-  before(:each) do
-    @db_name = SpecInfo.make_iso_db
-    @iso_db = Amalgalite::Database.new( @db_name )
-  end
-
-  after(:each) do
-    @iso_db.close
-    File.unlink @db_name if File.exist?( @db_name )
-  end
 
   it "raises NotImplemented if #call is not overwritten" do
     bh = ::Amalgalite::ProgressHandler.new

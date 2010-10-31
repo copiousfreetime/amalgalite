@@ -9,17 +9,6 @@ require 'amalgalite/taps/console'
 require 'amalgalite/database'
 
 describe Amalgalite::Database do
-  before(:each) do
-    @schema = IO.read( SpecInfo.test_schema_file )
-    @iso_db_file = SpecInfo.make_iso_db
-    @iso_db = Amalgalite::Database.new( SpecInfo.make_iso_db )
-  end
-
-  after(:each) do
-    File.unlink SpecInfo.test_db if File.exist?( SpecInfo.test_db )
-    @iso_db.close
-    File.unlink @iso_db_file if File.exist?( @iso_db_file )
-  end
 
   it "can create a new database" do
     db = Amalgalite::Database.new( SpecInfo.test_db )
@@ -207,7 +196,6 @@ describe Amalgalite::Database do
   end
 
   it "#reload_schema!" do
-    @iso_db = Amalgalite::Database.new( SpecInfo.make_iso_db )
     schema = @iso_db.schema
     schema.instance_of?( Amalgalite::Schema ).should eql(true)
     s2 = @iso_db.reload_schema!
@@ -425,14 +413,17 @@ describe Amalgalite::Database do
 
   it "rolls back a savepoint" do
     all_sub = @iso_db.execute("SELECT count(*) as cnt from subcountry").first['cnt']
+    us_sub  = @iso_db.execute("SELECT count(*) as cnt from subcountry where country = 'US'").first['cnt']
     lambda {
       @iso_db.savepoint( "t1" ) do |s|
         s.execute("DELETE FROM subcountry where country = 'US'")
+        as = @iso_db.execute("SELECT count(*) as cnt from subcountry where country = 'US'").first['cnt']
+        as.should == 0
         raise "sample error"
       end
     }.should raise_error( StandardError, /sample error/ )
 
-    @iso_db.execute("SELECT count(*) as cnt from subcountry").first['cnt'].should eql(all_sub)
+    @iso_db.execute("SELECT count(*) as cnt from subcountry where country = 'US'").first['cnt'].should eql(us_sub)
   end
 
   it "rolling back the outermost savepoint is still 'in_transaction'" do

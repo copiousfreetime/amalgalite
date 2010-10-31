@@ -1,8 +1,4 @@
-require 'rubygems'
-require 'spec'
-
-$: << File.expand_path(File.join(File.dirname(__FILE__),"..","lib"))
-require 'amalgalite'
+require File.expand_path( File.join( File.dirname(__FILE__), 'spec_helper'))
 
 describe Amalgalite::Blob do
 
@@ -17,6 +13,7 @@ describe Amalgalite::Blob do
         data    TEXT ); 
     SQL
     @db.execute( @schema_sql )
+    @country_data_file = Amalgalite::Iso3166Database.country_data_file
     @junk_file = File.join( File.dirname(__FILE__), "test_output")
   end
 
@@ -26,14 +23,14 @@ describe Amalgalite::Blob do
     File.unlink @junk_file    if File.exist?( @junk_file )
   end
 
-  { :file   => SpecInfo.country_data_file,
-    :string => IO.read( SpecInfo.country_data_file ),
-    :io     => StringIO.new( IO.read( SpecInfo.country_data_file ) ) }.each_pair do |style, data |
+  { :file   => Amalgalite::Iso3166Database.country_data_file,
+    :string => IO.read( Amalgalite::Iso3166Database.country_data_file),
+    :io     => StringIO.new( IO.read( Amalgalite::Iso3166Database.country_data_file) ) }.each_pair do |style, data |
     describe "inserts a blob from a #{style}" do
       before(:each) do
         column = @db.schema.tables['blobs'].columns['data']
         @db.execute("INSERT INTO blobs(name, data) VALUES ($name, $data)",
-                    { "$name" => SpecInfo.country_data_file,
+                    { "$name" => @country_data_file,
                       "$data" => Amalgalite::Blob.new( style => data,
                                                       :column => column ) } )
         @db.execute("VACUUM")
@@ -47,26 +44,26 @@ describe Amalgalite::Blob do
       it "and retrieves the data as a single value" do
         all_rows = @db.execute("SELECT name,data FROM blobs")
         all_rows.size.should eql(1)
-        all_rows.first['name'].should eql(SpecInfo.country_data_file)
+        all_rows.first['name'].should eql(@country_data_file)
         all_rows.first['data'].should_not be_incremental
-        all_rows.first['data'].to_string_io.string.should eql(IO.read( SpecInfo.country_data_file ))
+        all_rows.first['data'].to_string_io.string.should eql(IO.read( @country_data_file ))
       end
 
       it "and retrieves the data using incremental IO" do
         all_rows = @db.execute("SELECT * FROM blobs")
         all_rows.size.should eql(1)
-        all_rows.first['name'].should eql(SpecInfo.country_data_file)
+        all_rows.first['name'].should eql(@country_data_file)
         all_rows.first['data'].should be_incremental
-        all_rows.first['data'].to_string_io.string.should eql(IO.read( SpecInfo.country_data_file ))
+        all_rows.first['data'].to_string_io.string.should eql(IO.read( @country_data_file ))
       end
 
       it "writes the data to a file " do
         all_rows = @db.execute("SELECT * FROM blobs")
         all_rows.size.should eql(1)
-        all_rows.first['name'].should eql(SpecInfo.country_data_file)
+        all_rows.first['name'].should eql(@country_data_file)
         all_rows.first['data'].should be_incremental
         all_rows.first['data'].write_to_file( @junk_file )
-        IO.read( @junk_file).should eql(IO.read( SpecInfo.country_data_file ))
+        IO.read( @junk_file).should eql(IO.read( @country_data_file ))
       end
     end
   end

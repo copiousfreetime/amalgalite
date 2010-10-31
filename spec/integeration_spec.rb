@@ -1,23 +1,8 @@
-require 'rubygems'
-require 'spec'
+require File.expand_path(File.join(File.dirname(__FILE__),"spec_helper.rb"))
 require 'date'
 require 'time'
 
-$: << File.expand_path(File.join(File.dirname(__FILE__),"..","lib"))
-require 'amalgalite'
-
 describe "Integration specifications" do
-  before(:each) do
-    @schema = IO.read( SpecInfo.test_schema_file )
-    @iso_db_file = SpecInfo.make_iso_db
-    @iso_db = Amalgalite::Database.new( SpecInfo.make_iso_db )
-  end
-  
-  after(:each) do
-    File.unlink SpecInfo.test_db if File.exist?( SpecInfo.test_db )
-    @iso_db.close
-    File.unlink @iso_db_file if File.exist?( @iso_db_file )
-  end
 
   describe " - invalid queries" do
     it "raises error with an invalid syntax" do

@@ -11,7 +11,7 @@ CREATE INDEX country_name  ON country(name);
 
 CREATE TABLE subcountry (
     country TEXT NOT NULL REFERENCES country(two_letter),
-    name TEXT NOT NULL,
+    name TEXT,
     subdivision TEXT,
     level TEXT,
     UNIQUE(country, name)

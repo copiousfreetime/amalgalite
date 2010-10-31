@@ -1,10 +1,4 @@
-require 'rubygems'
-require 'spec'
-
 require File.expand_path(File.join(File.dirname(__FILE__), 'spec_helper.rb' ) )
-
-require 'amalgalite'
-require 'amalgalite/database'
 
 class BusyHandlerTest < Amalgalite::BusyHandler
   attr_accessor :call_count
@@ -24,15 +18,13 @@ end
 
 describe "Busy Handlers" do
   before(:each) do
-    @db_name = SpecInfo.make_iso_db
-    @read_db = Amalgalite::Database.new( @db_name )
-    @write_db = Amalgalite::Database.new( @db_name )
+    @read_db = Amalgalite::Database.new( @iso_db_path )
+    @write_db = Amalgalite::Database.new( @iso_db_path )
   end
 
   after(:each) do
     @write_db.close
     @read_db.close
-    File.unlink @db_name if File.exist?( @db_name )
   end
 
   it "raises NotImplemented if #call is not overwritten" do
