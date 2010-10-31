@@ -10,6 +10,7 @@ require 'amalgalite/function'
 require 'amalgalite/aggregate'
 require 'amalgalite/busy_timeout'
 require 'amalgalite/progress_handler'
+require 'amalgalite/csv_table_importer'
 
 module Amalgalite
   #
@@ -30,7 +31,7 @@ module Amalgalite
   #
   # Open an in-memory database:
   #
-  #   db = Amalgalite::Database.new( ":memory:" )
+  #   db = Amalgalite::MemoryDatabase.new
   #
   class Database
 
@@ -945,6 +946,30 @@ module Amalgalite
 
       @api.replicate_to( to_db.api )
       return to_db
+    end
+
+    ##
+    # call-seq:
+    #   db.import_csv_to_table( "/some/location/data.csv", "my_table" )
+    #   db.import_csv_to_table( "countries.csv", "countries", :col_sep => "|", :headers => %w[ name two_letter id ] )
+    #
+    #
+    # import_csv_to_table() takes 2 required arguments, and a hash of options.  The 
+    # first argument is the path to a CSV, the second is the table in which
+    # to load the data.  The options has is a subset of those used by FasterCSV
+    #
+    # * :col_sep - the string placed between each field.  Default is ","
+    # * :row_sep - the String appended to the end of each row.  Default is :auto
+    # * :quote_char - The character used to quote fields.  Default '"'
+    # * :headers - set to true or :first_row if there are headers in this CSV. Default is false.
+    #              This may also be an Array.  If that is the case then the
+    #              array is used as the fields in the CSV and the fields in the
+    #              table in which to insert.  If this is set to an Array, it is
+    #              assumed that all rows in the csv will be inserted.
+    #
+    def import_csv_to_table( csv_path, table_name, options = {} )
+      importer = CSVTableImporter.new( csv_path, self, table_name, options )
+      importer.run
     end
   end
 end
