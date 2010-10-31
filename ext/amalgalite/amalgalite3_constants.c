@@ -168,7 +168,7 @@ void Init_amalgalite3_constants( )
     /*  3 -- Access permission denied */
     rb_define_const(mC_ResultCode, "PERM", INT2FIX(SQLITE_PERM));
 
-    /*  15 -- NOT USED. Database lock protocol error */
+    /*  15 -- Database lock protocol error */
     rb_define_const(mC_ResultCode, "PROTOCOL", INT2FIX(SQLITE_PROTOCOL));
 
     /*  25 -- 2nd parameter to sqlite3_bind out of range */
