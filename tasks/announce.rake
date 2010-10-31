@@ -17,21 +17,21 @@ namespace :announce do
       mail.puts
       mail.puts info[:title]
       mail.puts
-      mail.puts "{{ Release notes for Version #{Amalgalite::VERSION} }}"
+      mail.puts "#{info[:urls]}"
       mail.puts
-      mail.puts info[:release_notes]
-      mail.puts 
-      mail.puts "    #{info[:urls]}"
+      mail.puts "=== Description"
+      mail.puts
+      mail.puts info[:description]
       mail.puts
       mail.puts "=== Installation"
       mail.puts
       mail.puts "  gem install #{Amalgalite::GEM_SPEC.name}"
-      mail.puts 
-      mail.puts "=== Description"
       mail.puts
-      mail.puts info[:description]
-      mail.puts 
-    end 
+      mail.puts "{{ Release notes for Version #{Amalgalite::VERSION} }}"
+      mail.puts
+      mail.puts info[:release_notes]
+      mail.puts
+   end
     puts "Created the following as email.txt:"
     puts "-" * 72
     puts File.read("email.txt")
