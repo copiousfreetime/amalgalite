@@ -68,8 +68,10 @@ module Amalgalite
           amalgalite/type_maps/default_map.rb
           amalgalite/function.rb
           amalgalite/progress_handler.rb
+          amalgalite/csv_table_importer.rb
           amalgalite/database.rb
           amalgalite/index.rb
+          amalgalite/memory_database.rb
           amalgalite/paths.rb
           amalgalite/table.rb
           amalgalite/view.rb
