@@ -8,7 +8,7 @@ module Amalgalite
   module Version
 
     MAJOR   = 0
-    MINOR   = 14
+    MINOR   = 15
     BUILD   = 0
 
     #
