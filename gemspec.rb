@@ -21,6 +21,7 @@ Amalgalite::GEM_SPEC = Gem::Specification.new do |spec|
 
   # add dependencies here
   spec.add_dependency("arrayfields", "~> 4.7.0")
+  spec.add_dependency("fastercsv", "~> 1.5.3")
   
   spec.add_development_dependency("rake", "~> 0.8.4")
   spec.add_development_dependency("configuration", "~> 0.0.5")
