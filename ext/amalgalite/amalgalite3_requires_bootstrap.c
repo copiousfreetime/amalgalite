@@ -18,13 +18,14 @@ VALUE eARB_Error;
  * string can be free'd and then raise with a ruby object in the hopes that
  * there is no memory leak from the C allocation.
  */
-void am_bootstrap_cleanup_and_raise( char* msg, sqlite3* db, sqlite3_stmt* stmt )
+void am_bootstrap_cleanup_and_raise( char* msg, sqlite3* db, sqlite3_stmt* stmt, VALUE free_msg )
 {
 
     if ( NULL != stmt ) { sqlite3_finalize( stmt ); stmt = NULL; }
     if ( NULL != db   ) { sqlite3_close( db ); }
-
-    free( msg );
+    
+    if (free_msg == Qtrue)
+        free( msg );
     rb_raise(eARB_Error, msg );
 }
 
@@ -116,7 +117,7 @@ VALUE am_bootstrap_lift( VALUE self, VALUE args )
     if ( SQLITE_OK != rc ) {
         memset( raise_msg, 0, BUFSIZ );
         snprintf(raise_msg, BUFSIZ, "Failure to open database %s for bootload: [SQLITE_ERROR %d] : %s", dbfile, rc, sqlite3_errmsg( db ) );
-        am_bootstrap_cleanup_and_raise( raise_msg, db, stmt );
+        am_bootstrap_cleanup_and_raise( raise_msg, db, stmt, Qfalse );
     }
 
     /* prepare the db query */
@@ -128,7 +129,7 @@ VALUE am_bootstrap_lift( VALUE self, VALUE args )
         snprintf( raise_msg, BUFSIZ,
                   "Failure to prepare bootload select statement table = '%s', rowid col = '%s', filename col ='%s', contents col = '%s' : [SQLITE_ERROR %d] %s\n",
                   tbl_name, pk_col, fname_col, content_col, rc, sqlite3_errmsg( db ));
-        am_bootstrap_cleanup_and_raise( raise_msg, db, stmt );
+        am_bootstrap_cleanup_and_raise( raise_msg, db, stmt, Qfalse );
     }
 
     /* loop over the resulting rows, eval'ing and loading $LOADED_FEATURES */
@@ -157,7 +158,7 @@ VALUE am_bootstrap_lift( VALUE self, VALUE args )
         memset( raise_msg, 0, BUFSIZ );
         snprintf( raise_msg, BUFSIZ, "Failure in bootloading, last successfully loaded rowid was %d : [SQLITE_ERROR %d] %s\n", 
                   last_row_good, rc, sqlite3_errmsg( db ) );
-        am_bootstrap_cleanup_and_raise( raise_msg, db, stmt );
+        am_bootstrap_cleanup_and_raise( raise_msg, db, stmt, Qfalse );
     }
 
     /* finalize the statement */    
@@ -165,7 +166,7 @@ VALUE am_bootstrap_lift( VALUE self, VALUE args )
     if ( SQLITE_OK != rc ) {
         memset( raise_msg, 0, BUFSIZ );
         snprintf( raise_msg, BUFSIZ, "Failure to finalize bootload statement : [SQLITE_ERROR %d] %s\n", rc, sqlite3_errmsg( db ) );
-        am_bootstrap_cleanup_and_raise( raise_msg, db, stmt );
+        am_bootstrap_cleanup_and_raise( raise_msg, db, stmt, Qfalse );
     }
 
     stmt = NULL;
@@ -175,7 +176,7 @@ VALUE am_bootstrap_lift( VALUE self, VALUE args )
     if ( SQLITE_OK != rc ) {
         memset( raise_msg, 0, BUFSIZ );
         snprintf( raise_msg, BUFSIZ, "Failure to close database : [SQLITE_ERROR %d] : %s\n", rc, sqlite3_errmsg( db )),
-        am_bootstrap_cleanup_and_raise( raise_msg, db,stmt );
+        am_bootstrap_cleanup_and_raise( raise_msg, db,stmt, Qfalse );
     }
 
     return Qnil;
