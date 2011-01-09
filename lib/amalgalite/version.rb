@@ -7,8 +7,8 @@ module Amalgalite
   # Version information for Amagalite
   module Version
 
-    MAJOR   = 0
-    MINOR   = 15
+    MAJOR   = 1
+    MINOR   = 0
     BUILD   = 0
 
     #
