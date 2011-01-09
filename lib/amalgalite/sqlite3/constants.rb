@@ -14,7 +14,7 @@ module Amalgalite::SQLite3
           @const_map_from_value = {}
           constants.each do |const_name|
             c_int = const_get( const_name )
-            @const_map_from_value[c_int] = const_name
+            @const_map_from_value[c_int] = const_name.to_s
           end
         end
         return @const_map_from_value[ value ]
@@ -29,7 +29,7 @@ module Amalgalite::SQLite3
           @const_map_from_name = {}
           constants.each do |const_name|
             c_int = const_get( const_name )
-            @const_map_from_name[ const_name ] = c_int
+            @const_map_from_name[ const_name.to_s ] = c_int
           end
         end
         return @const_map_from_name[ name.upcase ]

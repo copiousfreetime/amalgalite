@@ -1,7 +1,5 @@
-require 'rubygems'
-require 'spec'
+require File.expand_path( File.join( File.dirname( __FILE__ ), "spec_helper.rb" ) )
 
-$: << File.expand_path(File.join(File.dirname(__FILE__),"..","lib"))
 require 'amalgalite'
 require 'amalgalite/trace_tap'
 require 'amalgalite/profile_tap'

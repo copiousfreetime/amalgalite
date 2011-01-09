@@ -1,4 +1,16 @@
 = Amalgalite Changelog
+== Version 1.0.0 - 2011-01-09
+
+=== Enhancements
+
+* Update to 1.0
+* Update all dependencies to the latest version
+
+=== Bug Fixes
+
+* Fix FasterCSV/CSV compatibility issues with ruby 1.8/1.9 [GH-4]
+* 
+
 == Version 0.15.0 - 2010-10-30
 
 === Enhancements

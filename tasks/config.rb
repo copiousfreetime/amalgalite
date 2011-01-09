@@ -1,4 +1,5 @@
 require 'configuration'
+require 'yaml'
 
 require 'rake'
 require 'tasks/utils'
@@ -11,7 +12,7 @@ Configuration.for('project') {
   version       Amalgalite::Version.to_s
   author        "Jeremy Hinegardner"
   email         "jeremy at copiousfreetime dot org"
-  homepage      "http://copiousfreetime.rubyforge.org/amalgalite/"
+  homepage      "http://www.copiousfreetime.org/projects/amalgalite/"
   description   Utils.section_of("README", "description")
   summary       description.split(".").first
   history       "HISTORY"
@@ -61,7 +62,7 @@ Configuration.for("rubygem") {
 Configuration.for('test') {
   mode      "spec"
   files     Configuration.for("packaging").files.test
-  options   %w[ --format profile --color ]
+  options   %w[ --format documentation --color ]
   ruby_opts %w[  ]
 }
 
@@ -69,9 +70,8 @@ Configuration.for('test') {
 # Rcov 
 #-----------------------------------------------------------------------
 Configuration.for('rcov') {
-  output_dir  "coverage"
   libs        %w[ lib ]
-  rcov_opts   %w[ --html ]
+  rcov_opts   %w[ --html -o coverage ]
   ruby_opts   %w[  ]
   test_files  Configuration.for('packaging').files.test
 }
@@ -92,7 +92,7 @@ Configuration.for('rdoc') {
 #-----------------------------------------------------------------------
 Configuration.for('extension') {
   configs   Configuration.for('packaging').files.ext.find_all { |x| %w[ extconf.rb ].include?(File.basename(x)) }
-  cross_rbconfig YAML.load_file( File.expand_path("~/.rake-compiler/config.yml"))
+  cross_rbconfig ::YAML.load_file( File.expand_path("~/.rake-compiler/config.yml"))
 }
 
 #-----------------------------------------------------------------------

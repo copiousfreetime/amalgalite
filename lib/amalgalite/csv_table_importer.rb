@@ -1,4 +1,9 @@
-require 'fastercsv'
+if RUBY_VERSION >= "1.9"
+  require 'csv'
+else
+  require 'fastercsv'
+  ::CSV = ::FasterCSV
+end
 module Amalgalite
   ##
   # A class to deal with importing CSV data into a single table in the
@@ -17,7 +22,7 @@ module Amalgalite
     def run
       @database.transaction do |db|
         db.prepare( insert_sql ) do |stmt|
-          ::FasterCSV.foreach( @csv_path, @options ) do |row|
+          ::CSV.foreach( @csv_path, @options ) do |row|
             stmt.execute( row )
           end
         end

@@ -61,6 +61,16 @@ module Amalgalite
       self.sub_path("ext", *args)
     end
 
+    # returns:: [String] The full expanded path of the +spec+ directory below
+    #           _root_dir_.  All parameters passed in are joined onto the
+    #           result. Trailing File::SEPARATOR is guaranteed if
+    #           _*args_ are *not* present.
+    #
+    def self.spec_path(*args)
+      self.sub_path("spec", *args)
+    end
+
+
     def self.sub_path(sub,*args)
       sp = ::File.join(root_dir, sub) + File::SEPARATOR
       sp = ::File.join(sp, *args) if args

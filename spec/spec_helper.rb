@@ -1,15 +1,17 @@
 require 'rubygems'
-require 'spec'
+require 'rspec'
 
-$: << File.expand_path(File.join(File.dirname(__FILE__),"..","lib"))
+$:.unshift File.expand_path(File.join(File.dirname(__FILE__),"..","lib"))
+require 'amalgalite/paths'
+$:.unshift Amalgalite::Paths.root_dir
 
 require 'amalgalite'
-require File.expand_path( File.join( File.dirname(__FILE__), "iso_3166_database.rb" )  )
+require Amalgalite::Paths.spec_path( "iso_3166_database.rb" )
 
 class SpecInfo
   class << self
     def test_db
-      @test_db ||=  File.expand_path(File.join(File.dirname(__FILE__), "data", "test.db"))
+      @test_db ||= Amalgalite::Paths.spec_path("data", "test.db")
     end
 
     def make_master_iso_db
@@ -22,7 +24,7 @@ class SpecInfo
   end
 end
 
-Spec::Runner.configure do |config|
+RSpec.configure do |config|
   config.before(:all) do 
     SpecInfo.make_master_iso_db
   end

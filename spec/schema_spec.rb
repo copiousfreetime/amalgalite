@@ -1,8 +1,5 @@
-require 'rubygems'
-require 'spec'
-
 require File.expand_path( File.join( File.dirname(__FILE__), 'spec_helper'))
-$: << File.expand_path(File.join(File.dirname(__FILE__),"..","lib"))
+
 require 'amalgalite'
 require 'amalgalite/schema'
 

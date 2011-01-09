@@ -956,7 +956,7 @@ module Amalgalite
     #
     # import_csv_to_table() takes 2 required arguments, and a hash of options.  The 
     # first argument is the path to a CSV, the second is the table in which
-    # to load the data.  The options has is a subset of those used by FasterCSV
+    # to load the data.  The options has is a subset of those used by CSV
     #
     # * :col_sep - the string placed between each field.  Default is ","
     # * :row_sep - the String appended to the end of each row.  Default is :auto

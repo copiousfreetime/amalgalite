@@ -10,19 +10,16 @@ if spec_config = Configuration.for_if_exist?("test") then
 
       task :default => :spec
 
-      require 'spec/rake/spectask'
-      rs = Spec::Rake::SpecTask.new do |r| 
+      require 'rspec/core/rake_task'
+      rs = RSpec::Core::RakeTask.new do |r|
         r.ruby_opts   = spec_config.ruby_opts 
-        r.libs        = [ Amalgalite::Paths.lib_path, 
-                          Amalgalite::Paths.ext_path,
-                          Amalgalite::Paths.root_dir ]
-        r.spec_files  = spec_config.files 
-        r.spec_opts   = spec_config.options
-        #r.warning     = true
+        #r.rspec_path  = [ Amalgalite::Paths.lib_path, 
+                          #Amalgalite::Paths.ext_path,
+                          #Amalgalite::Paths.root_dir ]
+        r.rspec_opts  = spec_config.options
 
         if rcov_config = Configuration.for_if_exist?('rcov') then
-          r.rcov      = true
-          r.rcov_dir  = rcov_config.output_dir
+          r.rcov      = false
           r.rcov_opts = rcov_config.rcov_opts
         end
       end

@@ -1,7 +1,5 @@
 require File.expand_path( File.join( File.dirname(__FILE__), 'spec_helper'))
-
-$: << File.expand_path(File.join(File.dirname(__FILE__),"..","lib"))
-
+#
 # Example from http://sqlite.org/rtree.html
 #
 describe "SQLite3 R*Tree extension" do
