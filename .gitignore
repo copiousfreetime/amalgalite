@@ -12,3 +12,4 @@ tmp/*
 *.swp
 email.txt
 spec/data/*.db
+*.bundle
