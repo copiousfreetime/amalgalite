@@ -41,16 +41,16 @@ module Amalgalite::SQLite3
     # DataType defines the namespace for all possible SQLite data types.
     # 
     module DataType
+      extend Helpers
     end
-    DataType.freeze
 
     ##
     # Open defines the namespace for all possible flags to the Database.open
     # method
     #
     module Open
+      extend Helpers
     end
-    Open.freeze
 
     ##
     # Status defines the namespace for all the possible status flags for
@@ -59,7 +59,6 @@ module Amalgalite::SQLite3
     module Status
       extend Helpers
     end
-
 
     ##
     # DBStatus defines the namespace for all the possible status codes for the
@@ -76,5 +75,21 @@ module Amalgalite::SQLite3
     module ResultCode
       extend Helpers
     end # end ResultCode
+
+    ##
+    # Config defines the namespace for all possible parameter for the
+    # sqlite config API.
+    #
+    module Config
+      extend Helpers
+    end
+
+    ##
+    # StatementStatus defines the namespace for all the possible status codes
+    # for the SQLite prepared statements
+    #
+    module StatementStatus
+      extend Helpers
+    end
   end
 end

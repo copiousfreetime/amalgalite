@@ -13,7 +13,7 @@ describe "Amalgalite::SQLite3::Database::Status" do
 
   after(:each) do
     @db.close
-    FileUtils.rm_f "lookaside-test.db" 
+    ::FileUtils.rm_f "lookaside-test.db" 
   end
 
 
