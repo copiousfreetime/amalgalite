@@ -1,7 +1,6 @@
 require 'tasks/config'
 require 'pathname'
 require 'zip/zipfilesystem'
-require 'archive/tar/minitar'
 
 #-----------------------------------------------------------------------
 # Extensions
