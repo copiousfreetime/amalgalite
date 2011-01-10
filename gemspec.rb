@@ -27,7 +27,7 @@ Amalgalite::GEM_SPEC = Gem::Specification.new do |spec|
   spec.add_development_dependency("configuration", "~> 1.2.0")
   spec.add_development_dependency("rspec", "~> 2.4.0")
   spec.add_development_dependency("rake-compiler", "~> 0.7.5")
-  spec.add_development_dependency('archive-tar-minitar', "~> 0.5.2")
+  spec.add_development_dependency('rubyzip', "~> 0.9.4")
   spec.add_development_dependency('rcov', "~> 0.9.9")
 
   if ext_conf = Configuration.for_if_exist?("extension") then

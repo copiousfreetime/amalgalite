@@ -1,6 +1,6 @@
 require 'tasks/config'
 require 'pathname'
-require 'zlib'
+require 'zip/zipfilesystem'
 require 'archive/tar/minitar'
 
 #-----------------------------------------------------------------------
@@ -164,12 +164,13 @@ if ext_config = Configuration.for_if_exist?('extension') then
       parts.each do |p|
         next_version << "#{"%02d" % p }"
       end
+      next_version << "00" if next_version.size == 3
 
       next_version = next_version.join('')
 
       raise "VERSION env variable must be set" unless next_version
-      puts "downloading ..."
-      url = URI.parse("http://sqlite.org/sqlite-amalgamation-#{next_version}.tar.gz")
+      url = URI.parse("http://sqlite.org/sqlite-amalgamation-#{next_version}.zip")
+      puts "downloading #{url.to_s} ..."
       file = "tmp/#{File.basename( url.path ) }"
       FileUtils.mkdir "tmp" unless File.directory?( "tmp" )
       File.open( file, "wb+") do |f|
@@ -179,19 +180,15 @@ if ext_config = Configuration.for_if_exist?('extension') then
 
       puts "extracting..."
       upstream_files = %w[ sqlite3.h sqlite3.c sqlite3ext.h ]
-      Zlib::GzipReader.open( file ) do |tgz|
-        Archive::Tar::Minitar::Reader.open( tgz ) do |tar|
-          tar.each_entry do |entry|
-            bname = File.basename( entry.full_name )
-            if upstream_files.include?( bname ) then
-              dest_file = File.join( "ext", "amalgalite", bname )
-              puts "updating #{ dest_file }"
-              File.open( dest_file, "wb" ) do |df|
-                while bytes = entry.read do
-                  df.write bytes
-                end
-              end
-            end
+      Zip::ZipInputStream.open( file ) do |io|
+        loop do
+          entry = io.get_next_entry
+          break unless entry
+          bname = File.basename( entry.name )
+          if upstream_files.include?( bname ) then
+            dest_file = File.join( "ext", "amalgalite", bname )
+            puts "updating #{dest_file}"
+            entry.extract( dest_file ) { true }
           end
         end
       end
