@@ -28,9 +28,9 @@ $CFLAGS = $CFLAGS.gsub(/-Wall/,'')
 #
 # warnflags and debugflags appear to be 1.9 constructs
 #
-if CONFIG['arch'] =~ /(mswin|mingw)/i then
-  CONFIG['debugflags'] = CONFIG['debugflags'].gsub(/-g/,'') if CONFIG['debugflags']
-  CONFIG['warnflags'] = CONFIG['warnflags'].gsub(/-Wall/,'') if CONFIG['warnflags']
+if Config::CONFIG['arch'] =~ /(mswin|mingw)/i then
+  Config::CONFIG['debugflags'] = Config::CONFIG['debugflags'].gsub(/-g/,'')   if Config::CONFIG['debugflags']
+  Config::CONFIG['warnflags']  = Config::CONFIG['warnflags'].gsub(/-Wall/,'') if Config::CONFIG['warnflags']
 end
 subdir = RUBY_VERSION.sub(/\.\d$/,'')
 create_makefile("amalgalite/#{subdir}/amalgalite3")
