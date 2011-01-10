@@ -3,6 +3,7 @@
 
 === Enhancements
 
+* Update to SQLite 3.7.4
 * Update to 1.0
 * Update all dependencies to the latest version
 
