@@ -14,9 +14,9 @@ VALUE eARB_Error;
 
 /* 
  * cleanup the datatbase and statment values if they are currently open and then
- * raise the message.  It converts the error message to a String so that the C
- * string can be free'd and then raise with a ruby object in the hopes that
- * there is no memory leak from the C allocation.
+ * raise the message.  It is assumed that the *msg pointer passed in is NOT
+ * allocated via malloc() or the like.  It should be a local static buffer
+ * that we do not have to worry about freeing.
  */
 void am_bootstrap_cleanup_and_raise( char* msg, sqlite3* db, sqlite3_stmt* stmt )
 {
@@ -24,7 +24,6 @@ void am_bootstrap_cleanup_and_raise( char* msg, sqlite3* db, sqlite3_stmt* stmt 
     if ( NULL != stmt ) { sqlite3_finalize( stmt ); stmt = NULL; }
     if ( NULL != db   ) { sqlite3_close( db ); }
 
-    free( msg );
     rb_raise(eARB_Error, msg );
 }
 
@@ -68,13 +67,13 @@ VALUE am_bootstrap_lift( VALUE self, VALUE args )
     int  last_row_good; 
     char raise_msg[BUFSIZ];
 
-    VALUE     am_db_c     = rb_const_get( cARB, rb_intern("DEFAULT_DB") );
-    VALUE    am_tbl_c     = rb_const_get( cARB, rb_intern("DEFAULT_BOOTSTRAP_TABLE") );
-    VALUE     am_pk_c     = rb_const_get( cARB, rb_intern("DEFAULT_ROWID_COLUMN") );
-    VALUE  am_fname_c     = rb_const_get( cARB, rb_intern("DEFAULT_FILENAME_COLUMN") );
-    VALUE am_content_c    = rb_const_get( cARB, rb_intern("DEFAULT_CONTENTS_COLUMN") );
+    VALUE     am_db_c  = rb_const_get( cARB, rb_intern("DEFAULT_DB") );
+    VALUE    am_tbl_c  = rb_const_get( cARB, rb_intern("DEFAULT_BOOTSTRAP_TABLE") );
+    VALUE     am_pk_c  = rb_const_get( cARB, rb_intern("DEFAULT_ROWID_COLUMN") );
+    VALUE  am_fname_c  = rb_const_get( cARB, rb_intern("DEFAULT_FILENAME_COLUMN") );
+    VALUE am_content_c = rb_const_get( cARB, rb_intern("DEFAULT_CONTENTS_COLUMN") );
 
-    char*     dbfile = NULL;
+    char*      dbfile = NULL;
     char*    tbl_name = NULL;
     char*      pk_col = NULL;
     char*   fname_col = NULL;
