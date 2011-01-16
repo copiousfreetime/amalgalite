@@ -17,8 +17,28 @@ $: << File.expand_path(File.dirname(__FILE__))
 # This loads up the defaults for the whole project configuration
 #-------------------------------------------------------------------------------
 require 'rubygems'
-require 'tasks/config.rb'
-require 'rake/clean'
+begin
+  require 'tasks/config.rb'
+  require 'rake/clean'
+rescue LoadError
+  abort "You probably want to run 'gem install configuration' then 'rake install_dependencies'"
+end
+
+desc "Install development dependencies"
+task :install_dependencies => :clean do
+  gv = [
+    %w[ arrayfields     4.7.4 ],
+    %w[ fastercsv       1.5.4 ],
+    %w[ rspec           2.4.0 ],
+    %w[ zip             2.0.2 ],
+    %w[ rake-compiler   0.7.5 ],
+    %w[ rcov            0.9.9 ] ]
+  gv.each do |name, version|
+   puts "Installing #{name}-#{version}"
+   sh "gem install #{name} --version #{version} --no-rdoc --no-ri"
+  end
+end
+
 
 #-------------------------------------------------------------------------------
 # Main configuration for the project, these overwrite the items that are in
@@ -38,10 +58,12 @@ Configuration.for("project") {
 # load up all the project tasks and setup the default task to be the
 # test:default task.
 #-------------------------------------------------------------------------------
-Configuration.for("packaging").files.tasks.each do |tasklib|
-  import tasklib
+if Rake.application.top_level_tasks.first !="install_dependencies" then
+  Configuration.for("packaging").files.tasks.each do |tasklib|
+    import tasklib
+  end
+  task :default => 'test:default'
 end
-task :default => 'test:default'
 
 #-------------------------------------------------------------------------------
 # Finalize the loading of all pending imports and update the top level clobber
@@ -52,7 +74,12 @@ task :default => 'test:default'
 #
 # and it will get everything.
 #-------------------------------------------------------------------------------
-Rake.application.load_imports
+begin
+  Rake.application.load_imports
+rescue LoadError
+  abort "run 'rake install_dependencies'"
+end
+
 Rake.application.tasks.each do |t| 
   if t.name =~ /:clobber/ then
     task :clobber => [t.name] 

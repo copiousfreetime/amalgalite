@@ -1,6 +1,10 @@
 require 'tasks/config'
 require 'pathname'
-require 'zip/zipfilesystem'
+begin
+  require 'zip/zipfilesystem'
+rescue
+  abort "rake development_dependencies"
+end
 
 #-----------------------------------------------------------------------
 # Extensions
@@ -41,7 +45,7 @@ if ext_config = Configuration.for_if_exist?('extension') then
       end
     end
 
-    def build_win( version = "1.8.6" )
+    def build_win( version = "1.8.7" )
       ext_config = Configuration.for("extension")
       rbconfig = ext_config.cross_rbconfig["rbconfig-#{version}"]
       raise ArgumentError, "No cross compiler for version #{version}, we have #{ext_config.cross_rbconfig.keys.join(",")}" unless rbconfig
