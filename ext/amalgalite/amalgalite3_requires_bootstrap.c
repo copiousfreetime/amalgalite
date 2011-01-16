@@ -18,13 +18,13 @@ VALUE eARB_Error;
  * allocated via malloc() or the like.  It should be a local static buffer
  * that we do not have to worry about freeing.
  */
-void am_bootstrap_cleanup_and_raise( char* msg, sqlite3* db, sqlite3_stmt* stmt )
+void am_bootstrap_cleanup_and_raise( const char* msg, sqlite3* db, sqlite3_stmt* stmt )
 {
 
     if ( NULL != stmt ) { sqlite3_finalize( stmt ); stmt = NULL; }
     if ( NULL != db   ) { sqlite3_close( db ); }
 
-    rb_raise(eARB_Error, msg );
+    rb_raise(eARB_Error, "%s", msg );
 }
 
 

@@ -282,7 +282,7 @@ VALUE am_sqlite3_database_prepare(VALUE self, VALUE rSQL)
     Data_Get_Struct(self, am_sqlite3, am_db);
 
     Data_Get_Struct(stmt, am_sqlite3_stmt, am_stmt);
-    rc = sqlite3_prepare_v2( am_db->db, RSTRING_PTR(sql), RSTRING_LEN(sql),
+    rc = sqlite3_prepare_v2( am_db->db, RSTRING_PTR(sql), (int)RSTRING_LEN(sql),
                             &(am_stmt->stmt), &tail);
     if ( SQLITE_OK != rc) {
         rb_raise(eAS_Error, "Failure to prepare statement %s : [SQLITE_ERROR %d] : %s\n",
@@ -445,7 +445,7 @@ void amalgalite_set_context_result( sqlite3_context* context, VALUE result )
             sqlite3_result_int64( context, 0);
             break;
         case T_STRING:
-            sqlite3_result_text( context, RSTRING_PTR(result), RSTRING_LEN(result), NULL);
+            sqlite3_result_text( context, RSTRING_PTR(result), (int)RSTRING_LEN(result), NULL);
             break;
         default:
             sqlite3_result_error( context, "Unable to convert ruby object to an SQL function result", -1 );
@@ -652,7 +652,7 @@ void amalgalite_xFunc( sqlite3_context* context, int argc, sqlite3_value** argv 
     /* check the results */
     if ( state ) {
         VALUE msg = ERROR_INFO_MESSAGE();
-        sqlite3_result_error( context, RSTRING_PTR(msg), RSTRING_LEN(msg) );
+        sqlite3_result_error( context, RSTRING_PTR(msg), (int)RSTRING_LEN(msg) );
     } else {
         amalgalite_set_context_result( context, result );
     }
@@ -771,7 +771,7 @@ void amalgalite_xStep( sqlite3_context* context, int argc, sqlite3_value** argv 
         rb_gc_register_address( aggregate_context );
         if ( state ) {
             VALUE msg = ERROR_INFO_MESSAGE();
-            sqlite3_result_error( context, RSTRING_PTR(msg), RSTRING_LEN(msg));
+            sqlite3_result_error( context, RSTRING_PTR(msg), (int)RSTRING_LEN(msg));
             rb_iv_set( *aggregate_context, "@_exception", rb_gv_get("$!" ));
             return;
         } else {
@@ -797,7 +797,7 @@ void amalgalite_xStep( sqlite3_context* context, int argc, sqlite3_value** argv 
     /* check the results, if there is an error, set the @exception ivar */
     if ( state ) {
         VALUE msg = ERROR_INFO_MESSAGE();
-        sqlite3_result_error( context, RSTRING_PTR(msg), RSTRING_LEN(msg));
+        sqlite3_result_error( context, RSTRING_PTR(msg), (int)RSTRING_LEN(msg));
         rb_iv_set( *aggregate_context, "@_exception", rb_gv_get("$!" ));
     }
 
@@ -832,13 +832,13 @@ void amalgalite_xFinal( sqlite3_context* context )
         /* check the results */
         if ( state ) {
             VALUE msg = ERROR_INFO_MESSAGE();
-            sqlite3_result_error( context, RSTRING_PTR(msg), RSTRING_LEN(msg) );
+            sqlite3_result_error( context, RSTRING_PTR(msg), (int)RSTRING_LEN(msg) );
         } else {
             amalgalite_set_context_result( context, result );
         }
     } else {
         VALUE msg = rb_obj_as_string( exception );
-        sqlite3_result_error( context, RSTRING_PTR(msg), RSTRING_LEN(msg) );
+        sqlite3_result_error( context, RSTRING_PTR(msg), (int)RSTRING_LEN(msg) );
     }
 
 

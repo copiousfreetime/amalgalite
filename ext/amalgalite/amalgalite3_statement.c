@@ -43,7 +43,7 @@ VALUE am_sqlite3_statement_bind_zeroblob( VALUE self, VALUE position, VALUE leng
 {
     am_sqlite3_stmt  *am_stmt;
     int               pos = FIX2INT( position );
-    int               n = FIX2INT( length );
+    int               n = (int)FIX2INT( length );
     int               rc;
 
     Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
@@ -73,7 +73,7 @@ VALUE am_sqlite3_statement_bind_blob( VALUE self, VALUE position, VALUE blob )
     int               rc;
 
     Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
-    rc = sqlite3_bind_blob( am_stmt->stmt, pos, RSTRING_PTR( str ), RSTRING_LEN( str ), SQLITE_TRANSIENT);
+    rc = sqlite3_bind_blob( am_stmt->stmt, pos, RSTRING_PTR( str ), (int)RSTRING_LEN( str ), SQLITE_TRANSIENT);
     if ( SQLITE_OK != rc ) {
         rb_raise(eAS_Error, "Error binding blob at position %d in statement: [SQLITE_ERROR %d] : %s\n",
                 pos,
@@ -173,7 +173,7 @@ VALUE am_sqlite3_statement_bind_text(VALUE self, VALUE position, VALUE value)
     int               rc;
 
     Data_Get_Struct(self, am_sqlite3_stmt, am_stmt);
-    rc = sqlite3_bind_text( am_stmt->stmt, pos, RSTRING_PTR(str), RSTRING_LEN(str), SQLITE_TRANSIENT);
+    rc = sqlite3_bind_text( am_stmt->stmt, pos, RSTRING_PTR(str), (int)RSTRING_LEN(str), SQLITE_TRANSIENT);
     if ( SQLITE_OK != rc ) {
         rb_raise(eAS_Error, "Error binding [%s] to text at position %d in statement: [SQLITE_ERROR %d] : %s\n",
                 RSTRING_PTR(str), pos,

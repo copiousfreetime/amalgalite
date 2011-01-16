@@ -161,7 +161,7 @@ VALUE am_sqlite3_blob_write( VALUE self, VALUE buf )
     am_sqlite3_blob *am_blob;
     int              rc;
     VALUE            str = StringValue( buf );
-    int              n   = RSTRING_LEN( str );
+    int              n   = (int)RSTRING_LEN( str );
     char            *chk_buf = NULL;
 
     Data_Get_Struct(self, am_sqlite3_blob, am_blob);
