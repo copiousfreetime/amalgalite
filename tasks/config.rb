@@ -13,11 +13,11 @@ Configuration.for('project') {
   author        "Jeremy Hinegardner"
   email         "jeremy at copiousfreetime dot org"
   homepage      "http://www.copiousfreetime.org/projects/amalgalite/"
-  description   Utils.section_of("README", "description")
+  description   Utils.section_of("README.rdoc", "description")
   summary       description.split(".").first
-  history       "HISTORY"
+  history       "HISTORY.rdoc"
   license       ::FileList["LICENSE"]
-  readme        "README"
+  readme        "README.rdoc"
 }
 
 #-----------------------------------------------------------------------

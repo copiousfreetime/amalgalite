@@ -41,7 +41,7 @@ Amalgalite adds in the following additional non-default SQLite extension(s):
 
 == CHANGES
 
-Read the HISTORY file.
+Read the HISTORY.rdoc file.
 
 == LICENSE
 
