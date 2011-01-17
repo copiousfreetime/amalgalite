@@ -45,6 +45,16 @@ if ext_config = Configuration.for_if_exist?('extension') then
       end
     end
 
+    def myruby
+      require 'rbconfig'
+      x = File.join(
+        RbConfig::CONFIG['bindir'],
+        RbConfig::CONFIG['ruby_install_name']
+      )
+      #puts "myruby = #{x}"
+      return x
+    end
+
     def build_win( version = "1.8.7" )
       ext_config = Configuration.for("extension")
       rbconfig = ext_config.cross_rbconfig["rbconfig-#{version}"]
@@ -61,7 +71,7 @@ if ext_config = Configuration.for_if_exist?('extension') then
           cp "#{rbconfig}", "rbconfig.rb"
           rubylib = ENV['RUBYLIB']
           ENV['RUBYLIB'] = "."
-          sh %[ #{rvm} #{version} -S extconf.rb ]
+          sh %[ #{rvm} #{version} -S extconf.rb #{myruby} ]
           ENV['RUBYLIB'] = rubylib
           sh "make"
         end
