@@ -7,6 +7,7 @@ proj_config = Configuration.for('project')
 namespace :announce do
   desc "create email for ruby-talk"
   task :email do
+    require 'time'
     info = Utils.announcement
 
     File.open("email.txt", "w") do |mail|
