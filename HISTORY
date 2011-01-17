@@ -1,16 +1,17 @@
 = Amalgalite Changelog
-== Version 1.0.0 - 2011-01-09
+== Version 1.0.0 - 2011-01-16
 
 === Enhancements
 
+* Update to 1.0.0
 * Update to SQLite 3.7.4
-* Update to 1.0
-* Update all dependencies to the latest version
+* Update all runtime and development dependencies to the latest version
 
 === Bug Fixes
 
-* Fix FasterCSV/CSV compatibility issues with ruby 1.8/1.9 [GH-4]
-* 
+* Fix FasterCSV/CSV compatibility issues with ruby 1.8/1.9 [github issue #4]
+* Fix building issues for Ruby 1.9 [gitHub issue #5]
+* Fix cross compilation problems when using rvm
 
 == Version 0.15.0 - 2010-10-30
 
@@ -22,7 +23,7 @@
 
 === Bug Fixes
 
-* Unable to run specs from gem [GH-3]
+* Unable to run specs from gem [GH Issue #3]
 
 == Version 0.12.1 - 2010-02-17
 
