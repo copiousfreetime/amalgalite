@@ -300,6 +300,33 @@ VALUE am_sqlite3_database_prepare(VALUE self, VALUE rSQL)
     return stmt;
 }
 
+
+/**
+ * call-seqL
+ *    database.execute_batch( sqls ) -> Boolean
+ *
+ * Execute the statements in a batch.
+ */
+VALUE am_sqlite3_database_exec(VALUE self, VALUE rSQL)
+{
+  VALUE        sql = StringValue( rSQL );
+  am_sqlite3  *am_db;
+  int          rc;
+
+  Data_Get_Struct(self, am_sqlite3, am_db);
+  
+  rc = sqlite3_exec( am_db->db, RSTRING_PTR(sql), NULL, NULL, NULL );
+
+  if ( SQLITE_OK != rc ){
+    rb_raise( eAS_Error, "Failed to execute bulk statements: [SQLITE_ERROR %d] : %s\n",
+	      rc, sqlite3_errmsg(am_db->db));
+  }
+
+  /* Presume that nobody will want to batch execute
+     more than a Fixnum's worth of statements */
+  return Qtrue;
+}
+
 /**
  * This function is registered with a sqlite3 database using the sqlite3_trace
  * function.  During the registration process a handle on a VALUE is also
@@ -1137,6 +1164,7 @@ void Init_amalgalite3_database( )
     rb_define_method(cAS_Database, "progress_handler", am_sqlite3_database_progress_handler, 2); /* in amalgalite3_database.c */
     rb_define_method(cAS_Database, "interrupt!", am_sqlite3_database_interrupt_bang, 0); /* in amalgalite3_database.c */
     rb_define_method(cAS_Database, "replicate_to", am_sqlite3_database_replicate_to, 1); /* in amalgalite3_database.c */
+    rb_define_method(cAS_Database, "execute_batch", am_sqlite3_database_exec, 1); /* in amalgalite3_database.c */
 
 
     /*

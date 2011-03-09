@@ -502,4 +502,10 @@ describe Amalgalite::Database do
     lambda { @iso_db.replicate_to( false ) }.should raise_error( ArgumentError, /must be a String or a Database/ )
   end
 
+  it "imports batch statements" do
+    db = Amalgalite::Database.new(":memory:")
+    db.import("CREATE TABLE things(stuff TEXT); INSERT INTO things (stuff) VALUES (\"foobar\");").should be_true
+    db.first_value_from("SELECT stuff FROM things").should == "foobar"
+  end
+
 end

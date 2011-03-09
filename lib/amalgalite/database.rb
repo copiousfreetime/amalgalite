@@ -326,6 +326,14 @@ module Amalgalite
       return count
     end
 
+    ## 
+    # Execute a batch of statements via sqlite3_exec. This does the same as
+    # execute_batch, but doesn't update the statement statistics.
+    #
+    def import(sql)
+      @api.execute_batch(sql)
+    end
+
     ##
     # clear all the current taps
     #
