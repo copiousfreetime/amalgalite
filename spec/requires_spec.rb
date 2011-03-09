@@ -1,5 +1,6 @@
+require File.expand_path( File.join( File.dirname(__FILE__), 'spec_helper'))
 $: << File.expand_path(File.join(File.dirname(__FILE__),"..","lib"))
-#require 'amalgalite/requires'
+require 'amalgalite/requires'
 
 #describe Amalgalite::Requires do
 #  it "#require_order has all files in 'lib' and no more" do
@@ -18,3 +19,37 @@ $: << File.expand_path(File.join(File.dirname(__FILE__),"..","lib"))
 #end
 
 
+describe Amalgalite::Requires do
+  it "can import to an in-memory database" do
+    sql = <<-SQL
+CREATE TABLE rubylibs (
+      id                   INTEGER PRIMARY KEY AUTOINCREMENT,
+      filename   TEXT UNIQUE,
+      compressed BOOLEAN,
+      contents   BLOB
+      );
+INSERT INTO "rubylibs" VALUES(1, "application", "false", 'A=1');
+SQL
+    r = Amalgalite::Requires.new(:dbfile_name => ":memory:")
+    r.import(sql)
+    r.file_contents( "application" ).should == "A=1"
+  end
+
+
+  it "gives equal instances for file databases" do
+    a = Amalgalite::Requires.new( :dbfile_name => SpecInfo.test_db )
+    b = Amalgalite::Requires.new( :dbfile_name => SpecInfo.test_db )    
+
+    a.db_connection.should equal( b.db_connection )
+  end
+
+
+  it "gives separate instances for in-memory databases" do
+    a = Amalgalite::Requires.new( :dbfile_name => ":memory:" )
+    b = Amalgalite::Requires.new( :dbfile_name => ":memory:" )
+
+    a.db_connection.should_not equal(b.db_connection)
+  end
+
+  
+end
