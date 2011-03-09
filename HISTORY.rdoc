@@ -1,4 +1,12 @@
 = Amalgalite Changelog
+== Version 1.1.0 - 2011-03-09
+
+=== Enhancements
+
+* Added Amalgalite::Database#import, using sqlite3_exec under the hood,
+  to support loading batches of SQL. This works around execute_batch
+  failing when statement preparation breaks on long lines.
+
 == Version 1.0.0 - 2011-01-16
 
 === Enhancements
