@@ -6,6 +6,7 @@
 * Added Amalgalite::Database#import, using sqlite3_exec under the hood,
   to support loading batches of SQL. This works around execute_batch
   failing when statement preparation breaks on long lines.
+* Add support for :memory: databases to Amalgalite::Requires.
 
 == Version 1.0.0 - 2011-01-16
 
