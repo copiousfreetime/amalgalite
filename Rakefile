@@ -32,7 +32,9 @@ task :install_dependencies => :clean do
     %w[ rspec           2.4.0 ],
     %w[ zip             2.0.2 ],
     %w[ rake-compiler   0.7.5 ],
-    %w[ rcov            0.9.9 ] ]
+    %w[ rcov            0.9.9 ],
+    %w[ rdoc            3.5.3 ]
+ ]
   gv.each do |name, version|
    puts "Installing #{name}-#{version}"
    sh "gem install #{name} --version #{version} --no-rdoc --no-ri"
@@ -76,7 +78,7 @@ end
 #-------------------------------------------------------------------------------
 begin
   Rake.application.load_imports
-rescue LoadError
+rescue LoadError => e
   abort "run 'rake install_dependencies'"
 end
 
