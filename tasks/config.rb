@@ -92,7 +92,12 @@ Configuration.for('rdoc') {
 #-----------------------------------------------------------------------
 Configuration.for('extension') {
   configs   Configuration.for('packaging').files.ext.find_all { |x| %w[ extconf.rb ].include?(File.basename(x)) }
-  cross_rbconfig ::YAML.load_file( File.expand_path("~/.rake-compiler/config.yml"))
+
+  if File.file?(filename = File.expand_path("~/.rake-compiler/config.yml"))
+    cross_rbconfig ::YAML.load_file( filename )
+  else
+    cross_rbconfig( {} )
+  end
 }
 
 #-----------------------------------------------------------------------
