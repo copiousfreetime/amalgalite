@@ -18,14 +18,21 @@ module Amalgalite
       end
 
       #
-      # Allocate a database connection to the given filename
+      # Allocate a database connection to the given filename. For
+      # file databases, this means giving the same connection
+      # back if you ask for a connection to the same file.
+      # For in-memory databases, you get a new one each time.
       #
       def db_connection_to( dbfile_name )
-        unless connection = load_path_db_connections[ dbfile_name ] 
-          connection = ::Amalgalite::Database.new( dbfile_name )
-          load_path_db_connections[dbfile_name] = connection
+        if dbfile_name == ":memory:"
+          return ::Amalgalite::Database.new( dbfile_name )
+        else
+          unless connection = load_path_db_connections[ dbfile_name ] 
+            connection = ::Amalgalite::Database.new( dbfile_name )
+            load_path_db_connections[dbfile_name] = connection
+          end
+          return connection
         end
-        return connection
       end
 
       # 
@@ -96,14 +103,10 @@ module Amalgalite
       else
         begin
           filename = filename.gsub(/\.rb\Z/,'')
-          rows = db_connection.execute(sql, filename)
-          if rows.size > 0 then
-            row = rows.first
-            contents = row[contents_column].to_s
-            if row[compressed_column] then 
-              contents = ::Amalgalite::Packer.gunzip( contents )
-            end
 
+          contents = file_contents(filename)
+
+          if contents
             eval( contents, TOPLEVEL_BINDING, row[filename_column] )
             $LOADED_FEATURES << row[filename_column]
             return true
@@ -115,6 +118,34 @@ module Amalgalite
         end
       end
     end
+
+    # 
+    # Return the contents of the named file.
+    #
+    def file_contents(filename)
+      rows = db_connection.execute(sql, filename)
+      if rows.size > 0 then
+        row = rows.first
+
+        contents = row[contents_column].to_s
+        if row[compressed_column] then 
+          contents = ::Amalgalite::Packer.gunzip( contents )
+        end
+        
+        return contents
+      else
+        return nil
+      end
+    end
+
+    
+    #
+    # Import an SQL dump into the fake file system.
+    #
+    def import(sql)
+      db_connection.import(sql)
+    end
+
   end
 end
 require 'amalgalite/core_ext/kernel/require'
