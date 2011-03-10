@@ -1,3 +1,6 @@
+libpath=File.expand_path(File.join(File.dirname(__FILE__), "lib"))
+$:.unshift(libpath) unless $:.include?(libpath)
+
 require 'rubygems'
 require 'amalgalite/version'
 require 'tasks/config'
