@@ -28,56 +28,23 @@ void am_bootstrap_cleanup_and_raise( const char* msg, sqlite3* db, sqlite3_stmt*
 }
 
 
-/**
- * call-seq:
- *   Amalgalite::Requires::Bootstrap.lift( 'dbfile' => "lib.db", 'table_name' => "bootload", 'rowid_column' => "id", 'filename_column' => "filename",  'content_column' => "contents" )
- *
- * *WARNING* *WARNING* *WARNING* *WARNING* *WARNING* *WARNING* *WARNING*
- *
- * This is a boostrap mechanism to eval all the code in a particular column in a
- * specially formatted table in an sqlite database.  It should only be used for
- * a specific purpose, mainly loading the Amalgalite ruby code directly from an
- * sqlite table.  
- *
- * Amalgalite::Requires adds in the ability to _require_ code that is in an
- * sqlite database.  Since Amalgalite::Requires is itself ruby code, if
- * Amalgalite::Requires was in an sqlite database, it could not _require_
- * itself.  Therefore this method is made available.  It is a pure C extension
- * method that directly calls the sqlite3 C functions directly and uses the ruby
- * C api to eval the data in the table.
- *
- * This method attaches to an sqlite3 database (filename) and then does:
- *
- *     SELECT filename_column_name, content_column_name 
- *       FROM table_name
- *   ORDER BY rowid_column_name
- *
- * For each row returned it does an _eval_ on the code in the
- * *content_column_name* and then updates _$LOADED_FEATURES_ directly with the value from
- * *filename_column_name*.
- *
- * The database to be opened by _lift_ *must* be an sqlite3 UTF-8 database.
- *
- */
-VALUE am_bootstrap_lift( VALUE self, VALUE args )
+void am_bootstrap_from_db( sqlite3* db, VALUE args )
 {
-    sqlite3*        db = NULL;
     sqlite3_stmt* stmt = NULL;
     int             rc;
-    int  last_row_good; 
     char raise_msg[BUFSIZ];
+    int  last_row_good; 
 
-    VALUE     am_db_c  = rb_const_get( cARB, rb_intern("DEFAULT_DB") );
     VALUE    am_tbl_c  = rb_const_get( cARB, rb_intern("DEFAULT_BOOTSTRAP_TABLE") );
     VALUE     am_pk_c  = rb_const_get( cARB, rb_intern("DEFAULT_ROWID_COLUMN") );
     VALUE  am_fname_c  = rb_const_get( cARB, rb_intern("DEFAULT_FILENAME_COLUMN") );
     VALUE am_content_c = rb_const_get( cARB, rb_intern("DEFAULT_CONTENTS_COLUMN") );
 
-    char*      dbfile = NULL;
     char*    tbl_name = NULL;
     char*      pk_col = NULL;
     char*   fname_col = NULL;
     char* content_col = NULL;
+
 
     char             sql[BUFSIZ];
     const char* sql_tail = NULL;
@@ -94,29 +61,12 @@ VALUE am_bootstrap_lift( VALUE self, VALUE args )
     ID             eval_id = rb_intern("eval");
 
 
-    if (   Qnil == args  ) {
-        args = rb_hash_new();
-    } else {
-        args = rb_ary_shift( args );
-    }
 
-    Check_Type( args, T_HASH );
-    
-    /* get the arguments */
-    dbfile      = ( Qnil == (tmp = rb_hash_aref( args, rb_str_new2( "dbfile"          ) ) ) ) ? StringValuePtr( am_db_c )      : StringValuePtr( tmp );
     tbl_name    = ( Qnil == (tmp = rb_hash_aref( args, rb_str_new2( "table_name"      ) ) ) ) ? StringValuePtr( am_tbl_c )     : StringValuePtr( tmp );
     pk_col      = ( Qnil == (tmp = rb_hash_aref( args, rb_str_new2( "rowid_column"    ) ) ) ) ? StringValuePtr( am_pk_c )      : StringValuePtr( tmp );
     fname_col   = ( Qnil == (tmp = rb_hash_aref( args, rb_str_new2( "filename_column" ) ) ) ) ? StringValuePtr( am_fname_c )   : StringValuePtr( tmp );
     content_col = ( Qnil == (tmp = rb_hash_aref( args, rb_str_new2( "contents_column" ) ) ) ) ? StringValuePtr( am_content_c ) : StringValuePtr( tmp );
 
-
-    /* open the database */
-    rc = sqlite3_open_v2( dbfile , &db, SQLITE_OPEN_READONLY, NULL);
-    if ( SQLITE_OK != rc ) {
-        memset( raise_msg, 0, BUFSIZ );
-        snprintf(raise_msg, BUFSIZ, "Failure to open database %s for bootload: [SQLITE_ERROR %d] : %s", dbfile, rc, sqlite3_errmsg( db ) );
-        am_bootstrap_cleanup_and_raise( raise_msg, db, stmt );
-    }
 
     /* prepare the db query */
     memset( sql, 0, BUFSIZ );
@@ -167,18 +117,140 @@ VALUE am_bootstrap_lift( VALUE self, VALUE args )
         am_bootstrap_cleanup_and_raise( raise_msg, db, stmt );
     }
 
-    stmt = NULL;
+}
+
+
+/**
+ * call-seq:
+ *   Amalgalite::Requires::Bootstrap.lift( 'dbfile' => "lib.db", 'table_name' => "bootload", 'rowid_column' => "id", 'filename_column' => "filename",  'content_column' => "contents" )
+ *
+ * *WARNING* *WARNING* *WARNING* *WARNING* *WARNING* *WARNING* *WARNING*
+ *
+ * This is a boostrap mechanism to eval all the code in a particular column in a
+ * specially formatted table in an sqlite database.  It should only be used for
+ * a specific purpose, mainly loading the Amalgalite ruby code directly from an
+ * sqlite table.  
+ *
+ * Amalgalite::Requires adds in the ability to _require_ code that is in an
+ * sqlite database.  Since Amalgalite::Requires is itself ruby code, if
+ * Amalgalite::Requires was in an sqlite database, it could not _require_
+ * itself.  Therefore this method is made available.  It is a pure C extension
+ * method that directly calls the sqlite3 C functions directly and uses the ruby
+ * C api to eval the data in the table.
+ *
+ * This method attaches to an sqlite3 database (filename) and then does:
+ *
+ *     SELECT filename_column_name, content_column_name 
+ *       FROM table_name
+ *   ORDER BY rowid_column_name
+ *
+ * For each row returned it does an _eval_ on the code in the
+ * *content_column_name* and then updates _$LOADED_FEATURES_ directly with the value from
+ * *filename_column_name*.
+ *
+ * The database to be opened by _lift_ *must* be an sqlite3 UTF-8 database.
+ *
+ */
+VALUE am_bootstrap_lift( VALUE self, VALUE args )
+{
+    sqlite3 *db = NULL;
+    int      rc;
+    char     raise_msg[BUFSIZ];
+    VALUE    tmp = Qnil;
+
+    VALUE    am_db_c  = rb_const_get( cARB, rb_intern("DEFAULT_DB") );
+
+    char    *dbfile = NULL;
+
+
+    if (   Qnil == args  ) {
+        args = rb_hash_new();
+    } else {
+        args = rb_ary_shift( args );
+    }
+
+    Check_Type( args, T_HASH );
+    
+    /* get the arguments */
+    dbfile      = ( Qnil == (tmp = rb_hash_aref( args, rb_str_new2( "dbfile"          ) ) ) ) ? StringValuePtr( am_db_c )      : StringValuePtr( tmp );
+
+    /* open the database */
+    rc = sqlite3_open_v2( dbfile , &db, SQLITE_OPEN_READONLY, NULL);
+    if ( SQLITE_OK != rc ) {
+        memset( raise_msg, 0, BUFSIZ );
+        snprintf(raise_msg, BUFSIZ, "Failure to open database %s for bootload: [SQLITE_ERROR %d] : %s", dbfile, rc, sqlite3_errmsg( db ) );
+        am_bootstrap_cleanup_and_raise( raise_msg, db, NULL );
+    }
+
+    am_bootstrap_from_db( db, args );
 
     /* close the database */
     rc = sqlite3_close( db );
     if ( SQLITE_OK != rc ) {
         memset( raise_msg, 0, BUFSIZ );
         snprintf( raise_msg, BUFSIZ, "Failure to close database : [SQLITE_ERROR %d] : %s\n", rc, sqlite3_errmsg( db )),
-        am_bootstrap_cleanup_and_raise( raise_msg, db,stmt );
+        am_bootstrap_cleanup_and_raise( raise_msg, db, NULL );
     }
 
     return Qnil;
 }
+
+/**
+ * call-seq:
+ *   Amalgalite::Requires::Bootstrap.lift_str( sql, 'table_name' => "bootload", 'rowid_column' => "id", 'filename_column' => "filename",  'content_column' => "contents" )
+ * 
+ *  Bootstrap Amalgalite from a string containing an SQL dump. See Amalgalite::Requires::Bootstrap.lift.
+ *
+ *  For example:
+ *
+ *    Amalgalite::Requires::Bootstrap.lifts(File.read("lib.sql"))
+ */
+VALUE am_bootstrap_lift_str( VALUE self, VALUE args )
+{
+  sqlite3 *db = NULL;
+  int rc;
+  char     raise_msg[BUFSIZ];
+  VALUE sql = Qnil;
+  VALUE args_hsh = Qnil;
+
+  sql = rb_ary_shift(args);
+  StringValue(sql);
+  if ( Qnil == sql ) { rb_raise(eARB_Error, "SQL required." );  }
+  
+  args_hsh = rb_ary_shift(args);
+  if ( Qnil == args_hsh ) { args_hsh = rb_hash_new(); }
+
+
+  rc = sqlite3_open_v2( ":memory:", &db, SQLITE_OPEN_READWRITE, NULL );
+  if ( SQLITE_OK != rc ) {
+    memset( raise_msg, 0, BUFSIZ );
+    snprintf(raise_msg, BUFSIZ, "Failure to open database :memory: for bootload: [SQLITE_ERROR %d] : %s", rc, sqlite3_errmsg( db ) );
+    am_bootstrap_cleanup_and_raise( raise_msg, db, NULL );
+  }
+
+  /* Load the bootstrap SQL into the database */
+  rc = sqlite3_exec( db, StringValuePtr( sql ), NULL, NULL, NULL );
+
+  if ( SQLITE_OK != rc ) {
+    memset( raise_msg, 0, BUFSIZ );
+    snprintf(raise_msg, BUFSIZ, "Failure to import bootload sql: [SQLITE_ERROR %d] : %s", rc, sqlite3_errmsg( db ) );
+    am_bootstrap_cleanup_and_raise( raise_msg, db, NULL );
+  }
+
+  am_bootstrap_from_db( db, args_hsh );
+
+  rc = sqlite3_close( db );
+  
+  if ( SQLITE_OK != rc ) {
+    memset( raise_msg, 0, BUFSIZ );
+    snprintf( raise_msg, BUFSIZ, "Failure to close database : [SQLITE_ERROR %d] : %s\n", rc, sqlite3_errmsg( db )),
+      am_bootstrap_cleanup_and_raise( raise_msg, db, NULL );
+  }
+
+  return Qnil;
+
+}
+
 
 /**
  * Bootstrapping module to help _require_ when Amalgalite::Requires is not
@@ -193,7 +265,8 @@ void Init_amalgalite3_requires_bootstrap()
 
     eARB_Error = rb_define_class_under(cARB, "Error", rb_eStandardError);
 
-    rb_define_module_function(cARB, "lift", am_bootstrap_lift, -2); 
+    rb_define_module_function(cARB, "lift", am_bootstrap_lift, -2);
+    rb_define_module_function(cARB, "lifts", am_bootstrap_lift, -2);
 
     /* constants for default db, table, column, rowid, contents */ 
     rb_define_const(cARB,                "DEFAULT_DB", rb_str_new2( "lib.db" ));
