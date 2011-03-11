@@ -1,4 +1,11 @@
 = Amalgalite Changelog
+== Version 1.1.1 - 2011-03-11
+
+=== Bug Fixes
+
+* Provide bootstrapping from an in-memory SQL buffer
+* Fix adding LOADED_FEATURES (broken by a bad refactoring)
+
 == Version 1.1.0 - 2011-03-09
 
 === Enhancements
