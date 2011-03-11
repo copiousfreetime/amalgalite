@@ -107,8 +107,8 @@ module Amalgalite
           contents = file_contents(filename)
 
           if contents
-            eval( contents, TOPLEVEL_BINDING, row[filename_column] )
-            $LOADED_FEATURES << row[filename_column]
+            eval( contents, TOPLEVEL_BINDING, filename )
+            $LOADED_FEATURES << filename
             return true
           else
             return false
