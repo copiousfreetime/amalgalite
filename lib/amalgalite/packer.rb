@@ -211,7 +211,10 @@ module Amalgalite
           STDERR.puts "Unable to add #{f} to the manifest, cannot find the file on disk"
           next
         end
-        m.require_path = m.require_path.to_s[ /\A(.*)\.rb\Z/, 1]
+        # Make sure that we can handle files without the .rb extension
+        # if we have to. This means bin/foo works as a require path
+        # without requiring bin/foo to actually be bin/foo.rb
+        m.require_path = m.require_path.to_s.sub(/\.rb\Z/,'')
         manifest << m
       end
       return manifest
