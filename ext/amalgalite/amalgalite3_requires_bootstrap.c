@@ -8,9 +8,9 @@
 #include "amalgalite3.h"
 #include <stdio.h>
 extern VALUE mA;
-VALUE cAR;
-VALUE cARB;
-VALUE eARB_Error;
+VALUE cAR = Qnil;
+VALUE cARB = Qnil;
+VALUE eARB_Error = Qnil;
 
 /* 
  * cleanup the datatbase and statment values if they are currently open and then
@@ -30,11 +30,15 @@ void am_bootstrap_cleanup_and_raise( const char* msg, sqlite3* db, sqlite3_stmt*
 
 void am_bootstrap_from_db( sqlite3* db, VALUE args )
 {
+    if ( NIL_P(cARB) ){
+        rb_bug("Amalgalite::Requires::Bootstrap has not been initialised. This is a build error.");
+    }
+
     sqlite3_stmt* stmt = NULL;
     int             rc;
     char raise_msg[BUFSIZ];
     int  last_row_good; 
-
+    
     VALUE    am_tbl_c  = rb_const_get( cARB, rb_intern("DEFAULT_BOOTSTRAP_TABLE") );
     VALUE     am_pk_c  = rb_const_get( cARB, rb_intern("DEFAULT_ROWID_COLUMN") );
     VALUE  am_fname_c  = rb_const_get( cARB, rb_intern("DEFAULT_FILENAME_COLUMN") );
