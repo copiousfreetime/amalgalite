@@ -170,7 +170,7 @@ File.open(fname, "w+") do |f|
   CONSTANTS.keys.sort.each do |klass|
     const_set = CONSTANTS[klass]
     f.puts "    /**"
-    f.puts "     * module encapsulating the SQLite3 C extension constants for #{klass} "
+    f.puts "     * module encapsulating the SQLite3 C extension constants for #{klass}"
     f.puts "     */"
     f.puts "    VALUE mC_#{klass} = rb_define_module_under(mC, \"#{klass}\");"
     f.puts 
