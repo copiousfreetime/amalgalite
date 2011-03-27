@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 require 'optparse'
 require 'pathname'
-require 'rubygems'
 
 #
 # add relative paths to the load path if we are not a gem and calculate what the
@@ -16,14 +15,36 @@ if  ".." == rel_path.to_s.split( File::SEPARATOR ).first then
   $:.unshift File.join( File.dirname( __FILE__ ), "../ext" )
 end
 
-# 
+#
 # snapshot of what is needed for amalgalite requires, this info may only be used
 # when packing amalgalite itself
 #
 loaded_features_before = $LOADED_FEATURES.dup
 require 'amalgalite/packer'
 loaded_features_after  = $LOADED_FEATURES.dup
-amalgalite_needs = loaded_features_after - loaded_features_before
+load_diff = loaded_features_after - loaded_features_before
+
+#
+# strip off any LOAD_PATH elements from the front of load_diff since that
+# will conflict with Amalgalite::Packer.amalgalite_require_order.  Also
+# strip out any 'rubygems' items since those are not used by Amalgalite
+# and show as a side effect fo the "require 'amalgalite/packer'"
+#
+strip_paths = $LOAD_PATH.sort.reverse
+amalgalite_needs = []
+load_diff.each do |f|
+  next if f.split( File::SEPARATOR ).include?( "rubygems" )
+  appended = false
+  strip_paths.each do |path|
+    if 0 == f.index(path ) then
+      rel_path = f.sub( path, '' ).sub(%r{\A#{File::SEPARATOR}},'')
+      amalgalite_needs <<  rel_path
+      appended = true
+      break
+    end
+  end
+  amalgalite_needs << f unless appended
+end
 
 #
 # Commandline parser
@@ -77,7 +98,7 @@ begin
   require 'amalgalite/packer'
   file_list = ARGV.dup
 
-  
+
   if options[:self] then
     options[:table_name] = Amalgalite::Requires::Bootstrap::DEFAULT_BOOTSTRAP_TABLE
     core_libs = (amalgalite_needs - Amalgalite::Packer.amalgalite_require_order).delete_if { |l| l.index(".rb").nil? }
@@ -85,9 +106,9 @@ begin
     #
     # check and make sure nothing is missed
     #
-    core_libs.each do |l| 
-      if l.index("malgalite") then
-        STDERR.puts "ERROR!  require_order needs an update #{l}" 
+    core_libs.each do |l|
+      if l.index("amalgalite") then
+        STDERR.puts "ERROR!  require_order needs an update #{l}"
         exit 2
       end
     end
@@ -116,7 +137,7 @@ Packing complete.  To utilize the bootstrapping in #{dbfile} you must do
 one of the following:
 
   * statically compile the amalgalite C extension into your application
-  * require 'amalgalite/amalgalite3'
+  * require 'amalgalite/#{RUBY_VERSION.sub(/\.\d$/,'')}/amalgalite3'
 
 Once one of those is working you can boostrap the Amalgalite library with
 this line in your code:
