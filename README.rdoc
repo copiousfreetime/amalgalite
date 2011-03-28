@@ -27,13 +27,15 @@ Look in the examples/ directory to see
 * custom functions
 * custom aggregates
 * requiring ruby code from a database
+* full text search
 
 Also Scroll through Amalgalite::Database for a quick example, and a general
 overview of the API.
 
-Amalgalite adds in the following additional non-default SQLite extension(s):
+Amalgalite adds in the following additional non-default SQLite extensions:
 
 * {R*Tree index extension}[http://sqlite.org/rtree.html]
+* {Full Text Search}[http://sqlite.org/fts3.html]
 
 == CREDITS
 
