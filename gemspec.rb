@@ -23,12 +23,12 @@ Amalgalite::GEM_SPEC = Gem::Specification.new do |spec|
   spec.add_dependency("arrayfields", "~> 4.7.4")
   spec.add_dependency("fastercsv", "~> 1.5.4")
   
-  spec.add_development_dependency("rake", "~> 0.8.7")
+  spec.add_development_dependency("rake"         , "~> 0.8.7")
   spec.add_development_dependency("configuration", "~> 1.2.0")
-  spec.add_development_dependency("rspec", "~> 2.4.0")
-  spec.add_development_dependency("rake-compiler", "~> 0.7.5")
-  spec.add_development_dependency('zip', "~> 2.0.2")
-  spec.add_development_dependency('rcov', "~> 0.9.9")
+  spec.add_development_dependency("rspec"        , "~> 2.5.1")
+  spec.add_development_dependency("rake-compiler", "~> 0.7.6")
+  spec.add_development_dependency('zip'          , "~> 2.0.2")
+  spec.add_development_dependency('rcov'         , "~> 0.9.9")
 
   if ext_conf = Configuration.for_if_exist?("extension") then
     spec.extensions <<  ext_conf.configs
