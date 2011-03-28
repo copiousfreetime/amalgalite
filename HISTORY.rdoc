@@ -1,5 +1,5 @@
 = Amalgalite Changelog
-== Version 1.1.0 - 2011-03-27
+== Version 1.1.1 - 2011-03-27
 
 === Enhancements
 
