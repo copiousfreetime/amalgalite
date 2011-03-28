@@ -21,9 +21,13 @@ if rdoc_config = Configuration.for_if_exist?('rdoc') then
     end
 
     if rubyforge_config = Configuration.for_if_exist?('rubyforge') then
-      desc "Deploy the RDoc documentation to #{rubyforge_config.rdoc_location}"
+      desc "Deploy the RDoc documentation to ENV['RDOC_DEPLOY']"
       task :deploy => :rerdoc do
-        sh "rsync -zav --delete #{rdoc_config.output_dir}/ #{rubyforge_config.rdoc_location}"
+        if ENV['RDOC_DEPLOY'] then
+          sh "rsync -zav --delete #{rdoc_config.output_dir}/ #{ENV['RDOC_DEPLOY']}"
+        else
+          puts "To Deploy RDOC set the RDOC_DEPLOY environment variable"
+        end
       end 
     end 
 
