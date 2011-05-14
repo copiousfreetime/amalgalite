@@ -1,10 +1,10 @@
 == Amalgalite
 
-* Homepage[http://copiousfreetime.rubyforge.org/amalgalite]
-* {Rubyforge Project}[http://rubyforge.org/projects/copiousfreetime/]
+* Homepage[http://copiousfreetime.org/projects/amalgalite]
 * email jeremy at copiousfreetime dot org
 * git clone url git://github.com/copiousfreetime/amalgalite.git
 * {Github}[http://github.com/copiousfreetime/amalgalite/]
+* {Bug Tracking}[http://github.com/copiousfreetime/amalgalite/issues]
 
 == Articles
 
