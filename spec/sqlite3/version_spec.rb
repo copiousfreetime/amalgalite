@@ -7,16 +7,16 @@ describe "Amalgalite::SQLite3::Version" do
     Amalgalite::SQLite3::Version.to_s.should =~ /\d\.\d\.\d/
     Amalgalite::SQLite3::Version.runtime_version.should =~ /\d\.\d\.\d/
 
-    Amalgalite::SQLite3::Version.to_i.should eql(3007005)
-    Amalgalite::SQLite3::Version.runtime_version_number.should eql(3007005)
+    Amalgalite::SQLite3::Version.to_i.should eql(3007007)
+    Amalgalite::SQLite3::Version.runtime_version_number.should eql(3007007)
 
     Amalgalite::SQLite3::Version::MAJOR.should eql(3)
     Amalgalite::SQLite3::Version::MINOR.should eql(7)
-    Amalgalite::SQLite3::Version::RELEASE.should eql(5)
+    Amalgalite::SQLite3::Version::RELEASE.should eql(7)
     Amalgalite::SQLite3::Version.to_a.should have(3).items
 
-    Amalgalite::SQLite3::Version.compiled_version.should == "3.7.5"
-    Amalgalite::SQLite3::Version.compiled_version_number.should == 3007005
+    Amalgalite::SQLite3::Version.compiled_version.should == "3.7.7.1"
+    Amalgalite::SQLite3::Version.compiled_version_number.should == 3007007
     Amalgalite::SQLite3::Version.compiled_matches_runtime?.should == true
   end
 end
