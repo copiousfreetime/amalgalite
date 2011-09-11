@@ -6,12 +6,12 @@ require 'tasks/config'
 if pkg_config = Configuration.for_if_exist?("packaging") then
 
   require 'gemspec'
-  require 'rake/gempackagetask'
+  require 'rubygems/package_task'
   require 'rake/contrib/sshpublisher'
 
   namespace :dist do
 
-    Rake::GemPackageTask.new(Amalgalite::GEM_SPEC) do |pkg|
+    Gem::PackageTask.new(Amalgalite::GEM_SPEC) do |pkg|
       pkg.need_tar = pkg_config.formats.tgz
       pkg.need_zip = pkg_config.formats.zip
     end

@@ -9,10 +9,10 @@ if rdoc_config = Configuration.for_if_exist?('rdoc') then
   namespace :doc do
 
     require 'rdoc'
-    require 'rake/rdoctask'
+    require 'rdoc/task'
 
     # generating documentation locally
-    Rake::RDocTask.new do |rdoc|
+    RDoc::Task.new do |rdoc|
       rdoc.rdoc_dir   = rdoc_config.output_dir
       rdoc.options    = rdoc_config.options 
       rdoc.rdoc_files = rdoc_config.files

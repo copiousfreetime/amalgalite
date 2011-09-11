@@ -29,10 +29,11 @@ task :install_dependencies => :clean do
   gv = [
     %w[ arrayfields     4.7.4 ],
     %w[ fastercsv       1.5.4 ],
-    %w[ rspec           2.4.0 ],
+    %w[ rspec           2.6.0 ],
     %w[ zip             2.0.2 ],
-    %w[ rake-compiler   0.7.5 ],
-    %w[ rcov            0.9.9 ] ]
+    %w[ rake-compiler   0.7.9 ],
+    %w[ rdoc            3.9.4 ],
+    %w[ rcov            0.9.10 ] ]
   gv.each do |name, version|
    puts "Installing #{name}-#{version}"
    sh "gem install #{name} --version #{version} --no-rdoc --no-ri"

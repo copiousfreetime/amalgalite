@@ -6,7 +6,7 @@ Amalgalite::GEM_SPEC = Gem::Specification.new do |spec|
   proj = Configuration.for('project')
   spec.name         = proj.name
   spec.version      = Amalgalite::Version.to_s
-  
+
   spec.author       = proj.author
   spec.email        = proj.email
   spec.homepage     = proj.homepage
@@ -14,7 +14,7 @@ Amalgalite::GEM_SPEC = Gem::Specification.new do |spec|
   spec.description  = proj.description
   spec.platform     = Gem::Platform::RUBY
 
-  
+
   pkg = Configuration.for('packaging')
   spec.files        = pkg.files.all
   spec.executables  = pkg.files.bin.collect { |b| File.basename(b) }
@@ -22,13 +22,14 @@ Amalgalite::GEM_SPEC = Gem::Specification.new do |spec|
   # add dependencies here
   spec.add_dependency("arrayfields", "~> 4.7.4")
   spec.add_dependency("fastercsv", "~> 1.5.4")
-  
-  spec.add_development_dependency("rake"         , "~> 0.8.7")
-  spec.add_development_dependency("configuration", "~> 1.2.0")
-  spec.add_development_dependency("rspec"        , "~> 2.5.1")
+
+  spec.add_development_dependency("rake"         , "~> 0.9.2")
+  spec.add_development_dependency("configuration", "~> 1.3.1")
+  spec.add_development_dependency("rspec"        , "~> 2.6.0")
   spec.add_development_dependency("rake-compiler", "~> 0.7.6")
   spec.add_development_dependency('zip'          , "~> 2.0.2")
-  spec.add_development_dependency('rcov'         , "~> 0.9.9")
+  spec.add_development_dependency('rcov'         , "~> 0.9.10")
+  spec.add_development_dependency('rdoc'         , "~> 3.9.4")
 
   if ext_conf = Configuration.for_if_exist?("extension") then
     spec.extensions <<  ext_conf.configs
