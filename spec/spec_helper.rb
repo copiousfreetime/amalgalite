@@ -36,7 +36,7 @@ RSpec.configure do |config|
   config.before( :each ) do
     @iso_db_path = SpecInfo.make_clone_iso_db
     @iso_db      = Amalgalite::Database.new( @iso_db_path )
-    @schema     = IO.read( Amalgalite::Iso3166Database.schema_file )
+    @schema      = IO.read( Amalgalite::Iso3166Database.schema_file )
   end
 
   config.after( :each ) do

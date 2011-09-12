@@ -486,11 +486,11 @@ module Amalgalite
     ##
     # :call-seq:
     #   db.schema( dbname = "main" ) -> Schema
-    # 
-    # Returns a Schema object  containing the table and column structure of the
+    #
+    # Returns a Schema object containing the table and column structure of the
     # database.
     #
-    def schema( dbname = "main" ) 
+    def schema( dbname = "main" )
       @schema ||= ::Amalgalite::Schema.new( self, dbname )
       if @schema and @schema.dirty?
         reload_schema!( dbname )
@@ -512,7 +512,7 @@ module Amalgalite
 
     ##
     # Run a pragma command against the database
-    # 
+    #
     # Returns the result set of the pragma
     def pragma( cmd, &block )
       execute("PRAGMA #{cmd}", &block)

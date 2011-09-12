@@ -16,14 +16,16 @@ module Amalgalite
     # the schema object this column is associated with
     attr_accessor :schema
 
-    # the database name this column belongs to
+    # the database name this column belongs to. This will be 'main' for the main
+    # database, 'temp' for the temp database and whatever an attached database
+    # was attached as.
     attr_accessor :db
-
-    # the column name
-    attr_accessor :name
 
     # the table to which this column belongs
     attr_accessor :table
+
+    # the column name
+    attr_accessor :name
 
     # the default value of the column.   This may not have a value and that
     # either means that there is no default value, or one could not be
@@ -47,8 +49,8 @@ module Amalgalite
     #
     def initialize( db, table, name, order)
       @db                 = db
-      @name               = name
       @table              = table
+      @name               = name
       @order              = Float(order).to_i
       @declared_data_type = nil
       @default_value      = nil
