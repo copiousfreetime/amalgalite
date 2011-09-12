@@ -1,18 +1,24 @@
 = Amalgalite Changelog
-== Version 1.1.4 - 2011-09-11
+== Version 1.2.0 - 2011-09-12
 
 === Enhancements
 
 * Update to SQLite 3.7.7.1
 * Update development dependencies to the latest levels
+* Add Amalgalite::Database#import for mass execution of sql (bmalex 5a42f44f)
+* Allow :memory: databases to Amalgalite::Requires (bmalex df9f70b8)
+* Allow bootstrapping from an in-memory sql buffer (bmalex a17fb9cf)
 
 === Bug Fixes
 
 * Fix incorrect loading/reload of schema [GH #16]
+* Fix setting of LOADED_FEATRES when requiring from a database (bmalex edb81837)
+* Fix setting of require_path for files to require that are stored in the * database (bmalex de321b86)
 
 == Version 1.1.2 - 2011-04-01
 
 === Bug Fixes
+
 * Remove example database that was mistakenly packaged with version 1.1.1
 
 == Version 1.1.1 - 2011-03-27
