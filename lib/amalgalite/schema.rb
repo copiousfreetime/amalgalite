@@ -15,31 +15,52 @@ module Amalgalite
   #
   class Schema
 
+    # The internal database that this schema is for. Most of the time this will
+    # be 'main' for the main database. For the temp tables, this will be 'temp'
+    # and for any attached databsae, this is the name of attached database.
     attr_reader :catalog
-    attr_reader :schema 
+
+    # The schema_version at the time this schema was taken.
     attr_reader :schema_version
-    attr_writer :dirty
+
+    # The Amalagalite::Database this schema is associated with.
     attr_reader :db
 
     #
     # Create a new instance of Schema
     #
-    def initialize( db, catalog = 'main', schema = 'sqlite')
-      @db = db
-      @catalog = catalog
-      @schema = schema
+    def initialize( db, catalog = 'main', master_table = 'sqlite_master' )
+      @db             = db
+      @catalog        = catalog
       @schema_version = nil
-      @tables = {}
-      @views  = {}
+      @tables         = {}
+      @views          = {}
+      @master_table   = master_table
+
+      if @master_table == 'sqlite_master' then
+        @temp_schema = ::Amalgalite::Schema.new( db, 'temp', 'sqlite_temp_master')
+      else
+        @temp_schema = nil
+      end
       load_schema!
     end
 
-    def dirty?() 
-      return (@schema_version != self.current_version)
+    def catalog_master_table
+      "#{catalog}.#{@master_table}"
+    end
+
+    def temporary?
+      catalog == "temp"
+    end
+
+    def dirty?()
+      return true  if (@schema_version != self.current_version)
+      return false unless @temp_schema
+      return @temp_schema.dirty?
     end
 
     def current_version
-      @db.first_value_from("PRAGMA schema_version")
+      @db.first_value_from("PRAGMA #{catalog}.schema_version")
     end
 
     #
@@ -47,15 +68,24 @@ module Amalgalite
     def load_schema!
       load_tables
       load_views
+      if @temp_schema then
+        @temp_schema.load_schema!
+      end
       @schema_version = self.current_version
       nil
     end
 
     ##
-    # return the tables, reloading if dirty
+    # return the tables, reloading if dirty.
+    # If there is a temp table and a normal table with the same name, then the
+    # temp table is the one that is returned in the hash.
     def tables
       load_schema! if dirty?
-      return @tables
+      t = @tables
+      if @temp_schema then
+        t = @tables.merge( @temp_schema.tables )
+      end
+      return t
     end
 
     ##
@@ -63,7 +93,7 @@ module Amalgalite
     #
     def load_tables
       @tables = {}
-      @db.execute("SELECT tbl_name FROM sqlite_master WHERE type = 'table' AND name != 'sqlite_sequence'") do |table_info|
+      @db.execute("SELECT tbl_name FROM #{catalog_master_table} WHERE type = 'table' AND name != 'sqlite_sequence'") do |table_info|
         table = load_table( table_info['tbl_name'] )
         table.indexes = load_indexes( table )
         @tables[table.name] = table
@@ -74,36 +104,26 @@ module Amalgalite
     ##
     # Load a single table
     def load_table( table_name )
-      rows = @db.execute("SELECT tbl_name, sql FROM sqlite_master WHERE type = 'table' AND tbl_name = ?", table_name)
+      rows = @db.execute("SELECT tbl_name, sql FROM #{catalog_master_table} WHERE type = 'table' AND tbl_name = ?", table_name)
       table_info = rows.first
       table = nil
-      if table_info then 
+      if table_info then
         table = Amalgalite::Table.new( table_info['tbl_name'], table_info['sql'] )
-        table.columns = load_columns( table )
         table.schema = self
+        table.columns = load_columns( table )
         table.indexes = load_indexes( table )
-        @tables[table.name] = table 
-      else
-        # might be a temporary table
-        table = Amalgalite::Table.new( table_name, nil )
-        cols = load_columns( table )
-        if cols.size > 0 then
-          table.columns = cols
-          table.schema = self
-          table.indexes = load_indexes( table )
-          @tables[table.name] = table
-        end
+        @tables[table.name] = table
       end
       return table
     end
 
-    ## 
+    ##
     # load all the indexes for a particular table
     #
     def load_indexes( table )
       indexes = {}
 
-      @db.prepare("SELECT name, sql FROM sqlite_master WHERE type ='index' and tbl_name = $name") do |idx_stmt|
+      @db.prepare("SELECT name, sql FROM #{catalog_master_table} WHERE type ='index' and tbl_name = $name") do |idx_stmt|
         idx_stmt.execute( "$name" => table.name) do |idx_info|
           indexes[idx_info['name']] = Amalgalite::Index.new( idx_info['name'], idx_info['sql'], table )
         end
@@ -134,8 +154,8 @@ module Amalgalite
     def load_columns( table )
       cols = {}
       idx = 0
-      @db.execute("PRAGMA table_info(#{@db.quote(table.name)})") do |row|
-        col = Amalgalite::Column.new( "main", table.name, row['name'], row['cid'])
+      @db.execute("PRAGMA #{catalog}.table_info(#{@db.quote(table.name)})") do |row|
+        col = Amalgalite::Column.new( catalog,  table.name, row['name'], row['cid'])
 
         col.default_value       = row['dflt_value']
 
@@ -154,7 +174,7 @@ module Amalgalite
 
         unless table.temporary? then
           # get more exact information
-          @db.api.table_column_metadata( "main", table.name, col.name ).each_pair do |key, value|
+          @db.api.table_column_metadata( catalog, table.name, col.name ).each_pair do |key, value|
             col.send("#{key}=", value)
           end
         end
@@ -168,16 +188,23 @@ module Amalgalite
     ##
     # return the views, reloading if dirty
     #
+    # If there is a temp view, and a regular view of the same name, then the
+    # temporary view is the one that is returned in the hash.
+    #
     def views
       reload_schema! if dirty?
-      return @views
+      v = @views
+      if @temp_schema then
+        v = @views.merge( @temp_schema.views )
+      end
+      return v
     end
 
     ##
     # load a single view
     #
     def load_view( name )
-      rows = @db.execute("SELECT name, sql FROM sqlite_master WHERE type = 'view' AND name = ?", name )
+      rows = @db.execute("SELECT name, sql FROM #{catalog_master_table} WHERE type = 'view' AND name = ?", name )
       view_info = rows.first
       view = Amalgalite::View.new( view_info['name'], view_info['sql'] )
       view.schema = self
@@ -188,7 +215,7 @@ module Amalgalite
     # load all the views for the database
     #
     def load_views
-      @db.execute("SELECT name, sql FROM sqlite_master WHERE type = 'view'") do |view_info|
+      @db.execute("SELECT name, sql FROM #{catalog_master_table} WHERE type = 'view'") do |view_info|
         view = load_view( view_info['name'] )
         @views[view.name] = view
       end

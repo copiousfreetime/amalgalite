@@ -63,9 +63,8 @@ describe Amalgalite::Schema do
 
   it "knows the primary key of a temporary table" do
     @iso_db.execute "CREATE TEMPORARY TABLE tt( a, b INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, c )"
-    tt = @iso_db.schema.load_table( 'tt' )
+    tt = @iso_db.schema.tables[ 'tt' ]
     tt.primary_key.should == [ tt.columns['b'] ]
-
   end
 
   it "knows what the primary key of a table is when it is a multiple column primary key" do
@@ -113,11 +112,20 @@ describe Amalgalite::Schema do
     s.dirty?.should == true
   end
 
-
-  it "can load the schema of a temporary table" do
-    @iso_db.execute "CREATE TEMPORARY TABLE tt( a, b, c )"
-    @iso_db.schema.tables['tt'].should be_nil
-    @iso_db.schema.load_table('tt').should_not be_nil
-    @iso_db.schema.tables['tt'].should be_temporary
+  it "knows if a temporary table exists" do
+    @iso_db.execute "CREATE TEMPORARY TABLE tt(a,b,c)"
+    @iso_db.schema.tables.keys.include?('tt').should == true
+    @iso_db.schema.tables['tt'].temporary?.should == true
   end
+
+  it "sees that temporary tables shadow real tables" do
+    @iso_db.execute "CREATE TABLE tt(x)"
+    @iso_db.schema.tables['tt'].temporary?.should == false
+    @iso_db.execute "CREATE TEMP TABLE tt(a,b,c)"
+    @iso_db.schema.tables['tt'].temporary?.should == true
+    @iso_db.execute "DROP TABLE tt"
+    @iso_db.schema.tables['tt'].temporary?.should == false
+    @iso_db.schema.tables['tt'].columns.size.should == 1
+  end
+
 end

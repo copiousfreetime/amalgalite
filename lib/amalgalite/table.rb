@@ -5,7 +5,7 @@
 require 'set'
 module Amalgalite
   #
-  # a class representing the meta information about an SQLite table 
+  # a class representing the meta information about an SQLite table
   #
   class Table
     # the schema object the table is associated with
@@ -25,18 +25,18 @@ module Amalgalite
     # in this table.  keys are the column names
     attr_accessor :columns
 
-    def initialize( name, sql = nil ) 
+    def initialize( name, sql = nil )
       @name    = name
       @sql     = sql
       @indexes = {}
       @columns = {}
+      @schema  = nil
     end
 
     # Is the table a temporary table or not
     def temporary?
-      !sql
+      schema.temporary?
     end
-
 
     # the Columns in original definition order
     def columns_in_order
