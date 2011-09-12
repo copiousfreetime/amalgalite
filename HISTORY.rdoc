@@ -1,4 +1,15 @@
 = Amalgalite Changelog
+== Version 1.1.4 - 2011-09-11
+
+=== Enhancements
+
+* Update to SQLite 3.7.7.1
+* Update development dependencies to the latest levels
+
+=== Bug Fixes
+
+* Fix incorrect loading/reload of schema [GH #16]
+
 == Version 1.1.2 - 2011-04-01
 
 === Bug Fixes

@@ -11,6 +11,7 @@ Future Release:
     - explicit pragma handler
 
   Non backwards compatible changes:
+    - change the schema objects to be more consistent
     - change taps to use to_proc protocol
     - convert type dependency to just use 'call'
     - integrate transaction and savepoint under the same api
