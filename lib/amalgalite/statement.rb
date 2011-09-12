@@ -362,13 +362,16 @@ module Amalgalite
     # is the column indicated by the Column a 'rowid' column
     #
     def is_column_rowid?( table_name, column_name )
-      column_schema  = @db.schema.tables[table_name].columns[column_name]
-      if column_schema then
-        if column_schema.primary_key? and column_schema.declared_data_type and column_schema.declared_data_type.upcase == "INTEGER" then
-          return true
+      table_schema = @db.schema.tables[table_name]
+      if table_schema then
+        column_schema = table_schema.columns[column_name]
+        if column_schema then
+          if column_schema.primary_key? and column_schema.declared_data_type and column_schema.declared_data_type.upcase == "INTEGER" then
+            return true
+          end
+        else
+          return true if Statement.rowid_column_names.include?( column_name.upcase )
         end
-      else
-        return true if Statement.rowid_column_names.include?( column_name.upcase )
       end
       return false
     end
