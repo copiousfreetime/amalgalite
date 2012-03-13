@@ -164,7 +164,7 @@ module Amalgalite
         col.primary_key         = row['pk']
 
         # need to remove leading and trailing ' or " from the default value
-        if col.default_value and col.default_value.kind_of?( String ) and ( col.default_value.length >= 2 ) then
+        if col.default_value and col.default_value.kind_of?( String ) and ( col.default_value.length.to_i >= 2 ) then
           fc = col.default_value[0].chr
           lc = col.default_value[-1].chr
           if fc == lc and ( fc == "'" || fc == '"' ) then
