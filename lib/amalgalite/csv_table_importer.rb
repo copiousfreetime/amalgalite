@@ -11,7 +11,6 @@ module Amalgalite
   #
   class CSVTableImporter
     def initialize( csv_path, database, table_name, options = {} )
-      logger.info options
       @csv_path   = File.expand_path( csv_path )
       @database   = database
       @table_name = table_name
