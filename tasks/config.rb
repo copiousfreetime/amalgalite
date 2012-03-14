@@ -2,7 +2,7 @@ require 'configuration'
 require 'yaml'
 
 require 'rake'
-require 'tasks/utils'
+require './tasks/utils'
 
 #-----------------------------------------------------------------------
 # General project configuration
