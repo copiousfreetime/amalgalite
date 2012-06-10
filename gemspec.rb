@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'amalgalite/version'
-require 'tasks/config'
+require './tasks/config'
 
 Amalgalite::GEM_SPEC = Gem::Specification.new do |spec|
   proj = Configuration.for('project')
