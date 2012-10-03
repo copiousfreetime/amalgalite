@@ -749,9 +749,9 @@ module Amalgalite
         to_remove = possibles
       end
 
-      to_remove.each do |db_function|
-        @api.remove_function( db_function.name, db_function) 
-        @functions.delete( db_function.signature )
+      to_remove.each do |db_func|
+        @api.remove_function( db_func.name, db_func)
+        @functions.delete( db_func.signature )
       end
     end
 
@@ -810,9 +810,9 @@ module Amalgalite
         to_remove = possibles
       end
 
-      to_remove.each do |db_aggregate|
-        i = db_aggregate.new
-        @api.remove_aggregate( i.name, i.arity, db_aggregate )
+      to_remove.each do |db_agg|
+        i = db_agg.new
+        @api.remove_aggregate( i.name, i.arity, db_agg)
         @aggregates.delete( i.signature )
       end
     end

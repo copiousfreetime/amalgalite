@@ -16,8 +16,8 @@ class PH < ::Amalgalite::ProgressHandler
   end
 end
 
-def query_thread( db )
-  Thread.new( db ) do |db|
+def query_thread( database )
+  Thread.new( database ) do |db|
     begin
       db.execute("select count(id) from country")
     rescue => e
