@@ -29,7 +29,7 @@ namespace :ext do
 
         # install into requireable location so specs will run
         mkdir_p ext_dest_dir, :verbose => true
-        cp "amalgalite3.#{Config::CONFIG['DLEXT']}", ext_dest_dir, :verbose => true
+        cp "amalgalite3.#{RbConfig::CONFIG['DLEXT']}", ext_dest_dir, :verbose => true
       end
     end
   end

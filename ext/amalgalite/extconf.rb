@@ -22,12 +22,12 @@ end
 # remove the -g flags  if it exists
 %w[ -ggdb\\d* -g\\d* ].each do |debug|
   $CFLAGS = $CFLAGS.gsub(/#{debug}/,'')
-  RbConfig::MAKEFILE_CONFIG['debugflags'] = Config::MAKEFILE_CONFIG['debugflags'].gsub(/#{debug}/,'')   if Config::MAKEFILE_CONFIG['debugflags']
+  RbConfig::MAKEFILE_CONFIG['debugflags'] = RbConfig::MAKEFILE_CONFIG['debugflags'].gsub(/#{debug}/,'')   if RbConfig::MAKEFILE_CONFIG['debugflags']
 end
 
 %w[ shorten-64-to-32 write-strings ].each do |warning|
   $CFLAGS = $CFLAGS.gsub(/-W#{warning}/,'')
-  Config::MAKEFILE_CONFIG['warnflags'] = Config::MAKEFILE_CONFIG['warnflags'].gsub(/-W#{warning}/,'') if Config::MAKEFILE_CONFIG['warnflags'] 
+  RbConfig::MAKEFILE_CONFIG['warnflags'] = RbConfig::MAKEFILE_CONFIG['warnflags'].gsub(/-W#{warning}/,'') if RbConfig::MAKEFILE_CONFIG['warnflags'] 
 end
 
 
