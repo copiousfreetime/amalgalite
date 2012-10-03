@@ -3,7 +3,6 @@
 # All rights reserved.  See LICENSE and/or COPYING for details.
 #++
 
-require 'amalgalite/type_map'
 require 'time'
 require 'date'
 

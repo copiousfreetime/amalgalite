@@ -3,8 +3,6 @@
 # All rights reserved.  See LICENSE and/or COPYING for details.
 #++
 
-require 'amalgalite/type_map'
-
 module Amalgalite::TypeMaps
   ##
   # An Amalagliate TypeMap that has a one-to-one conversion between SQLite types
