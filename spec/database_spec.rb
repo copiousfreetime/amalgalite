@@ -416,7 +416,7 @@ describe Amalgalite::Database do
       @iso_db.savepoint( "t1" ) do |s|
         s.execute("DELETE FROM subcountry where country = 'US'")
         as = @iso_db.execute("SELECT count(*) as cnt from subcountry where country = 'US'").first['cnt']
-        as.should == 0
+        as.should be == 0
         raise "sample error"
       end
     }.should raise_error( StandardError, /sample error/ )
@@ -494,7 +494,7 @@ describe Amalgalite::Database do
     @iso_db.replicate_to( fdb )
     @iso_db.close
 
-    File.exist?( SpecInfo.test_db ).should == true
+    File.exist?( SpecInfo.test_db ).should be == true
     fdb.execute("SELECT count(*) as cnt from subcountry").first['cnt'].should == all_sub
   end
 

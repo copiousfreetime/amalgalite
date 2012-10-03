@@ -69,7 +69,7 @@ describe "Progress Handlers" do
     qt.join
     ph.call_count.should eql(25)
     qt[:exception].should be_instance_of( ::Amalgalite::SQLite3::Error )
-    @iso_db.api.last_error_code.should == 9
+    @iso_db.api.last_error_code.should be == 9
     @iso_db.api.last_error_message.should  =~ /interrupted/
     qt[:exception].message.should =~ /interrupted/
   end

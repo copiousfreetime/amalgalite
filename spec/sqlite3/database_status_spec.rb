@@ -18,14 +18,14 @@ describe "Amalgalite::SQLite3::Database::Status" do
 
 
   it "knows how much lookaside memory it has used" do
-    @db.api.status.lookaside_used.highwater.should > 0
-    @db.api.status.lookaside_used.current.should >= 0
+    @db.api.status.lookaside_used.highwater.should be > 0
+    @db.api.status.lookaside_used.current.should be >= 0
   end
 
   it "can reset the highwater value" do
     stat = @db.api.status.lookaside_used
     before = stat.highwater
-    before.should > 0
+    before.should be > 0
 
     stat.reset!
     after = stat.highwater

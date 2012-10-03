@@ -15,7 +15,7 @@ describe Amalgalite::Schema do
     s = @iso_db.schema
     sql = "CREATE VIEW v1 AS SELECT c.name, c.two_letter, s.name, s.subdivision FROM country AS c JOIN subcountry AS s ON c.two_letter = s.country"
     @iso_db.execute( sql )
-    s.dirty?.should == true
+    s.dirty?.should be == true
     @iso_db.schema.load_views
     @iso_db.schema.views.size.should eql(1)
     @iso_db.schema.views["v1"].sql.should eql(sql)
@@ -25,9 +25,9 @@ describe Amalgalite::Schema do
     s = @iso_db.schema
     sql = "CREATE TABLE t1( d1 default 't' )"
     @iso_db.execute( sql )
-    s.dirty?.should == true
+    s.dirty?.should be == true
     tt = @iso_db.schema.tables['t1']
-    tt.columns['d1'].default_value.should == "t"
+    tt.columns['d1'].default_value.should be == "t"
   end
 
   it "loads the tables and columns" do
@@ -56,7 +56,7 @@ describe Amalgalite::Schema do
     s = @iso_db.schema
     sql = "CREATE TABLE u( id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL , other text )"
     @iso_db.execute( sql )
-    s.dirty?.should == true
+    s.dirty?.should be == true
     ut = @iso_db.schema.tables['u']
     ut.primary_key.should == [ ut.columns['id'] ]
   end
@@ -71,7 +71,7 @@ describe Amalgalite::Schema do
     sql = "CREATE TABLE m ( id1, id2, PRIMARY KEY (id2, id1) )"
     s = @iso_db.schema
     @iso_db.execute( sql )
-    s.dirty?.should == true
+    s.dirty?.should be == true
     mt = @iso_db.schema.tables['m']
     mt.primary_key.should == [ mt.columns['id2'], mt.columns['id1'] ]
   end
@@ -93,39 +93,39 @@ describe Amalgalite::Schema do
   it "knows the schema is dirty when a table is created" do
     s = @iso_db.schema
     c = s.tables['country']
-    s.dirty?.should == false
+    s.dirty?.should be == false
     @iso_db.execute( "create table x1( a, b )" )
-    s.dirty?.should == true
+    s.dirty?.should be == true
   end
 
   it "knows the schema is dirty when a table is dropped" do
     s = @iso_db.schema
     c = s.tables['country']
     @iso_db.execute( "create table x1( a, b )" )
-    s.dirty?.should == true
+    s.dirty?.should be == true
 
     @iso_db.schema.load_schema!
     s = @iso_db.schema
 
-    s.dirty?.should == false
+    s.dirty?.should be == false
     @iso_db.execute("drop table x1")
-    s.dirty?.should == true
+    s.dirty?.should be == true
   end
 
   it "knows if a temporary table exists" do
     @iso_db.execute "CREATE TEMPORARY TABLE tt(a,b,c)"
-    @iso_db.schema.tables.keys.include?('tt').should == true
-    @iso_db.schema.tables['tt'].temporary?.should == true
+    @iso_db.schema.tables.keys.include?('tt').should be == true
+    @iso_db.schema.tables['tt'].temporary?.should be == true
   end
 
   it "sees that temporary tables shadow real tables" do
     @iso_db.execute "CREATE TABLE tt(x)"
-    @iso_db.schema.tables['tt'].temporary?.should == false
+    @iso_db.schema.tables['tt'].temporary?.should be == false
     @iso_db.execute "CREATE TEMP TABLE tt(a,b,c)"
-    @iso_db.schema.tables['tt'].temporary?.should == true
+    @iso_db.schema.tables['tt'].temporary?.should be == true
     @iso_db.execute "DROP TABLE tt"
-    @iso_db.schema.tables['tt'].temporary?.should == false
-    @iso_db.schema.tables['tt'].columns.size.should == 1
+    @iso_db.schema.tables['tt'].temporary?.should be == false
+    @iso_db.schema.tables['tt'].columns.size.should be == 1
   end
 
 end

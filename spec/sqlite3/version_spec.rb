@@ -15,8 +15,8 @@ describe "Amalgalite::SQLite3::Version" do
     Amalgalite::SQLite3::Version::RELEASE.should eql(9)
     Amalgalite::SQLite3::Version.to_a.should have(3).items
 
-    Amalgalite::SQLite3::Version.compiled_version.should == "3.7.9"
-    Amalgalite::SQLite3::Version.compiled_version_number.should == 3007009
-    Amalgalite::SQLite3::Version.compiled_matches_runtime?.should == true
+    Amalgalite::SQLite3::Version.compiled_version.should be == "3.7.9"
+    Amalgalite::SQLite3::Version.compiled_version_number.should be == 3007009
+    Amalgalite::SQLite3::Version.compiled_matches_runtime?.should be == true
   end
 end
