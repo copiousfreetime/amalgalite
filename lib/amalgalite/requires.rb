@@ -35,7 +35,7 @@ module Amalgalite
         end
       end
 
-      # 
+      #
       # Setting a class level variable as a flag to know what we are currently
       # in the middle of requiring
       #
@@ -62,7 +62,7 @@ module Amalgalite
           raise ::LoadError, "amalgalite has no such file to load -- #{filename}"
         end
       end
-   end
+    end
 
     attr_reader :dbfile_name
     attr_reader :table_name
