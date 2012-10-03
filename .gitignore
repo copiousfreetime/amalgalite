@@ -14,3 +14,4 @@ tmp/*
 email.txt
 spec/data/*.db
 *.bundle
+Gemfile*

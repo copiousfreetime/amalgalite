@@ -1,6 +1,8 @@
+
 require File.expand_path( File.join( File.dirname(__FILE__), 'spec_helper'))
 
 $: << File.expand_path(File.join(File.dirname(__FILE__),"..","lib"))
+require 'thread'
 require 'amalgalite'
 require 'amalgalite/taps/io'
 require 'amalgalite/taps/console'

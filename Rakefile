@@ -22,7 +22,7 @@ namespace :develop do
     # list these here instead of gem dependencies since there is not a way to
     # specify ruby version specific dependencies
     if RUBY_VERSION < "1.9.2"
-      Util.platform_gemspec.add_development_dependency( 'rcov', '~> 0.9.11' )
+      Util.platform_gemspec.add_development_dependency( 'rcov', '~> 1.0.0' )
     else
       Util.platform_gemspec.add_development_dependency( 'simplecov', '~> 0.6.4' )
     end
@@ -195,14 +195,14 @@ This.gemspec['ruby'] = Gem::Specification.new do |spec|
   # FIXME
   # spec.add_dependency( 'map', '~> 6.2.0')
   spec.add_dependency( 'arrayfields', '~> 4.7.4' )
-  spec.add_dependency( 'fastercsv'  , '~> 1.5.4' )
+  spec.add_dependency( 'fastercsv'  , '~> 1.5.5' )
 
   # The Development Dependencies
   spec.add_development_dependency("rake"         , "~> 0.9.2.2")
-  spec.add_development_dependency("rspec"        , "~> 2.6.0"  )
+  spec.add_development_dependency("rspec"        , "~> 2.11.0"  )
   spec.add_development_dependency('zip'          , "~> 2.0.2"  )
   spec.add_development_dependency('rdoc'         , '~> 3.12'   )
-  spec.add_development_dependency('rake-compiler', '~> 0.7.9'  )
+  spec.add_development_dependency('rake-compiler', '~> 0.8.1'  )
 
   spec.extensions.concat Util.extension_conf_files
 end
