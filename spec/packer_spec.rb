@@ -1,6 +1,5 @@
 require File.expand_path(File.join(File.dirname(__FILE__),"spec_helper.rb"))
 require 'amalgalite/packer'
-require 'gemspec'
 
 describe "Amalgalite::Packer" do
   before( :each ) do
@@ -51,8 +50,8 @@ describe "Amalgalite::Packer" do
 
   it "has all the lib files in the amalgalite gem" do
     ro = Amalgalite::Packer.amalgalite_require_order
-    glist = Amalgalite::GEM_SPEC.files.select { |l| l.index("lib/amalgalite") == 0 }
-    glist.map! { |l| l.sub("lib/","") }
+    glist = IO.readlines("Manifest.txt").select { |l| l.index("lib/amalgalite") == 0 }
+    glist.map! { |l| l.strip.sub("lib/","") }
     (glist - ro).each do |l|
       l.should_not =~ /amalgalite/
     end

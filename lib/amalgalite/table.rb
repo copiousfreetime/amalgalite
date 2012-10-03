@@ -26,11 +26,12 @@ module Amalgalite
     attr_accessor :columns
 
     def initialize( name, sql = nil )
-      @name    = name
-      @sql     = sql
-      @indexes = {}
-      @columns = {}
-      @schema  = nil
+      @name        = name
+      @sql         = sql
+      @indexes     = {}
+      @columns     = {}
+      @schema      = nil
+      @primary_key = nil
     end
 
     # Is the table a temporary table or not

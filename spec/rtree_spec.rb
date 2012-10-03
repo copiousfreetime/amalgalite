@@ -37,9 +37,9 @@ describe "SQLite3 R*Tree extension" do
 
   it "queries normally" do
     r = @db.execute "SELECT * FROM demo_index WHERE id=1;"
-    r.size.should == 1
+    r.size.should be == 1
     row = r.first
-    row['id'].should == 1
+    row['id'].should be == 1
   end
 
   it "does a 'contained within' query" do
@@ -49,8 +49,8 @@ describe "SQLite3 R*Tree extension" do
        AND minY>=30.00  AND maxY<=30.44;
     sql
 
-    r.size.should == 1
-    r.first['id'].should == 1
+    r.size.should be == 1
+    r.first['id'].should be == 1
   end
 
   it "does an 'overlapping' query" do

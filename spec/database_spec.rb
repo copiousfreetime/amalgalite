@@ -260,23 +260,23 @@ describe Amalgalite::Database do
 
   describe "#define_function" do
    it "does not allow mixing of arbitrary and mandatory arguments to an SQL function" do
-      class FunctionTest2 < ::Amalgalite::Function
+      class DBFunctionTest2 < ::Amalgalite::Function
         def initialize
           super( 'ftest2', -2 )
         end
         def call( a, *args ); end
       end
-      lambda { @iso_db.define_function("ftest2", FunctionTest2.new ) }.should raise_error( ::Amalgalite::Database::FunctionError )
+      lambda { @iso_db.define_function("ftest2", DBFunctionTest2.new ) }.should raise_error( ::Amalgalite::Database::FunctionError )
     end
 
     it "does not allow outrageous arity" do
-      class FunctionTest3 < ::Amalgalite::Function
+      class DBFunctionTest3 < ::Amalgalite::Function
         def initialize
           super( 'ftest3', 128 )
         end
         def call( *args) ; end
       end
-      lambda { @iso_db.define_function("ftest3", FunctionTest3.new ) }.should raise_error( ::Amalgalite::SQLite3::Error )
+      lambda { @iso_db.define_function("ftest3", DBFunctionTest3.new ) }.should raise_error( ::Amalgalite::SQLite3::Error )
     end
 
  end
@@ -416,7 +416,7 @@ describe Amalgalite::Database do
       @iso_db.savepoint( "t1" ) do |s|
         s.execute("DELETE FROM subcountry where country = 'US'")
         as = @iso_db.execute("SELECT count(*) as cnt from subcountry where country = 'US'").first['cnt']
-        as.should == 0
+        as.should be == 0
         raise "sample error"
       end
     }.should raise_error( StandardError, /sample error/ )
@@ -494,7 +494,7 @@ describe Amalgalite::Database do
     @iso_db.replicate_to( fdb )
     @iso_db.close
 
-    File.exist?( SpecInfo.test_db ).should == true
+    File.exist?( SpecInfo.test_db ).should be == true
     fdb.execute("SELECT count(*) as cnt from subcountry").first['cnt'].should == all_sub
   end
 

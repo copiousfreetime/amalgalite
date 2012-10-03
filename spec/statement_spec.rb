@@ -128,7 +128,7 @@ describe Amalgalite::Statement do
     db = Amalgalite::Database.new( SpecInfo.test_db )
     stmt = @db.prepare( @schema )
     stmt.execute
-    stmt.remaining_sql.size.should > 0
+    stmt.remaining_sql.size.should be > 0
     stmt.close
   end
 

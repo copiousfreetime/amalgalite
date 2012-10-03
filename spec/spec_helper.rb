@@ -1,10 +1,6 @@
 require 'rubygems'
 require 'rspec'
 
-$:.unshift File.expand_path(File.join(File.dirname(__FILE__),"..","lib"))
-require 'amalgalite/paths'
-$:.unshift Amalgalite::Paths.root_dir
-
 require 'amalgalite'
 require Amalgalite::Paths.spec_path( "iso_3166_database.rb" )
 
