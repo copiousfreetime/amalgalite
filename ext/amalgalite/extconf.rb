@@ -20,7 +20,7 @@ else
 end
 
 # remove the -g flags  if it exists
-%w[ -ggdb -g ].each do |debug|
+%w[ -ggdb\\d* -g\\d* ].each do |debug|
   $CFLAGS = $CFLAGS.gsub(/#{debug}/,'')
   RbConfig::MAKEFILE_CONFIG['debugflags'] = Config::MAKEFILE_CONFIG['debugflags'].gsub(/#{debug}/,'')   if Config::MAKEFILE_CONFIG['debugflags']
 end
