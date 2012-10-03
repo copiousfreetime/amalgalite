@@ -28,8 +28,8 @@ namespace :ext do
         sh "make"
 
         # install into requireable location so specs will run
-        subdir = "amalgalite/#{RUBY_VERSION.sub(/\.\d$/,'')}"
-        dest_dir = Amalgalite::Paths.lib_path( subdir )
+        version_sub = RUBY_VERSION.sub(/\.\d$/,'')
+        dest_dir = Util.proj_path( 'lib', 'amalgalite', version_sub)
         mkdir_p dest_dir, :verbose => true
         cp "amalgalite3.#{Config::CONFIG['DLEXT']}", dest_dir, :verbose => true
       end
