@@ -5,8 +5,8 @@
 
 # check if sqlite3 has already been required.  Amalgalite conflicts with system
 # level sqlite3 libraries.
-unless $LOADED_FEATURES.grep( /sqlite3/ ).empty? then
-  raise LoadError, "amalgalite conflicts with sqlite3-ruby, please choose one or the other."
+unless $LOADED_FEATURES.grep( /\Asqlite3/ ).empty? then
+  raise LoadError, "amalgalite conflicts with sqlite3, please choose one or the other."
 end
 
 module Amalgalite
