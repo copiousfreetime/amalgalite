@@ -177,6 +177,8 @@ namespace :ext do
   task :update_sqlite do
     require 'uri'
     require 'net/http'
+    require 'zip'
+
     parts = ENV['VERSION'].split(".")
     next_version = [ parts.shift.to_s ]
     parts.each do |p|
