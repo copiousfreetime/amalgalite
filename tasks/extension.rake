@@ -28,13 +28,17 @@ namespace :ext do
         sh "make"
 
         # install into requireable location so specs will run
-        version_sub = RUBY_VERSION.sub(/\.\d$/,'')
-        dest_dir = Util.proj_path( 'lib', 'amalgalite', version_sub)
-        mkdir_p dest_dir, :verbose => true
-        cp "amalgalite3.#{Config::CONFIG['DLEXT']}", dest_dir, :verbose => true
+        mkdir_p ext_dest_dir, :verbose => true
+        cp "amalgalite3.#{Config::CONFIG['DLEXT']}", ext_dest_dir, :verbose => true
       end
     end
   end
+
+  def ext_dest_dir
+    version_sub = RUBY_VERSION.sub(/\.\d$/,'')
+    dest_dir = Util.proj_path( 'lib', 'amalgalite', version_sub)
+  end
+
 
   def with_each_extension
     Util.platform_gemspec.extensions.each do |ext|
@@ -166,6 +170,7 @@ namespace :ext do
         rm_f "rbconfig.rb"
       end
     end
+    FileUtils.rm_rf ext_dest_dir, :verbose => true
   end
 
   desc "Download and integrate the next version of sqlite (use VERSION=x.y.z)"
@@ -207,3 +212,6 @@ namespace :ext do
     end
   end
 end
+task :clobber => 'ext:clobber'
+task :clean => 'ext:clean'
+task :test => 'ext:build'

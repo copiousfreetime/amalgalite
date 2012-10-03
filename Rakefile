@@ -221,6 +221,7 @@ end
 
 # the gemspec is also a dev artifact and should not be kept around.
 CLOBBER << This.gemspec_file
+CLOBBER << "tmp"
 
 # The standard gem packaging task, everyone has it.
 require 'rubygems/package_task'
@@ -261,7 +262,7 @@ task :release => [ :release_check, 'manifest:check', :gem ] do
 end
 
 #------------------------------------------------------------------------------
-# Load the extension tasks
+# Load the extra tasks
 #------------------------------------------------------------------------------
 load 'tasks/extension.rake'
 
