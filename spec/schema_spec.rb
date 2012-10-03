@@ -92,7 +92,7 @@ describe Amalgalite::Schema do
 
   it "knows the schema is dirty when a table is created" do
     s = @iso_db.schema
-    c = s.tables['country']
+    s.tables['country']
     s.dirty?.should be == false
     @iso_db.execute( "create table x1( a, b )" )
     s.dirty?.should be == true
@@ -100,7 +100,7 @@ describe Amalgalite::Schema do
 
   it "knows the schema is dirty when a table is dropped" do
     s = @iso_db.schema
-    c = s.tables['country']
+    s.tables['country']
     @iso_db.execute( "create table x1( a, b )" )
     s.dirty?.should be == true
 

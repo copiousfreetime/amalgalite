@@ -222,7 +222,7 @@ describe Amalgalite::Database do
         db.in_transaction?.should eql(true)
         raise "testing rollback"
       end
-    rescue => e
+    rescue
       @iso_db.in_transaction?.should eql(false)
       @iso_db.execute("SELECT count(1) as cnt FROM country").first['cnt'].should eql(242)
     end
@@ -364,7 +364,7 @@ describe Amalgalite::Database do
     end
 
     rudeness = Thread.new( @iso_db ) do |db|
-      sent = control_queue.deq
+      control_queue.deq
       count = 0
       loop do
         @iso_db.interrupt!
@@ -410,7 +410,6 @@ describe Amalgalite::Database do
   end
 
   it "rolls back a savepoint" do
-    all_sub = @iso_db.execute("SELECT count(*) as cnt from subcountry").first['cnt']
     us_sub  = @iso_db.execute("SELECT count(*) as cnt from subcountry where country = 'US'").first['cnt']
     lambda {
       @iso_db.savepoint( "t1" ) do |s|

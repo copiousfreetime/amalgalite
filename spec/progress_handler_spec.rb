@@ -21,7 +21,6 @@ def query_thread( database )
     begin
       db.execute("select count(id) from country")
     rescue => e
-      had_error = e
       Thread.current[:exception] = e
     end
   end

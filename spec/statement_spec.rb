@@ -125,7 +125,6 @@ describe Amalgalite::Statement do
   end
 
   it "can execute a single sql command and say if there is remaining sql to execute" do
-    db = Amalgalite::Database.new( SpecInfo.test_db )
     stmt = @db.prepare( @schema )
     stmt.execute
     stmt.remaining_sql.size.should be > 0
@@ -148,7 +147,7 @@ describe Amalgalite::Statement do
     db.execute( "create table t1(c1,c2,c3)" )
     db.execute("insert into t1(c1,c2,c3) values (1,2,'abc')")
     db.prepare( "select oid,* from t1" ) do |stmt|
-      rows = stmt.execute
+      stmt.execute
       stmt.should be_using_rowid_column
     end
 

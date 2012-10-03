@@ -105,7 +105,7 @@ module Amalgalite
     # The SQL to create the table for storing ruby code
     #
     def create_table_sql
-      sql = <<-create
+      <<-create
       CREATE TABLE #{options[:table_name]} (
       id                   INTEGER PRIMARY KEY AUTOINCREMENT,
       #{options[:filename_column]}   TEXT UNIQUE,

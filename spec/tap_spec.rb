@@ -34,11 +34,11 @@ describe Amalgalite::Taps::StringIO do
   end
 
   it "has a stdout tap" do
-    s = ::Amalgalite::Taps::Stdout.new
+    ::Amalgalite::Taps::Stdout.new
   end
-  
+
   it "has a stderr tap" do
-    s = ::Amalgalite::Taps::Stderr.new
+    ::Amalgalite::Taps::Stderr.new
   end
 end
 

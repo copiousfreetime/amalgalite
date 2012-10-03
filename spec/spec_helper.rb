@@ -14,7 +14,7 @@ class SpecInfo
     end
 
     def make_clone_iso_db
-      new_path = make_master_iso_db.duplicate( 'testing' )
+      make_master_iso_db.duplicate( 'testing' )
     end
   end
 end
