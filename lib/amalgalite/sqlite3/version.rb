@@ -36,7 +36,6 @@ module Amalgalite
     # Version of SQLite that ships with Amalgalite
     VERSION = Version.to_s.freeze
   end
-  Version.freeze
 end
 
 unless Amalgalite::SQLite3::Version.compiled_matches_runtime? then
