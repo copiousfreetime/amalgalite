@@ -1,4 +1,18 @@
 = Amalgalite Changelog
+== Version 1.3.0 - 2012-10-03
+
+=== Enhancements
+
+* Update to SQLite 3.7.14
+* Change up the development process to be inline with other projects
+* Make Amalgalite 1.9 -w clean
+
+=== Bug Fixes
+
+* Fix handling of debug flags in extconf.rb (ged #22)
+* Remove deprected Config:: (github issue #23)
+* Correct detection of being loaded in conjunction with 'sqlite3' gem (github issue #15)
+
 == Version 1.2.0 - 2011-09-12
 
 === Enhancements

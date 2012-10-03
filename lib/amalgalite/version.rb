@@ -4,6 +4,5 @@
 #++
 
 module Amalgalite
-  # Version information for Amagalite
-  VERSION = "1.2.0"
+  VERSION = "1.3.0"
 end
