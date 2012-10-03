@@ -59,14 +59,13 @@ desc "Boostrap development"
 task :develop => "develop:default"
 
 #------------------------------------------------------------------------------
-# Minitest - standard TestTask
+# RSpec - standard RSpec rake task
 #------------------------------------------------------------------------------
 begin
-  require 'rake/testtask'
-  Rake::TestTask.new( :test ) do |t|
-    t.ruby_opts    = %w[ -w -rubygems ]
-    t.libs         = %w[ lib spec ]
-    t.pattern      = "spec/**/*_spec.rb"
+  require 'rspec/core/rake_task'
+  RSpec::Core::RakeTask.new( :test ) do |t|
+    t.ruby_opts    = %w[ -w ]
+    t.rspec_opts   = %w[ --color --format documentation ]
   end
   task :default => :test
 rescue LoadError
@@ -322,6 +321,14 @@ BEGIN {
 
     def self.platform_gemspec
       This.gemspec[This.platform]
+    end
+
+    def self.proj_root_path
+      Pathname.new( File.expand_path( "..", __FILE__ ) )
+    end
+
+    def self.proj_path(*args)
+      proj_root_path.join( *args )
     end
   end
 
