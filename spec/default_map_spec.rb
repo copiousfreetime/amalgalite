@@ -1,4 +1,4 @@
-$: << File.expand_path(File.join(File.dirname(__FILE__),"..","lib"))
+require 'spec_helper'
 require 'amalgalite/type_maps/default_map'
 
 describe Amalgalite::TypeMaps::DefaultMap do

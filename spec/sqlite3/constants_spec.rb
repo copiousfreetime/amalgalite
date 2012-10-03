@@ -1,4 +1,4 @@
-require File.expand_path(File.join(File.dirname(__FILE__),%w[ .. spec_helper.rb ]))
+require 'spec_helper'
 
 require 'amalgalite/sqlite3/constants'
 
