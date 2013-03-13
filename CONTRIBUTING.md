@@ -18,8 +18,8 @@ easiest way to contribute.
     * **Bug reports** please be as detailed as possible. Include:
         * full ruby engine and version: `ruby -e 'puts RUBY_DESCRIPTION'`
         * operating system and version
-        * version of fixme `ruby -e 'ruby -rubygems -e "require 'fixme'; puts Fixme::VERSION'`
-        * as much detail about the bug as possible so I can replicated it. Feel free
+        * version of amalgalite `ruby -rubygems -e "require 'amalgalite'; puts Amalgalite::VERSION"`
+        * as much detail about the bug as possible so I can replicate it. Feel free
           to link in a [gist][]
     * **New Feature**
         * What the new feature should do.
@@ -27,19 +27,23 @@ easiest way to contribute.
 * Fork the [repo][].
 * Create a new branch for your issue: `git checkout -b issue/my-issue`
 * Lovingly craft your contribution:
-    * `rake develop` to get started, or if you prefer bundler `rake develop:using_bunder && bundle`.
+    * `rake develop` to get started, or if you prefer bundler `rake develop:using_bundler && bundle`.
     * `rake test` to run tests
-* Make sure that `rake test` passes. Its important, I said it twice.
+* Make sure that `rake test` passes. It's important, I said it twice.
 * Add yourself to the contributors section below.
 * Submit your [pull request][].
 
 # Contributors
 
-* Jeremy Hinegardner
+* [Jeremy Hinegardner](https://github.com/copiousfreetime)
+* [Jos Backus](https://github.com/josb)
+* [Alex Young](https://github.com/regularfry)
+* [Michael Granger](https://github.com/ged)
+* [Alex Young](https://github.com/bmalex)
 
 [GitHub Account]: https://github.com/signup/free "GitHub Signup"
-[GitHub Issues]:  https://github.com/copiousfreetime/fixme/issues "Fixme Issues"
-[new issue]:      https://github.com/copiousfreetime/fixme/issues/new "New Fixme Issue"
+[GitHub Issues]:  https://github.com/copiousfreetime/amalgalite/issues "Amalgalite Issues"
+[new issue]:      https://github.com/copiousfreetime/amalgalite/issues/new "New Amalgalite Issue"
 [gist]:           https://gist.github.com/ "New Gist"
-[repo]:           https://github.com/copiousfreetime/fixme "Fixme Repo"
+[repo]:           https://github.com/copiousfreetime/amalgalite "Amalgalite Repo"
 [pull request]:   https://help.github.com/articles/using-pull-requests "Using Pull Requests"
