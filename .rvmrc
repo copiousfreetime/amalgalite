@@ -1,1 +1,1 @@
-rvm use @amalgalite
+rvm use @amalgalite --create
