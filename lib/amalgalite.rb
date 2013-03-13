@@ -16,10 +16,17 @@ module Amalgalite
   class Error < ::StandardError; end
 end
 
-# use a version subdirectory for extensions, initially to support windows, but
-# why make a special case, it doesn't hurt anyone to have an extra subdir
-# someplace 
-require "amalgalite/#{RUBY_VERSION.sub(/\.\d$/,'')}/amalgalite3"
+# Load the binary extension, try loading one for the specific version of ruby
+# and if that fails, then fall back to one in the top of the library.
+# this is the method recommended by rake-compiler
+begin
+  # this will be for windows
+  require "amalgalite/#{RUBY_VERSION.sub(/\.\d$/,'')}/amalgalite"
+rescue LoadError
+  # everyone else.
+  require 'amalgalite/amalgalite'
+end
+
 
 require 'amalgalite/aggregate'
 require 'amalgalite/blob'

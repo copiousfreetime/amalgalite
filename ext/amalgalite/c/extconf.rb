@@ -33,4 +33,4 @@ end
 
 
 subdir = RUBY_VERSION.sub(/\.\d$/,'')
-create_makefile("amalgalite/#{subdir}/amalgalite3")
+create_makefile("amalgalite/#{subdir}/amalgalite")

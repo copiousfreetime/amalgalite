@@ -1,4 +1,4 @@
-#include "amalgalite3.h"
+#include "amalgalite.h"
 /**
  * Copyright (c) 2008 Jeremy Hinegardner
  * All rights reserved.  See LICENSE and/or COPYING for details.
@@ -1131,7 +1131,7 @@ VALUE am_sqlite3_database_alloc(VALUE klass)
  * The ruby extension wrapper around the core sqlite3 database object.
  *
  */
-void Init_amalgalite3_database( )
+void Init_amalgalite_database( )
 {
 
     VALUE ma  = rb_define_module("Amalgalite");
@@ -1146,32 +1146,32 @@ void Init_amalgalite3_database( )
     rb_define_singleton_method(cAS_Database, "open", am_sqlite3_database_open, -1);
     rb_define_singleton_method(cAS_Database, "open16", am_sqlite3_database_open16, 1);
     rb_define_method(cAS_Database, "prepare", am_sqlite3_database_prepare, 1);
-    rb_define_method(cAS_Database, "close", am_sqlite3_database_close, 0); /* in amalgalite3_database.c */
-    rb_define_method(cAS_Database, "last_insert_rowid", am_sqlite3_database_last_insert_rowid, 0); /* in amalgalite3_database.c */
-    rb_define_method(cAS_Database, "autocommit?", am_sqlite3_database_is_autocommit, 0); /* in amalgalite3_database.c */
-    rb_define_method(cAS_Database, "register_trace_tap", am_sqlite3_database_register_trace_tap, 1); /* in amalgalite3_database.c */
-    rb_define_method(cAS_Database, "register_profile_tap", am_sqlite3_database_register_profile_tap, 1); /* in amalgalite3_database.c */
-    rb_define_method(cAS_Database, "table_column_metadata", am_sqlite3_database_table_column_metadata, 3); /* in amalgalite3_database.c */
-    rb_define_method(cAS_Database, "row_changes", am_sqlite3_database_row_changes, 0); /* in amalgalite3_database.c */
-    rb_define_method(cAS_Database, "total_changes", am_sqlite3_database_total_changes, 0); /* in amalgalite3_database.c */
-    rb_define_method(cAS_Database, "last_error_code", am_sqlite3_database_last_error_code, 0); /* in amalgalite3_database.c */
-    rb_define_method(cAS_Database, "last_error_message", am_sqlite3_database_last_error_message, 0); /* in amalgalite3_database.c */
-    rb_define_method(cAS_Database, "define_function", am_sqlite3_database_define_function, 2); /* in amalgalite3_database.c */
-    rb_define_method(cAS_Database, "remove_function", am_sqlite3_database_remove_function, 2); /* in amalgalite3_database.c */
-    rb_define_method(cAS_Database, "define_aggregate", am_sqlite3_database_define_aggregate, 3); /* in amalgalite3_database.c */
-    rb_define_method(cAS_Database, "remove_aggregate", am_sqlite3_database_remove_aggregate, 3); /* in amalgalite3_database.c */
-    rb_define_method(cAS_Database, "busy_handler", am_sqlite3_database_busy_handler, 1); /* in amalgalite3_database.c */
-    rb_define_method(cAS_Database, "progress_handler", am_sqlite3_database_progress_handler, 2); /* in amalgalite3_database.c */
-    rb_define_method(cAS_Database, "interrupt!", am_sqlite3_database_interrupt_bang, 0); /* in amalgalite3_database.c */
-    rb_define_method(cAS_Database, "replicate_to", am_sqlite3_database_replicate_to, 1); /* in amalgalite3_database.c */
-    rb_define_method(cAS_Database, "execute_batch", am_sqlite3_database_exec, 1); /* in amalgalite3_database.c */
+    rb_define_method(cAS_Database, "close", am_sqlite3_database_close, 0); /* in amalgalite_database.c */
+    rb_define_method(cAS_Database, "last_insert_rowid", am_sqlite3_database_last_insert_rowid, 0); /* in amalgalite_database.c */
+    rb_define_method(cAS_Database, "autocommit?", am_sqlite3_database_is_autocommit, 0); /* in amalgalite_database.c */
+    rb_define_method(cAS_Database, "register_trace_tap", am_sqlite3_database_register_trace_tap, 1); /* in amalgalite_database.c */
+    rb_define_method(cAS_Database, "register_profile_tap", am_sqlite3_database_register_profile_tap, 1); /* in amalgalite_database.c */
+    rb_define_method(cAS_Database, "table_column_metadata", am_sqlite3_database_table_column_metadata, 3); /* in amalgalite_database.c */
+    rb_define_method(cAS_Database, "row_changes", am_sqlite3_database_row_changes, 0); /* in amalgalite_database.c */
+    rb_define_method(cAS_Database, "total_changes", am_sqlite3_database_total_changes, 0); /* in amalgalite_database.c */
+    rb_define_method(cAS_Database, "last_error_code", am_sqlite3_database_last_error_code, 0); /* in amalgalite_database.c */
+    rb_define_method(cAS_Database, "last_error_message", am_sqlite3_database_last_error_message, 0); /* in amalgalite_database.c */
+    rb_define_method(cAS_Database, "define_function", am_sqlite3_database_define_function, 2); /* in amalgalite_database.c */
+    rb_define_method(cAS_Database, "remove_function", am_sqlite3_database_remove_function, 2); /* in amalgalite_database.c */
+    rb_define_method(cAS_Database, "define_aggregate", am_sqlite3_database_define_aggregate, 3); /* in amalgalite_database.c */
+    rb_define_method(cAS_Database, "remove_aggregate", am_sqlite3_database_remove_aggregate, 3); /* in amalgalite_database.c */
+    rb_define_method(cAS_Database, "busy_handler", am_sqlite3_database_busy_handler, 1); /* in amalgalite_database.c */
+    rb_define_method(cAS_Database, "progress_handler", am_sqlite3_database_progress_handler, 2); /* in amalgalite_database.c */
+    rb_define_method(cAS_Database, "interrupt!", am_sqlite3_database_interrupt_bang, 0); /* in amalgalite_database.c */
+    rb_define_method(cAS_Database, "replicate_to", am_sqlite3_database_replicate_to, 1); /* in amalgalite_database.c */
+    rb_define_method(cAS_Database, "execute_batch", am_sqlite3_database_exec, 1); /* in amalgalite_database.c */
 
 
     /*
      * Ecapuslate a SQLite3 Database stat
      */
     cAS_Database_Stat = rb_define_class_under( cAS_Database, "Stat", rb_cObject );
-    rb_define_method(cAS_Database_Stat, "update!", am_sqlite3_database_stat_update_bang, -1); /* in amalgalite3_database.c */
+    rb_define_method(cAS_Database_Stat, "update!", am_sqlite3_database_stat_update_bang, -1); /* in amalgalite_database.c */
 
 }
 

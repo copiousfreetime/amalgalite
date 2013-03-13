@@ -5,7 +5,7 @@
  * vim: shiftwidth=4 
  */ 
 
-#include "amalgalite3.h"
+#include "amalgalite.h"
 #include <stdio.h>
 extern VALUE mA;
 VALUE cAR;
@@ -256,7 +256,7 @@ VALUE am_bootstrap_lift_str( VALUE self, VALUE args )
  * Bootstrapping module to help _require_ when Amalgalite::Requires is not
  * availble in files.
  */
-void Init_amalgalite3_requires_bootstrap()
+void Init_amalgalite_requires_bootstrap()
 {
 
     mA   = rb_define_module("Amalgalite");

@@ -12,9 +12,12 @@ This.ruby_gemspec do |spec|
 
   spec.add_development_dependency( 'rspec'        , '~> 2.13.0')
   spec.add_development_dependency( 'rake'         , '~> 10.0.3')
-  spec.add_development_dependency( 'rake-compiler', '~> 0.8.1'  )
+  spec.add_development_dependency( 'rake-compiler', '~> 0.8.1' )
   spec.add_development_dependency( 'rdoc'         , '~> 4.0'   )
-  spec.add_development_dependency( 'zip'          , "~> 2.0.2"  )
+  spec.add_development_dependency( 'zip'          , '~> 2.0.2' )
+
+  spec.extensions.concat This.extension_conf_files
 end
 
 load 'tasks/default.rake'
+load 'tasks/extension.rake'

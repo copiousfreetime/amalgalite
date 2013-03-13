@@ -1,4 +1,4 @@
-#include "amalgalite3.h"
+#include "amalgalite.h"
 /**
  * Copyright (c) 2008 Jeremy Hinegardner
  * All rights reserved.  See LICENSE and/or COPYING for details.
@@ -604,7 +604,7 @@ VALUE am_sqlite3_statement_alloc(VALUE klass)
  * Amagalite Database extension
  */
 
-void Init_amalgalite3_statement( )
+void Init_amalgalite_statement( )
 {
 
     VALUE ma  = rb_define_module("Amalgalite");

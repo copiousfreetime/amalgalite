@@ -128,11 +128,11 @@ extern VALUE am_sqlite3_blob_length(VALUE self);
 /*----------------------------------------------------------------------
  * more initialization methods
  *----------------------------------------------------------------------*/
-extern void Init_amalgalite3_constants( );
-extern void Init_amalgalite3_database( );
-extern void Init_amalgalite3_statement( );
-extern void Init_amalgalite3_blob( );
-extern void Init_amalgalite3_requires_bootstrap( );
+extern void Init_amalgalite_constants( );
+extern void Init_amalgalite_database( );
+extern void Init_amalgalite_statement( );
+extern void Init_amalgalite_blob( );
+extern void Init_amalgalite_requires_bootstrap( );
 
  
 /***********************************************************************

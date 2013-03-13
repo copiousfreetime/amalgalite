@@ -5,7 +5,7 @@
  * vim: shiftwidth=4 
 :*/ 
 
-#include "amalgalite3.h"
+#include "amalgalite.h"
 
 /* Module and Classes */
 VALUE mA;              /* module Amalgalite                     */
@@ -266,7 +266,7 @@ VALUE am_sqlite3_compiled_version_number( VALUE self )
  *
  */
 
-void Init_amalgalite3()
+void Init_amalgalite()
 {
     int rc = 0;
 
@@ -300,21 +300,21 @@ void Init_amalgalite3()
      * Encapsulation of the SQLite C library version
      */
     mASV = rb_define_module_under(mAS, "Version");
-    rb_define_module_function(mASV, "to_s", am_sqlite3_runtime_version, 0); /* in amalgalite3.c */
+    rb_define_module_function(mASV, "to_s", am_sqlite3_runtime_version, 0); /* in amalgalite.c */
     rb_define_module_function(mASV, "runtime_version", am_sqlite3_runtime_version, 0); /* in amalgalite.c */
-    rb_define_module_function(mASV, "to_i", am_sqlite3_runtime_version_number, 0); /* in amalgalite3.c */
-    rb_define_module_function(mASV, "runtime_version_number", am_sqlite3_runtime_version_number, 0); /* in amalgalite3.c */
-    rb_define_module_function(mASV, "compiled_version", am_sqlite3_compiled_version, 0 ); /* in amalgalite3.c */
-    rb_define_module_function(mASV, "compiled_version_number", am_sqlite3_compiled_version_number, 0 ); /* in amalgalite3.c */
+    rb_define_module_function(mASV, "to_i", am_sqlite3_runtime_version_number, 0); /* in amalgalite.c */
+    rb_define_module_function(mASV, "runtime_version_number", am_sqlite3_runtime_version_number, 0); /* in amalgalite.c */
+    rb_define_module_function(mASV, "compiled_version", am_sqlite3_compiled_version, 0 ); /* in amalgalite.c */
+    rb_define_module_function(mASV, "compiled_version_number", am_sqlite3_compiled_version_number, 0 ); /* in amalgalite.c */
 
     /*
      * Initialize the rest of the module
      */
-    Init_amalgalite3_constants( );
-    Init_amalgalite3_database( );
-    Init_amalgalite3_statement( );
-    Init_amalgalite3_blob( );
-    Init_amalgalite3_requires_bootstrap( );
+    Init_amalgalite_constants( );
+    Init_amalgalite_database( );
+    Init_amalgalite_statement( );
+    Init_amalgalite_blob( );
+    Init_amalgalite_requires_bootstrap( );
 
     /*
      * initialize sqlite itself

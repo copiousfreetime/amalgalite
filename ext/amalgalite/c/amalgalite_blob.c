@@ -1,4 +1,4 @@
-#include "amalgalite3.h"
+#include "amalgalite.h"
 /**
  * Copyright (c) 2008 Jeremy Hinegardner
  * All rights reserved.  See LICENSE and/or COPYING for details.
@@ -219,7 +219,7 @@ VALUE am_sqlite3_blob_alloc(VALUE klass)
  * incremental IO on a binary object, then you do not need to use Blob.
  */
 
-void Init_amalgalite3_blob( )
+void Init_amalgalite_blob( )
 {
 
     VALUE ma  = rb_define_module("Amalgalite");
