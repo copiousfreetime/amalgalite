@@ -21,3 +21,4 @@ end
 
 load 'tasks/default.rake'
 load 'tasks/extension.rake'
+load 'tasks/custom.rake'
