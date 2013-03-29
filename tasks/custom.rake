@@ -71,8 +71,10 @@ namespace :util do
 
     next_version = next_version.join('')
 
+    version_year = ENV['VERSION_YEAR'] || Date.today.year
+
     raise "VERSION env variable must be set" unless next_version
-    url = ::URI.parse("http://sqlite.org/sqlite-amalgamation-#{next_version}.zip")
+    url = ::URI.parse("http://sqlite.org/#{version_year}/sqlite-amalgamation-#{next_version}.zip")
     puts "downloading #{url.to_s} ..."
     file = "tmp/#{File.basename( url.path ) }"
     FileUtils.mkdir "tmp" unless File.directory?( "tmp" )
