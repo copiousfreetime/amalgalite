@@ -7,7 +7,7 @@ This.email    = "jeremy@copiousfreetime.org"
 This.homepage = "http://github.com/copiousfreetime/#{ This.name }"
 
 This.ruby_gemspec do |spec|
-  spec.add_dependency( 'arrayfields', '~> 4.7.4' )
+  spec.add_dependency( 'arrayfields', '~> 4.9.2' )
   spec.add_dependency( 'fastercsv'  , '~> 1.5.5' )
 
   spec.add_development_dependency( 'rspec'        , '~> 2.13.0')
