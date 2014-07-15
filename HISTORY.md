@@ -1,5 +1,11 @@
 # Amalgalite Changelog
 
+## Version 1.3.1 - 2014-07-15
+
+### Enhancements
+
+* Update arrayfields dependency to 4.9.2
+
 ## Version 1.3.0 - 2013-03-13
 
 ### Enhancements
