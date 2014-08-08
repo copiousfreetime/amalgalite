@@ -1,6 +1,6 @@
 # Amalgalite Changelog
 
-## Version 1.3.1 - 2014-07-15
+## Version 1.3.1 - 2014-XX-XX
 
 ### Enhancements
 
