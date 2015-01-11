@@ -7,16 +7,16 @@ describe "Amalgalite::SQLite3::Version" do
     expect(Amalgalite::SQLite3::Version.to_s).to match( /\d\.\d\.\d/ )
     expect(Amalgalite::SQLite3::Version.runtime_version).to match( /\d\.\d\.\d/ )
 
-    Amalgalite::SQLite3::Version.to_i.should eql(3007016)
-    Amalgalite::SQLite3::Version.runtime_version_number.should eql(3007016)
+    Amalgalite::SQLite3::Version.to_i.should eql(3008007)
+    Amalgalite::SQLite3::Version.runtime_version_number.should eql(3008007)
 
     Amalgalite::SQLite3::Version::MAJOR.should eql(3)
-    Amalgalite::SQLite3::Version::MINOR.should eql(7)
-    Amalgalite::SQLite3::Version::RELEASE.should eql(16)
+    Amalgalite::SQLite3::Version::MINOR.should eql(8)
+    Amalgalite::SQLite3::Version::RELEASE.should eql(7)
     expect(Amalgalite::SQLite3::Version.to_a.size).to eql(3)
 
-    Amalgalite::SQLite3::Version.compiled_version.should be == "3.7.16"
-    Amalgalite::SQLite3::Version.compiled_version_number.should be == 3007016
+    Amalgalite::SQLite3::Version.compiled_version.should be == "3.8.7.4"
+    Amalgalite::SQLite3::Version.compiled_version_number.should be == 3008007
     Amalgalite::SQLite3::Version.compiled_matches_runtime?.should be == true
   end
 end

@@ -10,7 +10,8 @@ $CFLAGS += " -DSQLITE_ENABLE_COLUMN_METADATA=1"
 $CFLAGS += " -DSQLITE_ENABLE_RTREE=1"
 $CFLAGS += " -DSQLITE_ENABLE_FTS3=1"
 $CFLAGS += " -DSQLITE_ENABLE_FTS3_PARENTHESIS=1"
-$CFLAGS += " -DSQLITE_ENABLE_STAT2=1"
+$CFLAGS += " -DSQLITE_ENABLE_FTS4=1"
+$CFLAGS += " -DSQLITE_ENABLE_STAT4=1"
 
 # we compile sqlite the same way that the installation of ruby is compiled.
 if RbConfig::MAKEFILE_CONFIG['configure_args'].include?( "--enable-pthread" ) then
