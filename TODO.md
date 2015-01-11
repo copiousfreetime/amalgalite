@@ -18,7 +18,6 @@
 - integrate transaction and savepoint under the same api
 
 ## SQLite Features:
-- activate SQLITE_ENABLE_STAT2 option
 - activate SQLITE_ENABLE_ICU extension
 - activate SQLITE_ENABLE_LOCKING_STYLE
 - activate SQLITE_ENABLE_UNLOCK_NOTIFY
