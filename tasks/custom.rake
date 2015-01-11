@@ -56,13 +56,16 @@ namespace :util do
     puts api_todo.keys.sort.join("\n")
   end
 
-  desc "Download and integrate the next version of sqlite (use VERSION=x.y.z)"
-  task :update_sqlite do
+  desc "Download and integrate a version of sqlite"
+  task :update_sqlite, [:version,:year] do |task, args|
+    version      = args[:version] or abort "A version of SQLite please `rake #{task.name}[version,year]`"
+    version_year = args[:year]    or abort "The Year #{version} was released please `rake #{task.name}[version,year]`"
+
     require 'uri'
-    require 'net/http'
+    require 'open-uri'
     require 'zip'
 
-    parts = ENV['VERSION'].split(".")
+    parts = version.split(".")
     next_version = [ parts.shift.to_s ]
     parts.each do |p|
       next_version << "#{"%02d" % p }"
@@ -71,16 +74,14 @@ namespace :util do
 
     next_version = next_version.join('')
 
-    version_year = ENV['VERSION_YEAR'] || Date.today.year
-
-    raise "VERSION env variable must be set" unless next_version
     url = ::URI.parse("http://sqlite.org/#{version_year}/sqlite-amalgamation-#{next_version}.zip")
     puts "downloading #{url.to_s} ..."
     file = "tmp/#{File.basename( url.path ) }"
     FileUtils.mkdir "tmp" unless File.directory?( "tmp" )
     File.open( file, "wb+") do |f|
-      res = Net::HTTP.get_response( url )
-      f.write( res.body )
+      open(url) do |input|
+        f.write( input.read )
+      end
     end
 
     puts "extracting..."
