@@ -59,7 +59,7 @@ describe Amalgalite::Database do
 
   it "closes normally" do
     db = Amalgalite::Database.new( SpecInfo.test_db )
-    lambda { db.close }.should_not raise_error( Amalgalite::SQLite3::Error )
+    expect { db.close }.not_to raise_error
   end
 
   it "returns the id of the last inserted row" do
@@ -255,7 +255,7 @@ describe Amalgalite::Database do
       rescue MyExceptionTest
         db.transaction("EXCLUSIVE") { }
       end
-    }.should_not raise_error( MyExceptionTest )
+    }.should_not raise_error
   end
 
   describe "#define_function" do
@@ -503,7 +503,7 @@ describe Amalgalite::Database do
 
   it "imports batch statements" do
     db = Amalgalite::Database.new(":memory:")
-    db.import("CREATE TABLE things(stuff TEXT); INSERT INTO things (stuff) VALUES (\"foobar\");").should be_true
+    db.import("CREATE TABLE things(stuff TEXT); INSERT INTO things (stuff) VALUES (\"foobar\");").should be_truthy
     db.first_value_from("SELECT stuff FROM things").should == "foobar"
   end
 

@@ -1,4 +1,5 @@
 require 'rspec'
+require 'fileutils'
 
 require 'amalgalite'
 require Amalgalite::Paths.spec_path( "iso_3166_database.rb" )
@@ -20,6 +21,10 @@ class SpecInfo
 end
 
 RSpec.configure do |config|
+  config.expect_with :rspec do |c|
+    c.syntax = [:should, :expect]
+  end
+
   config.before(:all) do 
     SpecInfo.make_master_iso_db
   end

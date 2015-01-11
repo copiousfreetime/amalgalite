@@ -43,6 +43,11 @@ begin
     t.pattern      = "{test,spec}/**/{test_*,*_spec}.rb"
   end
 
+  require 'rspec/core/rake_task'
+  RSpec::Core::RakeTask.new( :spec ) do |t|
+    t.ruby_opts    = %w[ -w ]
+    t.rspec_opts   = %w[ --color --format documentation ]
+  end
   task :test_requirements
   task :test => :test_requirements
   task :default => :test
