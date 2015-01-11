@@ -18,7 +18,6 @@ This.ruby_gemspec do |spec|
 
   spec.extensions.concat This.extension_conf_files
   spec.license = "BSD"
-  spec.required_ruby_version = '>= 1.9.3'
 end
 
 load 'tasks/default.rake'
