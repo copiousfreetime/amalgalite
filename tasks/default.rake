@@ -85,7 +85,7 @@ begin
     ENV['COVERAGE'] = 'true'
     Rake::Task[:test].execute
   end
-  CLOBBER << FileList["coverage/**/*"]
+  CLOBBER << 'coverage' if File.directory?( 'coverage' )
 rescue LoadError
   This.task_warning( 'simplecov' )
 end
@@ -204,9 +204,6 @@ task :gemspec do
     f.write This.platform_gemspec.to_ruby
   end
 end
-
-# the gemspec is also a dev artifact and should not be kept around.
-CLOBBER << This.gemspec_file.to_s
 
 # .rbc files from ruby 2.0
 CLOBBER << FileList["**/*.rbc"]
