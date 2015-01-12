@@ -1,10 +1,12 @@
 # Amalgalite Changelog
 
-## Version 1.3.1 - 2014-XX-XX
+## Version 1.4.0 - 2015-01-11
 
 ### Enhancements
 
 * Update arrayfields dependency to 4.9.2
+* Update to SQLite 3.8.7.4
+* Make windows binary gems again, including ruby 2.1
 
 ## Version 1.3.0 - 2013-03-13
 
