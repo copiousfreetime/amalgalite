@@ -4,6 +4,9 @@ coverage/*
 tags
 lib/amalgalite/1.8
 lib/amalgalite/1.9
+lib/amalgalite/2.0
+lib/amalgalite/2.1
+lib/amalgalite/2.2
 ext/amalgalite/Makefile
 ext/amalgalite/rbconfig.rb
 ext/amalgalite/*.def
