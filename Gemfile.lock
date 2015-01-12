@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     amalgalite (1.4.0)
-      arrayfields (~> 4.9.2)
+      arrayfields (~> 4.9)
 
 GEM
   remote: https://rubygems.org/
