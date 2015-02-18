@@ -1,8 +1,10 @@
 # Future Release possibilties:
+- rebuild statement constants
+- look at all pragma statements
 
 ## SQLite API:
 - authorizers
-- loading of extensions
+- loading of extensions -- readfile / writefile
 - utf-16 integration
 - create_collation 
 - encryption key support
@@ -10,6 +12,7 @@
 - table name and column name in a type map?
 - type conversion for manifest typing? how to allow it through?
 - explicit pragma handler
+- application_id pragma setter
 
 ## Non backwards compatible changes:
 - change the schema objects to be more consistent
@@ -28,6 +31,9 @@
 - statement status ( sqlite3_stmt_status )
 - db status ( sqlite3_db_status )
 - library status ( sqlite3_status )
+- sqlite3_index_info
+- sqlite3_create_function has 4th parameter SQLITE_DETERMINISTIC 
+- sqlite3_rtree_query_callback()
 
 ## Drivers:
 - data mapper driver
@@ -47,3 +53,5 @@
   prepared statement
 - sqlite_sourceid, sqlite_source_id
 - sqlite3_strnicmp
+-
+
