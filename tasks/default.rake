@@ -44,7 +44,7 @@ begin
   end
 
   require 'rspec/core/rake_task'
-  RSpec::Core::RakeTask.new( :spec ) do |t|
+  RSpec::Core::RakeTask.new( :test ) do |t|
     t.ruby_opts    = %w[ -w ]
     t.rspec_opts   = %w[ --color --format documentation ]
   end
