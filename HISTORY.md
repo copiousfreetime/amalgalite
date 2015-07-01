@@ -1,5 +1,9 @@
 # Amalgalite Changelog
 
+## Version 1.4.1 - 2015-MM-DD
+
+* Update to SQLite 3.8.10.2
+
 ## Version 1.4.0 - 2015-01-11
 
 ### Enhancements
