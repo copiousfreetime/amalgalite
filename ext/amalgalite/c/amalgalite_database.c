@@ -745,7 +745,7 @@ VALUE am_sqlite3_database_remove_function( VALUE self, VALUE name, VALUE proc_li
     Data_Get_Struct(self, am_sqlite3, am_db);
     rc = sqlite3_create_function( am_db->db, 
                                   zFunctionName, nArg,
-                                  SQLITE_ANY,
+                                  SQLITE_UTF8,
                                   NULL, NULL,
                                   NULL, NULL);
     if ( SQLITE_OK != rc ) {
@@ -894,7 +894,7 @@ VALUE am_sqlite3_database_define_aggregate( VALUE self, VALUE name, VALUE arity,
     Data_Get_Struct(self, am_sqlite3, am_db);
     rc = sqlite3_create_function( am_db->db, 
                                   zFunctionName, nArg,
-                                  SQLITE_ANY,
+                                  SQLITE_UTF8,
                                   (void *)klass, NULL,
                                   amalgalite_xStep,
                                   amalgalite_xFinal);
@@ -936,7 +936,7 @@ VALUE am_sqlite3_database_remove_aggregate( VALUE self, VALUE name, VALUE arity,
     Data_Get_Struct(self, am_sqlite3, am_db);
     rc = sqlite3_create_function( am_db->db, 
                                   zFunctionName, nArg,
-                                  SQLITE_ANY,
+                                  SQLITE_UTF8,
                                   NULL, NULL,
                                   NULL, 
                                   NULL);
