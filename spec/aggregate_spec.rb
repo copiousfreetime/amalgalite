@@ -131,16 +131,20 @@ describe "Aggregate SQL Functions" do
 
   it "handles an error being thrown during initialization in the C extension" do
     class AggregateTest7 < AggregateTest1
-      @@instance_count = 0
+      def self.called?
+        if @called then
+          raise "Initialization error!"
+        else
+          @called = true
+        end
+      end
+
       def initialize
+        super
         @name = "atest7"
         @count = 0
         @arity = -1
-        if @@instance_count > 0 then
-          raise "Initialization error!"
-        else
-          @@instance_count += 1
-        end
+        self.class.called?
       end
     end
     @iso_db.define_aggregate( "atest7", AggregateTest7 )
