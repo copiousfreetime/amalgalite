@@ -18,3 +18,4 @@ email.txt
 spec/data/*.db
 *.bundle
 *.lock
+.gem/
