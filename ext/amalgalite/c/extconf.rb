@@ -27,12 +27,11 @@ end
   RbConfig::MAKEFILE_CONFIG['debugflags'] = RbConfig::MAKEFILE_CONFIG['debugflags'].gsub(/#{debug}/,'')   if RbConfig::MAKEFILE_CONFIG['debugflags']
 end
 
-%w[ shorten-64-to-32 write-strings ].each do |warning|
+%w[ unused-const-variable shorten-64-to-32 write-strings incompatible-pointer-types-discards-qualifiers].each do |warning|
   $CFLAGS = $CFLAGS.gsub(/-W#{warning}/,'')
   RbConfig::MAKEFILE_CONFIG['warnflags'] = RbConfig::MAKEFILE_CONFIG['warnflags'].gsub(/-W#{warning}/,'') if RbConfig::MAKEFILE_CONFIG['warnflags'] 
+  $CFLAGS += " -Wno-#{warning}"
 end
-
-
 
 subdir = RUBY_VERSION.sub(/\.\d$/,'')
 create_makefile("amalgalite/#{subdir}/amalgalite")
