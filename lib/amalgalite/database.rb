@@ -770,7 +770,7 @@ module Amalgalite
       db_aggregate = klass
       a = klass.new
       raise AggregateError, "Use only mandatory or arbitrary parameters in an SQL Aggregate, not both" if a.arity < -1
-      raise AggregateError, "Aggregate implementation name '#{a.name}' does not match defined name '#{name}'"if a.name != name
+      raise AggregateError, "Aggregate implementation name '#{a.name}' does not match defined name '#{name}'" if a.name != name
       @api.define_aggregate( name, a.arity, klass )
       @aggregates[a.signature] = db_aggregate
       nil
