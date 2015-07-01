@@ -6,7 +6,7 @@ require 'rbconfig'
 $ruby = ARGV.shift if ARGV[0]
 
 # make available table and column meta data api
-$CFLAGS += " -DSQLITE_ENABLE_COLUMN_METADATA=1"  
+$CFLAGS += " -DSQLITE_ENABLE_COLUMN_METADATA=1"
 $CFLAGS += " -DSQLITE_ENABLE_DBSTAT_VTAB=1"
 $CFLAGS += " -DSQLITE_ENABLE_RTREE=1"
 $CFLAGS += " -DSQLITE_ENABLE_FTS3=1"
