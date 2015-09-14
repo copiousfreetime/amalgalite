@@ -27,7 +27,14 @@ end
   RbConfig::MAKEFILE_CONFIG['debugflags'] = RbConfig::MAKEFILE_CONFIG['debugflags'].gsub(/#{debug}/,'')   if RbConfig::MAKEFILE_CONFIG['debugflags']
 end
 
-%w[ unused-const-variable shorten-64-to-32 write-strings incompatible-pointer-types-discards-qualifiers].each do |warning|
+ignoreable_warnings = %w[ write-strings ]
+ignore_by_compiler = { "clang" => %w[ unused-const-variable shorten-64-to-32 incompatible-pointer-types-discards-qualifiers] }
+
+if extras = ignore_by_compiler[RbConfig::MAKEFILE_CONFIG["CC"]] then
+  ignoreable_warnings.concat(extras)
+end
+
+ignoreable_warnings.each do |warning|
   $CFLAGS = $CFLAGS.gsub(/-W#{warning}/,'')
   RbConfig::MAKEFILE_CONFIG['warnflags'] = RbConfig::MAKEFILE_CONFIG['warnflags'].gsub(/-W#{warning}/,'') if RbConfig::MAKEFILE_CONFIG['warnflags'] 
   $CFLAGS += " -Wno-#{warning}"
