@@ -12,6 +12,7 @@ This.ruby_gemspec do |spec|
   spec.add_development_dependency( 'rspec'        , '~> 3.0' )
   spec.add_development_dependency( 'rake'         , '~> 10.0')
   spec.add_development_dependency( 'rake-compiler', '~> 0.9' )
+  spec.add_development_dependency( 'rake-compiler-dock', '~> 0.4' )
   spec.add_development_dependency( 'rdoc'         , '~> 4.0' )
   spec.add_development_dependency( 'simplecov'    , '~> 0.9' )
   spec.add_development_dependency( 'zip'          , '~> 2.0' )
