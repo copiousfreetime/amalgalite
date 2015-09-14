@@ -39,22 +39,14 @@ Amalgalite adds in the following additional non-default SQLite extensions:
 
 ## BUILDING FOR WINDOWS
 
-[rake-compiler](https://github.com/luislavena/rake-compiler) is use for building
-the windows version. For me, on OSX to cross compile the process is:
+This is done using https://github.com/rake-compiler/rake-compiler-dock
 
-```
-% gem install rake-compiler # in each rvm instance, 1.8.7, 1.9.3
-% rvm use 2.0.0@amalgalite
-% rake-compiler cross-ruby VERSION=2.0.0-p0 # or latest
-% rvm use 1.9.3@amalgalite
-% rake-compiler cross-ruby VERSION=1.9.3-p374 # or latest
-% rvm use 1.8.7@amalgalite
-% rake-compiler cross-ruby VERSION=1.8.7-p371
-
-# This only works via 1.8.7 at the current moment
-% rake cross native gem RUBY_CC_VERSION=1.8.7:1.9.3:2.0.0
-```
-
+1. have VirtualBox installed
+2. Install boot2docker `brew install boot2docker`
+3. `gem install rake-compiler-dock`
+4. `rake-compiler-dock`
+5. `bundle`
+6 `rake cross native gem`
 
 ## CREDITS
 
