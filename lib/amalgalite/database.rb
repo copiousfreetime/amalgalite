@@ -682,9 +682,9 @@ module Amalgalite
 
     ##
     # call-seq:
-    #   db.function( "name", MyDBFunction.new )
-    #   db.function( "my_func", callable )
-    #   db.function( "my_func" ) do |x,y|
+    #   db.define_function( "name", MyDBFunction.new )
+    #   db.define_function( "my_func", callable )
+    #   db.define_function( "my_func" ) do |x,y|
     #     .... 
     #     return result
     #   end
@@ -692,13 +692,13 @@ module Amalgalite
     # register a callback to be exposed as an SQL function.  There are multiple
     # ways to register this function:
     #
-    # 1. db.function( "name" ) { |a| ... }
-    #    * pass +function+ a _name_ and a block.  
-    #    * The SQL function _name_ taking _arity_ parameters will be registered, 
+    # 1. db.define_function( "name" ) { |a| ... }
+    #    * pass +define_function+ a _name_ and a block.
+    #    * The SQL function _name_ taking _arity_ parameters will be registered,
     #      where _arity_ is the _arity_ of the block.
     #    * The return value of the block is the return value of the registred
     #      SQL function
-    # 2. db.function( "name", callable )
+    # 2. db.define_function( "name", callable )
     #    * pass +function+ a _name_ and something that <tt>responds_to?( :to_proc )</tt>
     #    * The SQL function _name_ is registered taking _arity_ parameters is
     #      registered where _arity_ is the _arity_ of +callable.to_proc.call+
