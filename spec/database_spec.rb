@@ -342,7 +342,7 @@ describe Amalgalite::Database do
       c = 0
       loop do
         begin
-          db.execute("select count(*) from subcountry")
+          db.execute("select * from subcountry")
           executions += 1
           if not looping_sent then
             control_queue.enq :looping 
