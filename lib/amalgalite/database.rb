@@ -750,7 +750,7 @@ module Amalgalite
       end
 
       to_remove.each do |db_func|
-        @api.remove_function( db_func.name, db_func)
+        @api.remove_function( db_func.name, db_func )
         @functions.delete( db_func.signature )
       end
     end
