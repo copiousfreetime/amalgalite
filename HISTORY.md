@@ -1,6 +1,6 @@
 # Amalgalite Changelog
 
-## Version 1.4.1 - 2015-MM-DD
+## Version 1.4.1 - 2015-09-13
 
 * Update to SQLite 3.8.11.1
 * Track down and cleanup sporadic rspec failures
