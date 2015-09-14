@@ -291,8 +291,6 @@ describe Amalgalite::Database do
 
       r = @iso_db.execute( "select rtest1() AS r" )
       r.first['r'].should eql("rtest1 called")
-      #@iso_db.remove_function("rtest1", -1)
-      # the arity of rtest1 is different in 1.9 vs. 1.8 
       @iso_db.remove_function("rtest1")
 
       lambda { @iso_db.execute( "select rtest1() as r" )}.should raise_error( ::Amalgalite::SQLite3::Error, /no such function: rtest1/ )
