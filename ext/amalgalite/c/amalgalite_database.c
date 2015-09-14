@@ -704,7 +704,7 @@ VALUE am_sqlite3_database_define_function( VALUE self, VALUE name, VALUE proc_li
     Data_Get_Struct(self, am_sqlite3, am_db);
     rc = sqlite3_create_function( am_db->db, 
                                   zFunctionName, nArg,
-                                  SQLITE_ANY,
+                                  SQLITE_UTF8,
                                   (void *)proc_like, amalgalite_xFunc,
                                   NULL, NULL);
     if ( SQLITE_OK != rc ) {
