@@ -2,7 +2,7 @@
 
 ## Version 1.4.1 - 2015-MM-DD
 
-* Update to SQLite 3.8.10.2
+* Update to SQLite 3.8.11.1
 
 ## Version 1.4.0 - 2015-01-11
 
