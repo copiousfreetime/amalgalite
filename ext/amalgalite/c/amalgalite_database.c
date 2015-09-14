@@ -789,19 +789,19 @@ void amalgalite_xStep( sqlite3_context* context, int argc, sqlite3_value** argv 
      *
      * If there is an error in initialization of the aggregate, set the error
      * context
-     */ 
+     */
     if ( *aggregate_context == T_NONE ) {
         VALUE klass = (VALUE) sqlite3_user_data( context );
         result = rb_protect( amalgalite_wrap_new_aggregate, klass, &state );
-        *aggregate_context = result;
-        /* mark the instance as protected from collection */
-        rb_gc_register_address( aggregate_context );
+
         if ( state ) {
             VALUE msg = ERROR_INFO_MESSAGE();
             sqlite3_result_error( context, RSTRING_PTR(msg), (int)RSTRING_LEN(msg));
-            rb_iv_set( *aggregate_context, "@_exception", rb_gv_get("$!" ));
             return;
         } else {
+            *aggregate_context = result;
+            /* mark the instance as protected from collection */
+            rb_gc_register_address( aggregate_context );
             rb_iv_set( *aggregate_context, "@_exception", Qnil );
         }
     }
@@ -892,10 +892,11 @@ VALUE am_sqlite3_database_define_aggregate( VALUE self, VALUE name, VALUE arity,
     int           nArg = FIX2INT( arity );
 
     Data_Get_Struct(self, am_sqlite3, am_db);
-    rc = sqlite3_create_function( am_db->db, 
+    rc = sqlite3_create_function( am_db->db,
                                   zFunctionName, nArg,
                                   SQLITE_UTF8,
-                                  (void *)klass, NULL,
+                                  (void *)klass,
+                                  NULL, /* for scalar functions, not used here */
                                   amalgalite_xStep,
                                   amalgalite_xFinal);
     if ( SQLITE_OK != rc ) {
