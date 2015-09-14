@@ -348,7 +348,7 @@ describe Amalgalite::Database do
             control_queue.enq :looping 
             looping_sent = true
           end
-          if c > 20000 then
+          if c > 20_000 then
             break
           end
           c += 1
@@ -367,7 +367,7 @@ describe Amalgalite::Database do
       loop do
         @iso_db.interrupt!
         break unless control_queue.empty?
-        if count > 20000 then
+        if count > 20_000 then
           break
         end
         count += 1
