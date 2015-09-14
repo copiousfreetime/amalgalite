@@ -3,6 +3,7 @@
 ## Version 1.4.1 - 2015-MM-DD
 
 * Update to SQLite 3.8.11.1
+* Track down and cleanup sporadic rspec failures
 
 ## Version 1.4.0 - 2015-01-11
 

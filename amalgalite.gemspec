@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Jeremy Hinegardner"]
-  s.date = "2015-02-18"
+  s.date = "2015-09-14"
   s.description = "Amalgalite embeds the SQLite database engine in a ruby extension.  There is no need to install SQLite separately.   Look in the examples/ directory to see * general usage * blob io * schema information * custom functions * custom aggregates * requiring ruby code from a database * full text search Also Scroll through Amalgalite::Database for a quick example, and a general overview of the API. Amalgalite adds in the following additional non-default SQLite extensions: * (http://sqlite.org/rtree.html) * (http://sqlite.org/fts3.html)"
   s.email = "jeremy@copiousfreetime.org"
   s.executables = ["amalgalite-pack"]
@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   s.licenses = ["BSD"]
   s.rdoc_options = ["--main", "README.md", "--markup", "tomdoc"]
   s.required_ruby_version = Gem::Requirement.new(">= 1.9.3")
-  s.rubygems_version = "2.4.6"
+  s.rubygems_version = "2.4.8"
   s.summary = "Amalgalite embeds the SQLite database engine in a ruby extension.  There is no need to install SQLite separately."
   s.test_files = ["spec/aggregate_spec.rb", "spec/amalgalite_spec.rb", "spec/blob_spec.rb", "spec/boolean_spec.rb", "spec/busy_handler.rb", "spec/data/iso-3166-country.txt", "spec/data/iso-3166-schema.sql", "spec/data/iso-3166-subcountry.txt", "spec/data/make-iso-db.sh", "spec/database_spec.rb", "spec/default_map_spec.rb", "spec/function_spec.rb", "spec/integeration_spec.rb", "spec/iso_3166_database.rb", "spec/packer_spec.rb", "spec/paths_spec.rb", "spec/progress_handler_spec.rb", "spec/requires_spec.rb", "spec/rtree_spec.rb", "spec/schema_spec.rb", "spec/spec_helper.rb", "spec/sqlite3/constants_spec.rb", "spec/sqlite3/database_status_spec.rb", "spec/sqlite3/status_spec.rb", "spec/sqlite3/version_spec.rb", "spec/sqlite3_spec.rb", "spec/statement_spec.rb", "spec/storage_map_spec.rb", "spec/tap_spec.rb", "spec/text_map_spec.rb", "spec/type_map_spec.rb", "spec/version_spec.rb"]
 
@@ -34,6 +34,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rspec>, ["~> 3.0"])
       s.add_development_dependency(%q<rake>, ["~> 10.0"])
       s.add_development_dependency(%q<rake-compiler>, ["~> 0.9"])
+      s.add_development_dependency(%q<rake-compiler-dock>, ["~> 0.4"])
       s.add_development_dependency(%q<rdoc>, ["~> 4.0"])
       s.add_development_dependency(%q<simplecov>, ["~> 0.9"])
       s.add_development_dependency(%q<zip>, ["~> 2.0"])
@@ -42,6 +43,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<rspec>, ["~> 3.0"])
       s.add_dependency(%q<rake>, ["~> 10.0"])
       s.add_dependency(%q<rake-compiler>, ["~> 0.9"])
+      s.add_dependency(%q<rake-compiler-dock>, ["~> 0.4"])
       s.add_dependency(%q<rdoc>, ["~> 4.0"])
       s.add_dependency(%q<simplecov>, ["~> 0.9"])
       s.add_dependency(%q<zip>, ["~> 2.0"])
@@ -51,6 +53,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<rspec>, ["~> 3.0"])
     s.add_dependency(%q<rake>, ["~> 10.0"])
     s.add_dependency(%q<rake-compiler>, ["~> 0.9"])
+    s.add_dependency(%q<rake-compiler-dock>, ["~> 0.4"])
     s.add_dependency(%q<rdoc>, ["~> 4.0"])
     s.add_dependency(%q<simplecov>, ["~> 0.9"])
     s.add_dependency(%q<zip>, ["~> 2.0"])
