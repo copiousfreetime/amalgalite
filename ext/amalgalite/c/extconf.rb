@@ -33,7 +33,16 @@ end
 end
 
 ignoreable_warnings = %w[ write-strings ]
-ignore_by_compiler = { "clang" => %w[ unused-const-variable shorten-64-to-32 incompatible-pointer-types-discards-qualifiers] }
+ignore_by_compiler = {
+  "clang" => %w[
+                  empty-body
+                  incompatible-pointer-types-discards-qualifiers
+                  shorten-64-to-32
+                  sign-compare
+                  unused-const-variable
+                  unused-variable
+                ]
+}
 
 if extras = ignore_by_compiler[RbConfig::MAKEFILE_CONFIG["CC"]] then
   ignoreable_warnings.concat(extras)
