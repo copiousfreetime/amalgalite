@@ -1,5 +1,10 @@
 # Amalgalite Changelog
 
+## Version 1.4.2 - 2015-10-XX
+
+* Update to SQLite 3.9.0
+* Add new ENABLE flags from SQLite 3.9.0
+
 ## Version 1.4.1 - 2015-09-13
 
 * Update to SQLite 3.8.11.1
