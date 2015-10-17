@@ -8,11 +8,16 @@ $ruby = ARGV.shift if ARGV[0]
 # make available table and column meta data api
 $CFLAGS += " -DSQLITE_ENABLE_COLUMN_METADATA=1"
 $CFLAGS += " -DSQLITE_ENABLE_DBSTAT_VTAB=1"
-$CFLAGS += " -DSQLITE_ENABLE_RTREE=1"
 $CFLAGS += " -DSQLITE_ENABLE_FTS3=1"
 $CFLAGS += " -DSQLITE_ENABLE_FTS3_PARENTHESIS=1"
 $CFLAGS += " -DSQLITE_ENABLE_FTS4=1"
+$CFLAGS += " -DSQLITE_ENABLE_FTS5=1"
+$CFLAGS += " -DSQLITE_ENABLE_JSON1=1"
+$CFLAGS += " -DSQLITE_ENABLE_RBU=1"
+$CFLAGS += " -DSQLITE_ENABLE_RTREE=1"
+$CFLAGS += " -DSQLITE_ENABLE_SQLLOG=1"
 $CFLAGS += " -DSQLITE_ENABLE_STAT4=1"
+$CFLAGS += " -DSQLITE_ENABLE_UNLOCK_NOTIFY=1"
 
 # we compile sqlite the same way that the installation of ruby is compiled.
 if RbConfig::MAKEFILE_CONFIG['configure_args'].include?( "--enable-pthread" ) then
