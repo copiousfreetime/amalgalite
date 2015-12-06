@@ -11,7 +11,7 @@ examples/blob.rb
 examples/bootstrap.rb
 examples/define_aggregate.rb
 examples/define_function.rb
-examples/fts3.rb
+examples/fts5.rb
 examples/gem-db.rb
 examples/require_me.rb
 examples/requires.rb
