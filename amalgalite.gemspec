@@ -57,5 +57,6 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<rdoc>, ["~> 4.0"])
     s.add_dependency(%q<simplecov>, ["~> 0.9"])
     s.add_dependency(%q<zip>, ["~> 2.0"])
+    s.add_dependency(%w<activerecord>, ["~> 5.0"])
   end
 end
