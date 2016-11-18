@@ -1,8 +1,9 @@
 require "active_record/connection_adapters/abstract_adapter"
 require "active_record/connection_adapters/statement_pool"
 require "active_record/connection_adapters/sqlite3/explain_pretty_printer"
-require "active_record/connection_adapters/sqlite3/quoting"
 require "active_record/connection_adapters/sqlite3/schema_creation"
+require "active_record/connection_adapters/amalgalite/quoting"
+require "active_record/connection_adapters/amalgalite/database_statements"
 
 module ActiveRecord
   module ConnectionHandling
@@ -41,8 +42,8 @@ module ActiveRecord
     class AmalgaliteAdapter < AbstractAdapter
       ADAPTER_NAME = "Amalgalite".freeze
 
-      include ActiveRecord::ConnectionAdapters::Amalgalite::Quoting
-      include ActiveRecord::ConnectionAdapters::Amalgalite::DatabaseStatements
+      include Amalgalite::Quoting
+      include Amalgalite::DatabaseStatements
 
       NATIVE_DATABASE_TYPES = {
         primary_key:  "INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL",
