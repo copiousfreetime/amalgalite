@@ -63,7 +63,7 @@ module ActiveRecord
         private
 
         def dealloc(stmt)
-          stmt[:stmt].close unless stmt[:stmt].closed?
+          stmt[:stmt].close
         end
       end
 
