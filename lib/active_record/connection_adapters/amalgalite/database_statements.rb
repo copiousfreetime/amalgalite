@@ -57,10 +57,10 @@ module ActiveRecord
           @connection.last_insert_rowid
         end
 
-        def execute(sql, name = nil) #:nodoc:
+        def execute(sql, params, name = nil) #:nodoc:
           log(sql, name) do
             ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
-              @connection.execute(sql)
+              @connection.execute(sql, params)
             end
           end
         end
