@@ -10,7 +10,7 @@ unless $LOADED_FEATURES.grep( /\Asqlite3/ ).empty? then
 end
 
 module Amalgalite
-  # 
+  #
   # Base class of all errors in Amalgalite
   #
   class Error < ::StandardError; end
