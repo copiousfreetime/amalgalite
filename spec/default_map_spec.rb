@@ -12,7 +12,7 @@ describe Amalgalite::TypeMaps::DefaultMap do
       @map.bind_type_of( 3.14 ).should == ::Amalgalite::SQLite3::Constants::DataType::FLOAT
     end
 
-    it "Fixnum is bound to DataType::INTGER" do
+    it "Integer is bound to DataType::INTGER" do
       @map.bind_type_of( 42 ).should == ::Amalgalite::SQLite3::Constants::DataType::INTEGER
     end
 

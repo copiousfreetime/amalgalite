@@ -25,7 +25,7 @@ describe "Integration specifications" do
       "datetime"  => { :value => DateTime.now, :klass => DateTime }, 
       "timestamp" => { :value => Time.now, :klass => Time   } ,
       "date"      => { :value => Date.today, :klass => Date },
-      "integer"   => { :value => 42, :klass => Fixnum } ,
+      "integer"   => { :value => 42, :klass => Integer } ,
       "double"    => { :value => 3.14, :klass => Float },
       "varchar"   => { :value => "foobarbaz", :klass => String },
       "boolean"   => { :value => true, :klass => TrueClass },
