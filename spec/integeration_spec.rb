@@ -36,7 +36,7 @@ describe "Integration specifications" do
         db.execute "CREATE TABLE t( c #{sql_type} )"
         db.execute "insert into t (c) values ( ? )", ruby_info[:value]
         rows = db.execute "select * from t"
-        rows.first['c'].class.should eql(ruby_info[:klass])
+        rows.first['c'].should be_kind_of(ruby_info[:klass])
 
         if [ DateTime, Time ].include?( ruby_info[:klass] ) then
           rows.first['c'].strftime("%Y-%m-%d %H:%M:%S").should eql(ruby_info[:value].strftime("%Y-%m-%d %H:%M:%S"))
