@@ -17,7 +17,7 @@ module Amalgalite::TypeMaps
       case obj
       when Float
         ::Amalgalite::SQLite3::Constants::DataType::FLOAT
-      when Fixnum
+      when Integer
         ::Amalgalite::SQLite3::Constants::DataType::INTEGER
       when NilClass
         ::Amalgalite::SQLite3::Constants::DataType::NULL
