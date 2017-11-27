@@ -1,4 +1,6 @@
 ## Amalgalite
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fcopiousfreetime%2Famalgalite.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fcopiousfreetime%2Famalgalite?ref=badge_shield)
+
 
 * [Homepage](http://github.com/copiousfreetime/amalgalite)
 * email jeremy at copiousfreetime dot org
@@ -63,3 +65,6 @@ Copyright (c) 2008 Jeremy Hinegardner
 All rights reserved.
 
 See LICENSE and/or COPYING for details.
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fcopiousfreetime%2Famalgalite.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fcopiousfreetime%2Famalgalite?ref=badge_large)
