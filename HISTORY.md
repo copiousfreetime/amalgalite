@@ -1,5 +1,18 @@
 # Amalgalite Changelog
 
+## Version 1.6.0 - 2017-12-13
+
+* Update to SQLite 3.21.0
+* source id access methods
+  * Amalgalite::SQLite3::Version.compiled_source_id
+  * Amalgalite::SQLite3::Version.runtime_source_id
+* enable new compile time options
+  * SQLITE_ENABLE_DBPAGE_VTAB
+  * SQLITE_ENABLE_MEMORY_MANAGEMENT
+  * SQLITE_ENABLE_PREUPDATE_HOOK
+  * SQLITE_ENABLE_SESSION
+  * SQLITE_ENABLE_STMTVTAB
+
 ## Version 1.5.0 - 2015-12-06
 
 * Update to SQLite 3.9.2
