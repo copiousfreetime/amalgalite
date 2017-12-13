@@ -236,6 +236,18 @@ VALUE am_sqlite3_runtime_version_number(VALUE self)
 
 /*
  * call-seq:
+ *    Amalgalite::SQLite3::Version.runtime_source_id -> String
+ *
+ * Return the SQLite C library source id as a string
+ *
+ */
+VALUE am_sqlite3_runtime_source_id(VALUE self)
+{
+    return rb_str_new2(sqlite3_sourceid());
+}
+
+/*
+ * call-seq:
  *   Amalgalite::SQLite::Version.compiled_version -> String
  *
  * Return the compiletime version number as a string.
@@ -257,6 +269,18 @@ VALUE am_sqlite3_compiled_version(VALUE self)
 VALUE am_sqlite3_compiled_version_number( VALUE self )
 {
     return INT2FIX( SQLITE_VERSION_NUMBER );
+}
+
+/*
+ * call-seq:
+ *    Amalgalite::SQLite3::Version.compiled_source_id -> String
+ *
+ * Return the compiled SQLite C library source id as a string
+ *
+ */
+VALUE am_sqlite3_compiled_source_id(VALUE self)
+{
+    return rb_str_new2( SQLITE_SOURCE_ID );
 }
 
 /**
@@ -306,6 +330,8 @@ void Init_amalgalite()
     rb_define_module_function(mASV, "runtime_version_number", am_sqlite3_runtime_version_number, 0); /* in amalgalite.c */
     rb_define_module_function(mASV, "compiled_version", am_sqlite3_compiled_version, 0 ); /* in amalgalite.c */
     rb_define_module_function(mASV, "compiled_version_number", am_sqlite3_compiled_version_number, 0 ); /* in amalgalite.c */
+    rb_define_module_function(mASV, "runtime_source_id", am_sqlite3_runtime_source_id, 0); /* in amalgalite.c */
+    rb_define_module_function(mASV, "compiled_source_id", am_sqlite3_compiled_source_id, 0); /* in amalgalite.c */
 
     /*
      * Initialize the rest of the module
