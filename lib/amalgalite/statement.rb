@@ -347,7 +347,7 @@ module Amalgalite
           # only check for rowid if we have a table name and it is not one of the
           # sqlite_master tables.  We could get recursion in those cases.
           if not using_rowid_column? and tbl_name and
-             not %w[ sqlite_master sqlite_temp_master].include?( tbl_name ) and is_column_rowid?( tbl_name, col_name ) then
+             not %w[ sqlite_master sqlite_temp_master ].include?( tbl_name ) and is_column_rowid?( tbl_name, col_name ) then
             @rowid_index = idx
           end
 
@@ -363,7 +363,10 @@ module Amalgalite
     # is the column indicated by the Column a 'rowid' column
     #
     def is_column_rowid?( table_name, column_name )
-      column_schema  = @db.schema.tables[table_name].columns[column_name]
+      table_schema = @db.schema.tables[table_name]
+      return false unless table_schema
+
+      column_schema  = table_schema.columns[column_name]
       if column_schema then
         if column_schema.primary_key? and column_schema.declared_data_type and column_schema.declared_data_type.upcase == "INTEGER" then
           return true
