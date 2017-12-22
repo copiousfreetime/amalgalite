@@ -6,12 +6,12 @@
 
 Gem::Specification.new do |s|
   s.name = "amalgalite".freeze
-  s.version = "1.5.0.3"
+  s.version = "1.5.0.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze]
   s.authors = ["Jeremy Hinegardner".freeze]
-  s.date = "2017-07-25"
+  s.date = "2017-12-22"
   s.description = "Amalgalite embeds the SQLite database engine in a ruby extension.  There is no need to install SQLite separately.   Look in the examples/ directory to see * general usage * blob io * schema information * custom functions * custom aggregates * requiring ruby code from a database * full text search Also Scroll through Amalgalite::Database for a quick example, and a general overview of the API. Amalgalite adds in the following additional non-default SQLite extensions: * (http://sqlite.org/rtree.html) * (http://sqlite.org/fts3.html)".freeze
   s.email = "jeremy@copiousfreetime.org".freeze
   s.executables = ["amalgalite-pack".freeze]

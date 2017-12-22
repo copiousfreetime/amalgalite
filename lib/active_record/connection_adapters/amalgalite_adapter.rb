@@ -11,10 +11,17 @@ module ActiveRecord
       parse_amalgalite_config!(config)
 
       db = ::Amalgalite::Database.new(config[:database])
+      add_custom_functions(db)
       ConnectionAdapters::AmalgaliteAdapter.new(db, logger, nil, config)
     end
 
     private
+
+    def add_custom_functions(db)
+      db.define_function('power') do |base, exponent|
+        base**exponent
+      end
+    end
 
     def parse_amalgalite_config!(config)
       config[:database] ||= config[:dbfile]
