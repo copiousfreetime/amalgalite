@@ -80,6 +80,7 @@ spec/default_map_spec.rb
 spec/function_spec.rb
 spec/integeration_spec.rb
 spec/iso_3166_database.rb
+spec/json_spec.rb
 spec/packer_spec.rb
 spec/paths_spec.rb
 spec/progress_handler_spec.rb
