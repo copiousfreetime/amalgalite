@@ -1,5 +1,5 @@
 # Amalgalite Changelog
-## Version 1.6.1 - 2017-12-XX
+## Version 1.6.1 - 2018-01-02
 
 * Fix bug when using the `json` extension
 
