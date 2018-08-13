@@ -32,8 +32,8 @@ end
 
 # remove the -g flags  if it exists
 %w[ -ggdb\\d* -g\\d* ].each do |debug|
-  $CFLAGS = $CFLAGS.gsub(/#{debug}/,'')
-  RbConfig::MAKEFILE_CONFIG['debugflags'] = RbConfig::MAKEFILE_CONFIG['debugflags'].gsub(/#{debug}/,'')   if RbConfig::MAKEFILE_CONFIG['debugflags']
+  $CFLAGS = $CFLAGS.gsub(/\s#{debug}\b/,'')
+  RbConfig::MAKEFILE_CONFIG['debugflags'] = RbConfig::MAKEFILE_CONFIG['debugflags'].gsub(/\s#{debug}\b/,'')   if RbConfig::MAKEFILE_CONFIG['debugflags']
 end
 
 ignoreable_warnings = %w[ write-strings ]
