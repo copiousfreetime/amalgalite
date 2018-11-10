@@ -1,4 +1,8 @@
 # Amalgalite Changelog
+## Version 1.6.2 - 2018-11-10
+
+* Update to SQLite 3.25.3
+
 ## Version 1.6.1 - 2018-01-02
 
 * Fix bug when using the `json` extension
