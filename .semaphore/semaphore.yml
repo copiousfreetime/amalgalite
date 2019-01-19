@@ -9,6 +9,9 @@ agent:
 blocks:
   - name: Install dependencies
     task:
+      prologue:
+        commands:
+          - sem-version ruby 2.5.3
       jobs:
         - name: cache bundle
           commands:
@@ -21,6 +24,7 @@ blocks:
     task:
       prologue:
         commands:
+          - sem-version ruby 2.5.3
           - checkout
           - cache restore gems-$SEMAPHORE_GIT_BRANCH-$(checksum Gemfile.lock)
           - bundle install --deployment --path vendor/bundle
