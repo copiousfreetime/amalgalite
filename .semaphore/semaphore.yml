@@ -7,22 +7,24 @@ agent:
     os_image: ubuntu1804
 
 blocks:
-  - name: Setup
+  - name: Install dependencies
     task:
       jobs:
-        - name: bundle
+        - name: cache bundle
           commands:
-          - checkout
-          # Partial cache key matching ensures that new branches reuse gems
-          # from the last build of master.
-          - cache restore gems-$SEMAPHORE_GIT_BRANCH-$(checksum Gemfile.lock),gems-$SEMAPHORE_GIT_BRANCH-,gems-master-
-          - bundle install --deployment -j 4 --path vendor/bundle
-          - cache store gems-$SEMAPHORE_GIT_BRANCH-$(checksum Gemfile.lock) vendor/bundle
-  - name: Unit tests
+            - checkout
+            - cache restore gems-$SEMAPHORE_GIT_BRANCH-$(checksum Gemfile.lock),gems-$SEMAPHORE_GIT_BRANCH,gems-master
+            - bundle install --deployment --path vendor/bundle
+            - cache store gems-$SEMAPHORE_GIT_BRANCH-$(checksum Gemfile.lock) vendor/bundle
+
+  - name: Run unit tests
     task:
       prologue:
         commands:
           - checkout
-          - cache restore gems-$SEMAPHORE_GIT_BRANCH-$(checksum Gemfile.lock),gems-$SEMAPHORE_GIT_BRANCH-,gems-master-
+          - cache restore gems-$SEMAPHORE_GIT_BRANCH-$(checksum Gemfile.lock)
           - bundle install --deployment --path vendor/bundle
-          - bundle exec rake
+      jobs:
+        - name: Test
+          commands:
+          - bundle exec rake test
