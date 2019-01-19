@@ -1,4 +1,11 @@
 # Amalgalite Changelog
+
+## Version 1.6.3 - 2019-01-19
+
+* Update to SQLite 3.26.0
+* enable new compile time options
+  * SQLITE_ENABLE_GEOPOLY
+
 ## Version 1.6.2 - 2018-11-10
 
 * Update to SQLite 3.25.3

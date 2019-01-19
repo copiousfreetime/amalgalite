@@ -16,7 +16,7 @@
 
 ## DESCRIPTION
 
-Amalgalite embeds the SQLite database engine in a ruby extension.  There is no
+Amalgalite embeds the SQLite database engine in a ruby extension. There is no
 need to install SQLite separately.  
 
 Look in the examples/ directory to see
@@ -42,9 +42,9 @@ Amalgalite adds in the following additional non-default SQLite extensions:
 This is done using https://github.com/rake-compiler/rake-compiler-dock
 
 1. have VirtualBox installed
-2. Install boot2docker `brew install boot2docker`
+2. have Docker Machine installed (https://docs.docker.com/engine/installation/)
 3. `gem install rake-compiler-dock`
-4. `rake-compiler-dock`
+4. `rake-compiler-dock` (this could take a while)
 5. `bundle`
 6. `rake cross native gem`
 
