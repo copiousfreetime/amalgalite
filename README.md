@@ -17,7 +17,7 @@
 ## DESCRIPTION
 
 Amalgalite embeds the SQLite database engine in a ruby extension. There is no
-need to install SQLite separately.  
+need to install SQLite separately.
 
 Look in the examples/ directory to see
 
@@ -35,18 +35,14 @@ overview of the API.
 Amalgalite adds in the following additional non-default SQLite extensions:
 
 * [R*Tree index extension](http://sqlite.org/rtree.html)
-* [Full Text Search](http://sqlite.org/fts3.html)
+* [Full Text Search](http://sqlite.org/fts5.html) - both fts3 and fts5
+* [Geopoly Interface to R*Tree](https://www.sqlite.org/geopoly.html)
+* [JSON Extension](https://www.sqlite.org/json1.html)
 
-## BUILDING FOR WINDOWS
-
-This is done using https://github.com/rake-compiler/rake-compiler-dock
-
-1. have VirtualBox installed
-2. have Docker Machine installed (https://docs.docker.com/engine/installation/)
-3. `gem install rake-compiler-dock`
-4. `rake-compiler-dock` (this could take a while)
-5. `bundle`
-6. `rake cross native gem`
+Other extensions are add that might not be usable/visible by users of the gem.
+The full list of extensions added is in
+[extconf.rb](ext/amalgalite/c/extconf.rb). And those may be cross referenced
+against the [compile options from SQLite](https://www.sqlite.org/compile.html)
 
 ## CREDITS
 
