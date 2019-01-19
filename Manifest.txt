@@ -1,3 +1,5 @@
+.ruby-version
+.semaphore/semaphore.yml
 CONTRIBUTING.md
 HISTORY.md
 LICENSE
