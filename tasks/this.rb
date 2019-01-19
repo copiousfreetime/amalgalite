@@ -25,8 +25,8 @@ class ThisProject
   #
   # Yields self
   def initialize(&block)
-    @exclude_from_manifest = Regexp.union(/\.(git|DS_Store)/,
-                                          /^(doc|coverage|pkg|tmp|Gemfile(\.lock)?)/,
+    @exclude_from_manifest = Regexp.union(/\.(git|DS_Store|ruby-version)/,
+                                          /^(doc|coverage|pkg|tmp|.semaphore|Gemfile(\.lock)?)/,
                                           /^[^\/]+\.gemspec/,
                                           /\.(swp|jar|bundle|so|rvmrc|travis.yml|byebug_history)$/,
                                           /~$/)
