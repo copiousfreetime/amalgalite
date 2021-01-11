@@ -11,8 +11,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze]
   s.authors = ["Jeremy Hinegardner".freeze]
-  s.date = "2019-01-19"
-  s.description = "Amalgalite embeds the SQLite database engine in a ruby extension. There is no need to install SQLite separately.   Look in the examples/ directory to see * general usage * blob io * schema information * custom functions * custom aggregates * requiring ruby code from a database * full text search Also Scroll through Amalgalite::Database for a quick example, and a general overview of the API. Amalgalite adds in the following additional non-default SQLite extensions: * (http://sqlite.org/rtree.html) * (http://sqlite.org/fts3.html)".freeze
+  s.date = "2021-01-11"
+  s.description = "Amalgalite embeds the SQLite database engine in a ruby extension. There is no need to install SQLite separately. Look in the examples/ directory to see * general usage * blob io * schema information * custom functions * custom aggregates * requiring ruby code from a database * full text search Also Scroll through Amalgalite::Database for a quick example, and a general overview of the API. Amalgalite adds in the following additional non-default SQLite extensions: * (http://sqlite.org/rtree.html) * (http://sqlite.org/fts5.html) - both fts3 and fts5 * (https://www.sqlite.org/geopoly.html) * (https://www.sqlite.org/json1.html) Other extensions are add that might not be usable/visible by users of the gem. The full list of extensions added is in (ext/amalgalite/c/extconf.rb). And those may be cross referenced against the (https://www.sqlite.org/compile.html)".freeze
   s.email = "jeremy@copiousfreetime.org".freeze
   s.executables = ["amalgalite-pack".freeze]
   s.extensions = ["ext/amalgalite/c/extconf.rb".freeze]
@@ -22,39 +22,30 @@ Gem::Specification.new do |s|
   s.licenses = ["BSD".freeze]
   s.rdoc_options = ["--main".freeze, "README.md".freeze, "--markup".freeze, "tomdoc".freeze]
   s.required_ruby_version = Gem::Requirement.new(">= 2.2.2".freeze)
-  s.rubygems_version = "3.0.1".freeze
+  s.rubygems_version = "3.1.4".freeze
   s.summary = "Amalgalite embeds the SQLite database engine in a ruby extension. There is no need to install SQLite separately.".freeze
   s.test_files = ["spec/aggregate_spec.rb".freeze, "spec/amalgalite_spec.rb".freeze, "spec/blob_spec.rb".freeze, "spec/boolean_spec.rb".freeze, "spec/busy_handler.rb".freeze, "spec/data/iso-3166-country.txt".freeze, "spec/data/iso-3166-schema.sql".freeze, "spec/data/iso-3166-subcountry.txt".freeze, "spec/data/make-iso-db.sh".freeze, "spec/database_spec.rb".freeze, "spec/default_map_spec.rb".freeze, "spec/function_spec.rb".freeze, "spec/integeration_spec.rb".freeze, "spec/iso_3166_database.rb".freeze, "spec/json_spec.rb".freeze, "spec/packer_spec.rb".freeze, "spec/paths_spec.rb".freeze, "spec/progress_handler_spec.rb".freeze, "spec/requires_spec.rb".freeze, "spec/rtree_spec.rb".freeze, "spec/schema_spec.rb".freeze, "spec/spec_helper.rb".freeze, "spec/sqlite3/constants_spec.rb".freeze, "spec/sqlite3/database_status_spec.rb".freeze, "spec/sqlite3/status_spec.rb".freeze, "spec/sqlite3/version_spec.rb".freeze, "spec/sqlite3_spec.rb".freeze, "spec/statement_spec.rb".freeze, "spec/storage_map_spec.rb".freeze, "spec/tap_spec.rb".freeze, "spec/text_map_spec.rb".freeze, "spec/type_map_spec.rb".freeze, "spec/version_spec.rb".freeze]
 
   if s.respond_to? :specification_version then
     s.specification_version = 4
+  end
 
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<arrayfields>.freeze, ["~> 4.9"])
-      s.add_development_dependency(%q<rspec>.freeze, ["~> 3.0"])
-      s.add_development_dependency(%q<rake>.freeze, ["~> 12.0"])
-      s.add_development_dependency(%q<rake-compiler>.freeze, ["~> 1.0"])
-      s.add_development_dependency(%q<rake-compiler-dock>.freeze, ["~> 0.6"])
-      s.add_development_dependency(%q<rdoc>.freeze, ["~> 5.0"])
-      s.add_development_dependency(%q<simplecov>.freeze, ["~> 0.14"])
-      s.add_development_dependency(%q<zip>.freeze, ["~> 2.0"])
-    else
-      s.add_dependency(%q<arrayfields>.freeze, ["~> 4.9"])
-      s.add_dependency(%q<rspec>.freeze, ["~> 3.0"])
-      s.add_dependency(%q<rake>.freeze, ["~> 12.0"])
-      s.add_dependency(%q<rake-compiler>.freeze, ["~> 1.0"])
-      s.add_dependency(%q<rake-compiler-dock>.freeze, ["~> 0.6"])
-      s.add_dependency(%q<rdoc>.freeze, ["~> 5.0"])
-      s.add_dependency(%q<simplecov>.freeze, ["~> 0.14"])
-      s.add_dependency(%q<zip>.freeze, ["~> 2.0"])
-    end
+  if s.respond_to? :add_runtime_dependency then
+    s.add_runtime_dependency(%q<arrayfields>.freeze, ["~> 4.9"])
+    s.add_development_dependency(%q<rspec>.freeze, ["~> 3.0"])
+    s.add_development_dependency(%q<rake>.freeze, ["~> 13.0"])
+    s.add_development_dependency(%q<rake-compiler>.freeze, ["~> 1.0"])
+    s.add_development_dependency(%q<rake-compiler-dock>.freeze, ["~> 0.6"])
+    s.add_development_dependency(%q<rdoc>.freeze, ["~> 6.0"])
+    s.add_development_dependency(%q<simplecov>.freeze, ["~> 0.14"])
+    s.add_development_dependency(%q<zip>.freeze, ["~> 2.0"])
   else
     s.add_dependency(%q<arrayfields>.freeze, ["~> 4.9"])
     s.add_dependency(%q<rspec>.freeze, ["~> 3.0"])
-    s.add_dependency(%q<rake>.freeze, ["~> 12.0"])
+    s.add_dependency(%q<rake>.freeze, ["~> 13.0"])
     s.add_dependency(%q<rake-compiler>.freeze, ["~> 1.0"])
     s.add_dependency(%q<rake-compiler-dock>.freeze, ["~> 0.6"])
-    s.add_dependency(%q<rdoc>.freeze, ["~> 5.0"])
+    s.add_dependency(%q<rdoc>.freeze, ["~> 6.0"])
     s.add_dependency(%q<simplecov>.freeze, ["~> 0.14"])
     s.add_dependency(%q<zip>.freeze, ["~> 2.0"])
   end
