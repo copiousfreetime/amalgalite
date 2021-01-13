@@ -13,6 +13,7 @@ module Amalgalite
   # implementation you must:
   #
   # * implement _initalize_ with 0 arguments
+  # * call super() in your _initialize_ method
   # * set the @arity data member
   # * set the @name data member 
   # * implement _step_ with arity of +@arity+
@@ -25,6 +26,7 @@ module Amalgalite
   #     attr_accessor :words
   #
   #     def initialize
+  #       super
   #       @name = 'unique_word_count'
   #       @arity = 1
   #       @words = Hash.new { |h,k| h[k] = 0 }
@@ -49,6 +51,10 @@ module Amalgalite
 
     # The arity of the SQL function
     attr_accessor :arity
+
+    def initialize
+      @_exception = nil
+    end
 
     # finalize should return the final value of the aggregate function
     def finalize

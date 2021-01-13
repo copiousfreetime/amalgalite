@@ -2,6 +2,7 @@ require 'spec_helper'
 
 class AggregateTest1 < ::Amalgalite::Aggregate
   def initialize
+    super
     @name = 'atest1'
     @arity = -1
     @count = 0
@@ -96,6 +97,7 @@ describe "Aggregate SQL Functions" do
   it "handles an error being thrown during the step function" do
     class AggregateTest5 < AggregateTest1
       def initialize
+        super
         @name = "atest5"
         @arity = -1
         @count = 0
@@ -117,6 +119,7 @@ describe "Aggregate SQL Functions" do
   it "handles an error being thrown during the finalize function" do
     class AggregateTest6 < AggregateTest1
       def initialize
+        super
         @name = "atest6"
         @count = 0
         @arity = -1
@@ -131,6 +134,7 @@ describe "Aggregate SQL Functions" do
 
   it "handles an error being thrown during initialization in the C extension" do
     class AggregateTest7 < AggregateTest1
+      @called = false
       def self.called?
         if @called then
           raise "Initialization error!"
