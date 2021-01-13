@@ -1,5 +1,18 @@
 # Amalgalite Changelog
 
+## Version 1.7.0 - 2021-01-13
+
+* Update to SQLite to 3.34.0
+* enable new compile time options
+  * SQLITE_ENABLE_BYTECODE_VGAB
+  * SQLITE_ENABLE_DESERIALIZE
+  * SQLITE_ENABLE_EXPLAIN_COMMENTS
+  * SQLITE_ENABLE_NULL_TRIM
+  * SQLITE_ENABLE_QPSG
+  * SQLITE_ENABLE_SNAPSHOT
+* resolve ruby deprecations for ruby 2.7.2
+* rework the aggregator interface to handle issue with ruby warnings.
+
 ## Version 1.6.3 - 2019-01-19
 
 * Update to SQLite 3.26.0
