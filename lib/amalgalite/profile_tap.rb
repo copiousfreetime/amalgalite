@@ -120,8 +120,8 @@ module Amalgalite
     # time information.
     #
     def profile( msg, time )
-      unless sampler = @samplers[msg] 
-        msg = msg.gsub(/\s+/,' ')
+      msg = msg.gsub(/\s+/,' ')
+      unless sampler = @samplers[msg]
         sampler = @samplers[msg] = ProfileSampler.new( msg )
       end
       sampler.sample( time )

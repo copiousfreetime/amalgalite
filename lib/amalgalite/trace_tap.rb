@@ -19,7 +19,7 @@ module Amalgalite
     attr_reader :delegate_method
 
     def initialize( wrapped_obj, send_to = 'trace' )
-      unless wrapped_obj.respond_to?( send_to ) 
+      unless wrapped_obj.respond_to?( send_to )
         raise Amalgalite::Error, "#{wrapped_obj.class.name} does not respond to #{send_to.to_s} "
       end
 

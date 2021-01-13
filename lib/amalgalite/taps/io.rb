@@ -9,7 +9,7 @@ require 'stringio'
 module Amalgalite
   module Taps
     #
-    # An IOTap is an easy way to send all top information to andy IO based
+    # An IOTap is an easy way to send all top information to any IO based
     # object.  Both profile and trace tap information can be captured
     # This means you can send the events to STDOUT with:
     #
@@ -20,14 +20,17 @@ module Amalgalite
 
       attr_reader :profile_tap
       attr_reader :io
+      attr_reader :trace_count
 
       def initialize( io )
         @io = io
         @profile_tap = ProfileTap.new( self, 'output_profile_event' )
+        @trace_count = 0
       end
 
       def trace( msg )
-        io.puts msg 
+        @trace_count += 1
+        io.puts msg
       end
 
       # need a profile method, it routes through the profile tap which calls back

@@ -328,22 +328,59 @@ VALUE am_sqlite3_database_exec(VALUE self, VALUE rSQL)
 }
 
 /**
- * This function is registered with a sqlite3 database using the sqlite3_trace
- * function.  During the registration process a handle on a VALUE is also
- * registered.
+ * This function is registered with a sqlite3 database using the
+ * sqlite3_trace_v2 function. During the registration process a handle on a
+ * VALUE is also registered.
  *
  * When this function is called, it calls the 'trace' method on the tap object,
- * which is the VALUE that was registered during the sqlite3_trace call.
+ * which is the VALUE that was registered during the sqlite3_trace_v2 call.
  *
- * This function corresponds to the SQLite xTrace function specification.
+ * This function corresponds to the SQLite xCallback function specification.
+ *
+ * https://sqlite.org/c3ref/c_trace.html
  *
  */
-void amalgalite_xTrace(void* tap, const char* msg)
+int amalgalite_xTraceCallback(unsigned trace_type, void* tap, void* prepared_statement, void* extra)
 {
     VALUE     trace_obj = (VALUE) tap;
+    char*           msg;
+    sqlite3_uint64 time;
 
-    rb_funcall( trace_obj, rb_intern("trace"), 1, rb_str_new2( msg ) );
-    return;
+    switch(trace_type) {
+        case SQLITE_TRACE_STMT:
+            msg = (char*)extra;
+
+            /* The callback can compute the same text that would have been returned by the
+             * legacy sqlite3_trace() interface by using the X argument when X begins with
+             * "--" and invoking sqlite3_expanded_sql(P) otherwise.
+             */
+            if (0 != strncmp(msg, "--", 2)) {
+                msg = sqlite3_expanded_sql(prepared_statement);
+            }
+
+            rb_funcall( trace_obj, rb_intern("trace"), 1, rb_str_new2( msg ) );
+            break;
+
+        case SQLITE_TRACE_PROFILE:
+            msg = sqlite3_expanded_sql(prepared_statement);
+            time = *(sqlite3_uint64*)extra;
+            rb_funcall( trace_obj, rb_intern("profile"),
+                         2, rb_str_new2( msg ), SQLUINT64_2NUM(time) );
+            break;
+
+        case SQLITE_TRACE_ROW:
+            /* not implemented */
+            break;
+
+        case SQLITE_TRACE_CLOSE:
+            /* not implemented */
+            break;
+
+        default:
+            /* nothing */
+            break;
+    }
+    return 0;
 }
 
 
@@ -351,12 +388,16 @@ void amalgalite_xTrace(void* tap, const char* msg)
  * call-seq:
  *   database.register_trace_tap( tap_obj )
  *
- * This registers an object to be called with every trace event in SQLite.
+ * This registers an object to be called for all the trace objects in the sqlite
+ * system. From an SQLite perspective, the trace object is registered for both
+ * SQLITE_TRACE_STMT and SQLITE_TRACE_PROFILE.
  *
+ * The object must respond to both `trace` and `profile` methods. See
+ * Amalgalite::Trace::
  * This is an experimental api and is subject to change, or removal.
  *
  */
-VALUE am_sqlite3_database_register_trace_tap(VALUE self, VALUE tap)
+VALUE am_sqlite3_database_register_trace_tap(VALUE self, VALUE tap )
 {
     am_sqlite3   *am_db;
 
@@ -367,7 +408,7 @@ VALUE am_sqlite3_database_register_trace_tap(VALUE self, VALUE tap)
      */
     if ( Qnil == tap ) {
 
-        sqlite3_trace( am_db->db, NULL, NULL );
+        sqlite3_trace_v2( am_db->db, 0, NULL, NULL );
         rb_gc_unregister_address( &(am_db->trace_obj) );
         am_db->trace_obj = Qnil;
 
@@ -379,62 +420,9 @@ VALUE am_sqlite3_database_register_trace_tap(VALUE self, VALUE tap)
 
         am_db->trace_obj = tap;
         rb_gc_register_address( &(am_db->trace_obj) );
-        sqlite3_trace( am_db->db, amalgalite_xTrace, (void *)am_db->trace_obj );
+        sqlite3_trace_v2( am_db->db, SQLITE_TRACE_STMT | SQLITE_TRACE_PROFILE, amalgalite_xTraceCallback, (void *)am_db->trace_obj );
     }
 
-    return Qnil;
-}
-
-
-/**
- * the amagliate trace function to be registered with register_trace_tap
- * When it is called, it calls the 'trace' method on the tap object.
- *
- * This function conforms to the sqlite3 xProfile function specification.
- */
-void amalgalite_xProfile(void* tap, const char* msg, sqlite3_uint64 time)
-{
-    VALUE     trace_obj = (VALUE) tap;
-
-    rb_funcall( trace_obj, rb_intern("profile"),
-                2, rb_str_new2( msg ), SQLUINT64_2NUM(time) );
-
-    return;
-}
-
-/**
- * call-seq:
- *   database.register_profile_tap( tap_obj )
- *
- * This registers an object to be called with every profile event in SQLite.
- *
- * This is an experimental api and is subject to change or removal.
- *
- */
-VALUE am_sqlite3_database_register_profile_tap(VALUE self, VALUE tap)
-{
-    am_sqlite3   *am_db;
-
-    Data_Get_Struct(self, am_sqlite3, am_db);
-
-    /* Qnil, unregister the item and tell the garbage collector we are done with
-     * it.
-     */
-
-    if ( tap == Qnil ) {
-        sqlite3_profile( am_db->db, NULL, NULL );
-        rb_gc_unregister_address( &(am_db->profile_obj) );
-        am_db->profile_obj = Qnil;
-
-    /* register the item and store the reference to the object in the am_db
-     * structure.  We also have to tell the Ruby garbage collector that we
-     * point to the Ruby object from C.
-     */
-    } else {
-        am_db->profile_obj = tap;
-        rb_gc_register_address( &(am_db->profile_obj) );
-        sqlite3_profile( am_db->db, amalgalite_xProfile, (void *)am_db->profile_obj );
-    }
     return Qnil;
 }
 
@@ -1151,7 +1139,6 @@ void Init_amalgalite_database( )
     rb_define_method(cAS_Database, "last_insert_rowid", am_sqlite3_database_last_insert_rowid, 0); /* in amalgalite_database.c */
     rb_define_method(cAS_Database, "autocommit?", am_sqlite3_database_is_autocommit, 0); /* in amalgalite_database.c */
     rb_define_method(cAS_Database, "register_trace_tap", am_sqlite3_database_register_trace_tap, 1); /* in amalgalite_database.c */
-    rb_define_method(cAS_Database, "register_profile_tap", am_sqlite3_database_register_profile_tap, 1); /* in amalgalite_database.c */
     rb_define_method(cAS_Database, "table_column_metadata", am_sqlite3_database_table_column_metadata, 3); /* in amalgalite_database.c */
     rb_define_method(cAS_Database, "row_changes", am_sqlite3_database_row_changes, 0); /* in amalgalite_database.c */
     rb_define_method(cAS_Database, "total_changes", am_sqlite3_database_total_changes, 0); /* in amalgalite_database.c */

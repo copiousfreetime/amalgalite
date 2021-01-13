@@ -119,9 +119,13 @@ describe Amalgalite::Database do
     sql = "CREATE TABLE trace_test( x, y, z)"
     s = db.trace_tap = ::Amalgalite::Taps::StringIO.new
     db.execute( sql )
-    db.trace_tap.string.should eql("registered as trace tap\n#{sql}\n")
+    escaped_sql= Regexp.quote(sql)
+    db.trace_tap.string.should match(/registered as trace tap/)
+    db.trace_tap.string.should match(/#{escaped_sql}/)
+    s.trace_count.should eql(2)
     db.trace_tap = nil
-    s.string.should eql("registered as trace tap\n#{sql}\nunregistered as trace tap\n")
+    s.trace_count.should eql(3)
+    s.string.should match(/unregistered as trace tap/)
   end
 
   it "raises an exception if the wrong type of object is used for tracing" do
@@ -129,18 +133,13 @@ describe Amalgalite::Database do
     lambda { db.trace_tap = Object.new }.should raise_error(Amalgalite::Error)
   end
 
-  it "raises an exception if the wrong type of object is used for profile" do
-    db = Amalgalite::Database.new( SpecInfo.test_db )
-    lambda { db.profile_tap = Object.new }.should raise_error(Amalgalite::Error)
-  end
-
   it "profiles the execution of code" do
     db = Amalgalite::Database.new( SpecInfo.test_db )
-    s = db.profile_tap = ::Amalgalite::Taps::StringIO.new
+    s = db.trace_tap = ::Amalgalite::Taps::StringIO.new
     db.execute_batch( @schema )
-    db.profile_tap.samplers.size.should eql(6)
-    db.profile_tap = nil
-    s.string.should =~ /unregistered as profile tap/m
+    db.trace_tap.samplers.size.should eql(5)
+    db.trace_tap = nil
+    s.string.should =~ /unregistered as trace tap/
   end
 
   it "#execute yields each row when called with a block" do
@@ -167,13 +166,11 @@ describe Amalgalite::Database do
 
   it "can clear all registered taps" do
     db = Amalgalite::Database.new( SpecInfo.test_db )
-    s = db.profile_tap = ::Amalgalite::Taps::StringIO.new
-    db.trace_tap = s
+    s = db.trace_tap = ::Amalgalite::Taps::StringIO.new
     db.execute_batch( @schema )
-    db.profile_tap.samplers.size.should eql(6)
+    db.trace_tap.samplers.size.should eql(5)
     db.clear_taps!
     s.string.should =~ /unregistered as trace tap/m
-    s.string.should =~ /unregistered as profile tap/m
   end
 
   it "allows nested transactions even if SQLite under the covers does not" do

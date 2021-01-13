@@ -339,7 +339,6 @@ module Amalgalite
     #
     def clear_taps!
       self.trace_tap = nil
-      self.profile_tap = nil
     end
 
     ##
@@ -393,19 +392,18 @@ module Amalgalite
     #
     #   db.trace_tap = nil
     #
-    # This will unregistere the trace tap
+    # This will unregister the trace tap
     #
     #
     def trace_tap=( tap_obj )
 
       # unregister any previous trace tap
       #
-      unless @trace_tap.nil?
+      if !@trace_tap.nil? then
         @trace_tap.trace( 'unregistered as trace tap' )
         @trace_tap = nil
       end
       return @trace_tap if tap_obj.nil?
-
 
       # wrap the tap if we need to
       #
@@ -422,55 +420,6 @@ module Amalgalite
       @api.register_trace_tap( @trace_tap )
 
       @trace_tap.trace( 'registered as trace tap' )
-    end
-
-
-    ##
-    # call-seq:
-    #   db.profile_tap = obj 
-    #
-    # Register a profile tap.
-    #
-    # Registering a profile tap means that the +obj+ registered will have its
-    # +profile+ method called with an Integer and a String parameter every time
-    # a profile event happens.  The Integer is the number of nanoseconds it took
-    # for the String (SQL) to execute in wall-clock time.
-    #
-    # That is, every time a profile event happens in SQLite the following is
-    # invoked:
-    #
-    #   obj.profile( str, int ) 
-    #
-    # For instance:
-    #
-    #   db.profile_tap = Amalgalite::ProfileTap.new( logger, 'debug' )
-    # 
-    # This will register an instance of ProfileTap, which wraps an logger object.
-    # On each +profile+ event the ProfileTap#profile method will be called
-    # which in turn will call <tt>logger.debug<tt> with a formatted string containing
-    # the String and Integer from the profile event.
-    #
-    #   db.profile_tap = nil
-    #
-    # This will unregister the profile tap
-    #
-    #
-    def profile_tap=( tap_obj )
-
-      # unregister any previous profile tap
-      unless @profile_tap.nil?
-        @profile_tap.profile( 'unregistered as profile tap', 0.0 )
-        @profile_tap = nil
-      end
-      return @profile_tap if tap_obj.nil?
-
-      if tap_obj.respond_to?( 'profile' ) then
-        @profile_tap = tap_obj
-      else
-        raise Amalgalite::Error, "#{tap_obj.class.name} cannot be used to tap.  It has no 'profile' method"
-      end
-      @api.register_profile_tap( @profile_tap )
-      @profile_tap.profile( 'registered as profile tap', 0.0 )
     end
 
     ##
