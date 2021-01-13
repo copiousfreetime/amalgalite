@@ -37,6 +37,7 @@ GEM
     zip (2.0.2)
 
 PLATFORMS
+  ruby
   x86_64-darwin-19
 
 DEPENDENCIES
