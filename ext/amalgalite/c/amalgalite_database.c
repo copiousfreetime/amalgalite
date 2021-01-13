@@ -782,8 +782,11 @@ void amalgalite_xStep( sqlite3_context* context, int argc, sqlite3_value** argv 
         VALUE klass = (VALUE) sqlite3_user_data( context );
         result = rb_protect( amalgalite_wrap_new_aggregate, klass, &state );
 
+        /* exception was raised during initialization */
         if ( state ) {
-            VALUE msg = ERROR_INFO_MESSAGE();
+            *aggregate_context = rb_gv_get("$!");
+            rb_gc_register_address( aggregate_context );
+            VALUE msg = rb_obj_as_string( *aggregate_context );
             sqlite3_result_error( context, RSTRING_PTR(msg), (int)RSTRING_LEN(msg));
             return;
         } else {
@@ -832,8 +835,30 @@ void amalgalite_xFinal( sqlite3_context* context )
     VALUE          result;
     int            state;
     am_protected_t protected;
+    VALUE          exception = Qnil;
     VALUE         *aggregate_context = (VALUE*)sqlite3_aggregate_context( context, sizeof( VALUE ) );
-    VALUE          exception = rb_iv_get( *aggregate_context, "@_exception" );
+
+    /**
+     * check and see if an exception had been throw at some point during the
+     * initialization of hte aggregate or during the step function call
+     *
+     */
+    if (TYPE(*aggregate_context) == T_OBJECT) {
+        /* if there is a @_exception value and it has a value then there was an
+         * exception during step function execution
+         */
+        if (rb_ivar_defined( *aggregate_context, rb_intern("@_exception") )) {
+            exception = rb_iv_get( *aggregate_context, "@_exception" );
+        } else {
+
+            /* if the aggregate context itself is an exception, then there was
+             * an error during teh initialization of the aggregate context
+             */
+            if (rb_obj_is_kind_of( *aggregate_context, rb_eException )) {
+                exception = *aggregate_context;
+            }
+        }
+    }
 
     if ( Qnil == exception ) {
         /* gather all the data to make the protected call */
@@ -855,8 +880,6 @@ void amalgalite_xFinal( sqlite3_context* context )
         VALUE msg = rb_obj_as_string( exception );
         sqlite3_result_error( context, RSTRING_PTR(msg), (int)RSTRING_LEN(msg) );
     }
-
-
 
     /* release the aggregate instance from garbage collector protection */
     rb_gc_unregister_address( aggregate_context );
