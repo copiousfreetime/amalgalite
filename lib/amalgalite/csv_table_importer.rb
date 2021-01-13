@@ -22,7 +22,7 @@ module Amalgalite
     def run
       @database.transaction do |db|
         db.prepare( insert_sql ) do |stmt|
-          ::CSV.foreach( @csv_path, @options ) do |row|
+          ::CSV.foreach( @csv_path, **@options ) do |row|
             stmt.execute( row )
           end
         end
