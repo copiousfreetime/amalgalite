@@ -19,3 +19,4 @@ spec/data/*.db
 *.bundle
 .gem/
 vendor/
+.byebug_history
