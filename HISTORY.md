@@ -1,5 +1,9 @@
 # Amalgalite Changelog
 
+## Version 1.7.1 - 2021
+
+* Update SQLite to 3.34.1
+
 ## Version 1.7.0 - 2021-01-13
 
 * Update to SQLite to 3.34.0
