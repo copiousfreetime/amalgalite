@@ -79,7 +79,7 @@ namespace :util do
     file = "tmp/#{File.basename( url.path ) }"
     FileUtils.mkdir "tmp" unless File.directory?( "tmp" )
     File.open( file, "wb+") do |f|
-      open(url) do |input|
+      url.open do |input|
         f.write( input.read )
       end
     end
