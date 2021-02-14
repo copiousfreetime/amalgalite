@@ -11,7 +11,11 @@ blocks:
         - name: cache bundle
           matrix:
             - env_var: RUBY_VERSION
-              values: [ "2.5.8", "2.6.6", "2.7.2", "3.0.0" ]
+              values:
+                - 2.5.8
+                - 2.6.6
+                - 2.7.2
+                - 3.0.0
           commands:
             - sem-version ruby $RUBY_VERSION -f
             - checkout
@@ -20,12 +24,15 @@ blocks:
             - cache store gems-$SEMAPHORE_GIT_BRANCH-$RUBY_VERSION-$(checksum Gemfile.lock) vendor/bundle
   - name: Run unit tests
     task:
-      prologue:
       jobs:
         - name: Ruby version
           matrix:
             - env_var: RUBY_VERSION
-              values: [ "2.5.8", "2.6.6", "2.7.2", "3.0.0" ]
+              values:
+                - 2.5.8
+                - 2.6.6
+                - 2.7.2
+                - 3.0.0
           commands:
             - sem-version ruby $RUBY_VERSION -f
             - checkout
