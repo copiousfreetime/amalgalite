@@ -1,25 +1,22 @@
 version: v1.0
 name: amalgalite
-
 agent:
   machine:
     type: e1-standard-2
     os_image: ubuntu1804
-
 blocks:
   - name: Install dependencies
     task:
       prologue:
         commands:
-          - sem-version ruby 2.5.3
+          - sem-version ruby 2.7.2
       jobs:
         - name: cache bundle
           commands:
             - checkout
-            - cache restore gems-$SEMAPHORE_GIT_BRANCH-$(checksum Gemfile.lock),gems-$SEMAPHORE_GIT_BRANCH,gems-master
+            - 'cache restore gems-$SEMAPHORE_GIT_BRANCH-$(checksum Gemfile.lock),gems-$SEMAPHORE_GIT_BRANCH,gems-master'
             - bundle install --deployment --path vendor/bundle
             - cache store gems-$SEMAPHORE_GIT_BRANCH-$(checksum Gemfile.lock) vendor/bundle
-
   - name: Run unit tests
     task:
       prologue:
@@ -31,4 +28,4 @@ blocks:
       jobs:
         - name: Test
           commands:
-          - bundle exec rake test
+            - bundle exec rake test
