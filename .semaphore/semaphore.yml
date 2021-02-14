@@ -7,25 +7,28 @@ agent:
 blocks:
   - name: Install dependencies
     task:
-      prologue:
-        commands:
-          - sem-version ruby 2.7.2
       jobs:
         - name: cache bundle
+          matrix:
+            - env_var: RUBY_VERSION
+              values: [ "2.5.8", "2.6.6", "2.7.2", "3.0.0" ]
           commands:
+            - sem-version ruby $RUBY_VERSION -f
             - checkout
-            - 'cache restore gems-$SEMAPHORE_GIT_BRANCH-$(checksum Gemfile.lock),gems-$SEMAPHORE_GIT_BRANCH,gems-master'
+            - 'cache restore gems-$SEMAPHORE_GIT_BRANCH-$RUBY_VERSION-$(checksum Gemfile.lock),gems-$SEMAPHORE_GIT_BRANCH,gems-master'
             - bundle install --deployment --path vendor/bundle
-            - cache store gems-$SEMAPHORE_GIT_BRANCH-$(checksum Gemfile.lock) vendor/bundle
+            - cache store gems-$SEMAPHORE_GIT_BRANCH-$RUBY_VERSION-$(checksum Gemfile.lock) vendor/bundle
   - name: Run unit tests
     task:
       prologue:
-        commands:
-          - sem-version ruby 2.5.3
-          - checkout
-          - cache restore gems-$SEMAPHORE_GIT_BRANCH-$(checksum Gemfile.lock)
-          - bundle install --deployment --path vendor/bundle
       jobs:
-        - name: Test
+        - name: Ruby version
+          matrix:
+            - env_var: RUBY_VERSION
+              values: [ "2.5.8", "2.6.6", "2.7.2", "3.0.0" ]
           commands:
+            - sem-version ruby $RUBY_VERSION -f
+            - checkout
+            - cache restore gems-$SEMAPHORE_GIT_BRANCH-$RUBY_VERSION-$(checksum Gemfile.lock)
+            - bundle install --deployment --path vendor/bundle
             - bundle exec rake test
