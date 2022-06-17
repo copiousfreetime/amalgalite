@@ -135,7 +135,7 @@ class ThisProject
       spec.homepage    = homepage
 
       spec.summary     = summary
-      spec.description = description
+      spec.description = summary
       spec.license     = license
 
       spec.files       = manifest
@@ -185,7 +185,7 @@ class ThisProject
 
   # Internal: Return the summary text from the README
   def summary
-    description_section.first
+    description_section.first.gsub(/\s+/, ' ')
   end
 
   # Internal: Return the full description text from the README
