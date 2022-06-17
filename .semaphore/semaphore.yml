@@ -50,3 +50,15 @@ blocks:
             - bundle config set --local path vendor/bundle
             - bundle install
             - bundle exec rake test
+global_job_config:
+  epilogue:
+    always:
+      commands:
+         - '[[ -f tmp/report.xml ]] && test-results publish tmp/report.xml'
+
+after_pipeline:
+  task:
+    jobs:
+      - name: Publish Results
+        commands:
+          - test-results gen-pipeline-report

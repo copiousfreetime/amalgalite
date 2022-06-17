@@ -39,7 +39,11 @@ begin
   require 'rspec/core/rake_task'
   RSpec::Core::RakeTask.new( :test ) do |t|
     t.ruby_opts    = %w[ -w ]
-    t.rspec_opts   = %w[ --color --format documentation ]
+    t.rspec_opts   = %w[
+      --color
+      --format documentation
+      --format RspecJunitFormatter --out tmp/report.xml
+    ]
   end
   task :test_requirements
   task :test => :test_requirements
