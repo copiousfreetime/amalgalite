@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib".freeze]
   s.authors = ["Jeremy Hinegardner".freeze]
   s.date = "2022-06-17"
-  s.description = "Amalgalite embeds the SQLite database engine in a ruby extension. There is no need to install SQLite separately. Look in the examples/ directory to see * general usage * blob io * schema information * custom functions * custom aggregates * requiring ruby code from a database * full text search Also Scroll through Amalgalite::Database for a quick example, and a general overview of the API. Amalgalite adds in the following additional non-default SQLite extensions: * (http://sqlite.org/rtree.html) * (http://sqlite.org/fts5.html) - both fts3 and fts5 * (https://www.sqlite.org/geopoly.html) * (https://www.sqlite.org/json1.html) Other extensions are add that might not be usable/visible by users of the gem. The full list of extensions added is in (ext/amalgalite/c/extconf.rb). And those may be cross referenced against the (https://www.sqlite.org/compile.html)".freeze
+  s.description = "Amalgalite embeds the SQLite database engine as a ruby extension. There is no need to install SQLite separately.".freeze
   s.email = "jeremy@copiousfreetime.org".freeze
   s.executables = ["amalgalite-pack".freeze]
   s.extensions = ["ext/amalgalite/c/extconf.rb".freeze]
@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--main".freeze, "README.md".freeze, "--markup".freeze, "tomdoc".freeze]
   s.required_ruby_version = Gem::Requirement.new(">= 2.2.2".freeze)
   s.rubygems_version = "3.1.6".freeze
-  s.summary = "Amalgalite embeds the SQLite database engine in a ruby extension. There is no need to install SQLite separately.".freeze
+  s.summary = "Amalgalite embeds the SQLite database engine as a ruby extension. There is no need to install SQLite separately.".freeze
   s.test_files = ["spec/aggregate_spec.rb".freeze, "spec/amalgalite_spec.rb".freeze, "spec/blob_spec.rb".freeze, "spec/boolean_spec.rb".freeze, "spec/busy_handler.rb".freeze, "spec/data/iso-3166-country.txt".freeze, "spec/data/iso-3166-schema.sql".freeze, "spec/data/iso-3166-subcountry.txt".freeze, "spec/data/make-iso-db.sh".freeze, "spec/database_spec.rb".freeze, "spec/default_map_spec.rb".freeze, "spec/function_spec.rb".freeze, "spec/integeration_spec.rb".freeze, "spec/iso_3166_database.rb".freeze, "spec/json_spec.rb".freeze, "spec/packer_spec.rb".freeze, "spec/paths_spec.rb".freeze, "spec/progress_handler_spec.rb".freeze, "spec/requires_spec.rb".freeze, "spec/rtree_spec.rb".freeze, "spec/schema_spec.rb".freeze, "spec/spec_helper.rb".freeze, "spec/sqlite3/constants_spec.rb".freeze, "spec/sqlite3/database_status_spec.rb".freeze, "spec/sqlite3/status_spec.rb".freeze, "spec/sqlite3/version_spec.rb".freeze, "spec/sqlite3_spec.rb".freeze, "spec/statement_spec.rb".freeze, "spec/storage_map_spec.rb".freeze, "spec/tap_spec.rb".freeze, "spec/text_map_spec.rb".freeze, "spec/type_map_spec.rb".freeze, "spec/version_spec.rb".freeze]
 
   if s.respond_to? :specification_version then
@@ -33,6 +33,7 @@ Gem::Specification.new do |s|
   if s.respond_to? :add_runtime_dependency then
     s.add_runtime_dependency(%q<arrayfields>.freeze, ["~> 4.9"])
     s.add_development_dependency(%q<rspec>.freeze, ["~> 3.11"])
+    s.add_development_dependency(%q<rspec_junit_formatter>.freeze, ["~> 0.5"])
     s.add_development_dependency(%q<rake>.freeze, ["~> 13.0"])
     s.add_development_dependency(%q<rake-compiler>.freeze, ["~> 1.2"])
     s.add_development_dependency(%q<rake-compiler-dock>.freeze, ["~> 1.2"])
@@ -42,6 +43,7 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<arrayfields>.freeze, ["~> 4.9"])
     s.add_dependency(%q<rspec>.freeze, ["~> 3.11"])
+    s.add_dependency(%q<rspec_junit_formatter>.freeze, ["~> 0.5"])
     s.add_dependency(%q<rake>.freeze, ["~> 13.0"])
     s.add_dependency(%q<rake-compiler>.freeze, ["~> 1.2"])
     s.add_dependency(%q<rake-compiler-dock>.freeze, ["~> 1.2"])
