@@ -1,4 +1,8 @@
 # Amalgalite Changelog
+## Version 1.7.2 - 2022-06-17
+
+* Update SQLIte to 3.38.5
+* Update ruby compatability testing to 2.5 -> 3.1
 
 ## Version 1.7.1 - 2021
 

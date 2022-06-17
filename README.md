@@ -1,7 +1,6 @@
 ## Amalgalite
 
 * [Homepage](http://github.com/copiousfreetime/amalgalite)
-* email jeremy at copiousfreetime dot org
 * `git clone git://github.com/copiousfreetime/amalgalite.git`
 * [Github](http://github.com/copiousfreetime/amalgalite/)
 * [Bug Tracking](http://github.com/copiousfreetime/amalgalite/issues)
@@ -16,7 +15,7 @@
 
 ## DESCRIPTION
 
-Amalgalite embeds the SQLite database engine in a ruby extension. There is no
+Amalgalite embeds the SQLite database engine as a ruby extension. There is no
 need to install SQLite separately.
 
 Look in the examples/ directory to see

@@ -25,10 +25,10 @@ class ThisProject
   #
   # Yields self
   def initialize(&block)
-    @exclude_from_manifest = Regexp.union(/\.(git|DS_Store|ruby-version)/,
-                                          /^(doc|coverage|pkg|tmp|.semaphore|Gemfile(\.lock)?)/,
+    @exclude_from_manifest = Regexp.union(/\.(git|DS_Store|semaphore)/,
+                                          /^(doc|coverage|pkg|tmp|Gemfile(\.lock)?)/,
                                           /^[^\/]+\.gemspec/,
-                                          /\.(swp|jar|bundle|so|rvmrc|travis.yml|byebug_history)$/,
+                                          /\.(swp|jar|bundle|so|rvmrc|travis.yml|byebug_history|fossa.yml|ruby-version)$/,
                                           /~$/)
     @gemspecs              = Hash.new
     yield self if block_given?
@@ -135,7 +135,7 @@ class ThisProject
       spec.homepage    = homepage
 
       spec.summary     = summary
-      spec.description = description
+      spec.description = summary
       spec.license     = license
 
       spec.files       = manifest
@@ -185,7 +185,7 @@ class ThisProject
 
   # Internal: Return the summary text from the README
   def summary
-    description_section.first
+    description_section.first.gsub(/\s+/, ' ')
   end
 
   # Internal: Return the full description text from the README

@@ -15,14 +15,15 @@ module Amalgalite
       @database   = database
       @table_name = table_name
       @table      = @database.schema.tables[@table_name]
-      @options    = options
+      @options    = options.dup
+      @encoding   = options.delete("encoding") || "UTF-8"
       validate
     end
 
     def run
       @database.transaction do |db|
         db.prepare( insert_sql ) do |stmt|
-          ::CSV.foreach( @csv_path, **@options ) do |row|
+          ::CSV.foreach( @csv_path, "r:#{@encoding}", **@options ) do |row|
             stmt.execute( row )
           end
         end
