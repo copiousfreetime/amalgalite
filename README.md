@@ -1,5 +1,7 @@
 ## Amalgalite
 
+[![Build Status](https://copiousfreetime.semaphoreci.com/badges/amalgalite/branches/main.svg?key=6d8f47c8-bfc7-4969-a128-424478908a27)](https://copiousfreetime.semaphoreci.com/projects/amalgalite)
+
 * [Homepage](http://github.com/copiousfreetime/amalgalite)
 * `git clone git://github.com/copiousfreetime/amalgalite.git`
 * [Github](http://github.com/copiousfreetime/amalgalite/)
