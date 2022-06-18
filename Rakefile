@@ -19,7 +19,7 @@ This.ruby_gemspec do |spec|
   spec.add_development_dependency( 'zip',                '~> 2.0'  )
 
   spec.extensions.concat This.extension_conf_files
-  spec.license = "BSD"
+  spec.license = "BSD-3-Clause"
 end
 
 load 'tasks/default.rake'
