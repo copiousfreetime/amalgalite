@@ -1,4 +1,9 @@
 # Amalgalite Changelog
+
+## Version 1.7.3 - 2022-11-14
+
+* Update SQLite to 3.39.4
+
 ## Version 1.7.2 - 2022-06-17
 
 * Update SQLIte to 3.38.5
