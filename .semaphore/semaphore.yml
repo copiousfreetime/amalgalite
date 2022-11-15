@@ -29,7 +29,6 @@ blocks:
             - bundle config set --local path vendor/bundle
             - bundle install
             - bundle exec rake test
-            - 
   - name: Run MacOS Tests
     dependencies: []
     task:
@@ -55,6 +54,24 @@ blocks:
             - bundle config set --local path vendor/bundle
             - bundle install
             - bundle exec rake test
+  - name: Build Gems
+    dependencies:
+      - Run Linux Tests
+      - Run MacOS Tests
+    task:
+      jobs:
+        - name: build gems
+          matrix:
+            - env_var: RCD_PLATFORM
+              values:
+                - x86-mingw32
+                - x64-mingw-ucrt
+                - x64-mingw32
+          commands:
+            - checkout
+            - bundle install
+            - RCD_PLATFORM=${RCD_PLATFORM} rake-compiler-dock bash -c "bundle && rake cross native gem"
+            - artifact push project pkg/*${RCD_PLATFORM}*.gem
 global_job_config:
   epilogue:
     always:
