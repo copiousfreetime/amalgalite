@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze]
   s.authors = ["Jeremy Hinegardner".freeze]
-  s.date = "2022-11-14"
+  s.date = "2022-11-15"
   s.description = "Amalgalite embeds the SQLite database engine as a ruby extension. There is no need to install SQLite separately.".freeze
   s.email = "jeremy@copiousfreetime.org".freeze
   s.executables = ["amalgalite-pack".freeze]
@@ -32,8 +32,8 @@ Gem::Specification.new do |s|
 
   if s.respond_to? :add_runtime_dependency then
     s.add_runtime_dependency(%q<arrayfields>.freeze, ["~> 4.9"])
-    s.add_development_dependency(%q<rspec>.freeze, ["~> 3.11"])
-    s.add_development_dependency(%q<rspec_junit_formatter>.freeze, ["~> 0.5"])
+    s.add_development_dependency(%q<rspec>.freeze, ["~> 3.12"])
+    s.add_development_dependency(%q<rspec_junit_formatter>.freeze, ["~> 0.6"])
     s.add_development_dependency(%q<rake>.freeze, ["~> 13.0"])
     s.add_development_dependency(%q<rake-compiler>.freeze, ["~> 1.2"])
     s.add_development_dependency(%q<rake-compiler-dock>.freeze, ["~> 1.2"])
@@ -42,8 +42,8 @@ Gem::Specification.new do |s|
     s.add_development_dependency(%q<zip>.freeze, ["~> 2.0"])
   else
     s.add_dependency(%q<arrayfields>.freeze, ["~> 4.9"])
-    s.add_dependency(%q<rspec>.freeze, ["~> 3.11"])
-    s.add_dependency(%q<rspec_junit_formatter>.freeze, ["~> 0.5"])
+    s.add_dependency(%q<rspec>.freeze, ["~> 3.12"])
+    s.add_dependency(%q<rspec_junit_formatter>.freeze, ["~> 0.6"])
     s.add_dependency(%q<rake>.freeze, ["~> 13.0"])
     s.add_dependency(%q<rake-compiler>.freeze, ["~> 1.2"])
     s.add_dependency(%q<rake-compiler-dock>.freeze, ["~> 1.2"])
