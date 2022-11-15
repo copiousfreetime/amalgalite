@@ -23,6 +23,8 @@ blocks:
           commands:
             - checkout
             - sem-version ruby ${RUBY_VERSION}
+            - gem update --system --no-doc
+            - gem update bundler
             - bundle config set --local deployment true
             - bundle config set --local path vendor/bundle
             - bundle install
@@ -46,6 +48,8 @@ blocks:
             - checkout
             - git -C /Users/semaphore/.rbenv/plugins/ruby-build pull
             - sem-version ruby $RUBY_VERSION -f
+            - gem update --system --no-doc
+            - gem update bundler
             - bundle config set --local deployment true
             - bundle config set --local path vendor/bundle
             - bundle install
