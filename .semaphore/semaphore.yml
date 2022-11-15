@@ -62,10 +62,10 @@ blocks:
         - name: "Build Gems"
           matrix:
             - env_var: RCD_PLATFORM
-                values:
-                  - x86-mingw32
-                  - x64-mingw-ucrt
-                  - x64-mingw32
+              values:
+                - x86-mingw32
+                - x64-mingw-ucrt
+                - x64-mingw32
           commands:
             - checkout
             - bundle install
