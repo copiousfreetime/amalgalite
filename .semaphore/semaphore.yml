@@ -9,7 +9,7 @@ blocks:
     dependencies: []
     task:
       jobs:
-        - name: run tests
+        - name: linux matrix test
           matrix:
             - env_var: RUBY_VERSION
               values:
@@ -56,10 +56,12 @@ blocks:
             - bundle install
             - bundle exec rake test
   - name: Build Gems
-    dependencies: ["Run Linux Tests", "Run MacOS Tests"]
+    dependencies:
+      - Run Linux Tests
+      - Run MacOS Tests
     task:
       jobs:
-        - name: "Build Gems"
+        - name: build gems
           matrix:
             - env_var: RCD_PLATFORM
               values:
