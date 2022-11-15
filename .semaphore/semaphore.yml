@@ -57,8 +57,14 @@ blocks:
   - name: Build Gems
     dependencies:
       - Run Linux Tests
-      - Run MacOS Tests
     task:
+      agent:
+        machine:
+          type: e1-standard-2
+          os_image: ubuntu2004
+        containers:
+          - name: rake-compiler-dock
+            image: "larskanis/rake-compiler-dock-mri-x86_64-linux:1.2.1"
       jobs:
         - name: build gems
           matrix:
@@ -70,7 +76,7 @@ blocks:
           commands:
             - checkout
             - bundle install
-            - RCD_PLATFORM=${RCD_PLATFORM} rake-compiler-dock bash -c "bundle && rake cross native gem"
+            - bundle exec rake cross native gem
             - artifact push project pkg/*${RCD_PLATFORM}*.gem
 global_job_config:
   epilogue:
