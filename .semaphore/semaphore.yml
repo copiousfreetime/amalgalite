@@ -65,9 +65,9 @@ blocks:
         containers:
           - name: rake-compiler-dock
             image: "larskanis/rake-compiler-dock-mri-x86-mingw32:1.2.1"
-            env_vars:
-              - name: RCD_PLATFORM
-                value: x86-mingw32
+      env_vars:
+        - name: RCD_PLATFORM
+          value: x86-mingw32
       jobs:
         - name: build x86-mingw32 gem
           commands:
