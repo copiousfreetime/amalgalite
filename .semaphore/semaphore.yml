@@ -70,7 +70,7 @@ blocks:
           commands:
             - checkout
             - bundle install
-            - bundle exec rake cross native:x86-mingw32 gem
+            - bundle exec rake native:x86-mingw32 gem
             - artifact push project pkg/*x86-mingw32*.gem
 
   - name: Build x64-mingw32 gem
@@ -89,7 +89,7 @@ blocks:
           commands:
             - checkout
             - bundle install
-            - bundle exec rake cross native:x64-mingw32 gem
+            - bundle exec rake native:x64-mingw32 gem
             - artifact push project pkg/*x64-mingw32*.gem
 
 global_job_config:
