@@ -73,7 +73,7 @@ blocks:
             - bundle exec rake cross native:x86-mingw32 gem
             - artifact push project pkg/*x86-mingw32*.gem
 
-   - name: Build x64-mingw32 gem
+  - name: Build x64-mingw32 gem
     dependencies:
       - Run Linux Tests
     task:
@@ -96,7 +96,7 @@ global_job_config:
   epilogue:
     always:
       commands:
-         - '[[ -f tmp/report.xml ]] && test-results publish tmp/report.xml'
+        - '[[ -f tmp/report.xml ]] && test-results publish tmp/report.xml'
 
 after_pipeline:
   task:
