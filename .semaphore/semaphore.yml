@@ -73,7 +73,7 @@ blocks:
           commands:
             - checkout
             - bundle install
-            - bundle exec rake cross native gem
+            - bundle exec rake cross native:${RCD_PLATFORM} gem
             - artifact push project pkg/*${RCD_PLATFORM}*.gem
 global_job_config:
   epilogue:
