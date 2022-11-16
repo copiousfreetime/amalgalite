@@ -54,6 +54,7 @@ blocks:
             - bundle config set --local path vendor/bundle
             - bundle install
             - bundle exec rake test
+
   - name: Build x86-mingw32 gem
     dependencies:
       - Run Linux Tests
@@ -71,7 +72,7 @@ blocks:
             - checkout
             - bundle install
             - bundle exec rake native:x86-mingw32 gem
-            - artifact push project pkg/*x86-mingw32*.gem
+            - artifact push project --force pkg/*x86-mingw32*.gem
 
   - name: Build x64-mingw32 gem
     dependencies:
@@ -90,7 +91,7 @@ blocks:
             - checkout
             - bundle install
             - bundle exec rake native:x64-mingw32 gem
-            - artifact push project pkg/*x64-mingw32*.gem
+            - artifact push project --force pkg/*x64-mingw32*.gem
 
 global_job_config:
   epilogue:
