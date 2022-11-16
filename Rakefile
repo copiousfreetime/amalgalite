@@ -12,6 +12,7 @@ This.ruby_gemspec do |spec|
   spec.add_development_dependency( 'rspec',              '~> 3.12' )
   spec.add_development_dependency( 'rspec_junit_formatter','~> 0.6' )
   spec.add_development_dependency( 'rake',               '~> 13.0' )
+  spec.add_development_dependency( 'rake-compiler',      '~> 1.2'  )
   spec.add_development_dependency( 'rake-compiler-dock', '~> 1.2'  )
   spec.add_development_dependency( 'rdoc',               '~> 6.4'  )
   spec.add_development_dependency( 'simplecov',          '~> 0.21' )
