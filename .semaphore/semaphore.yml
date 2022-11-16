@@ -54,7 +54,7 @@ blocks:
             - bundle config set --local path vendor/bundle
             - bundle install
             - bundle exec rake test
-  - name: Build Gems
+  - name: Build x86-mingw32 gem
     dependencies:
       - Run Linux Tests
     task:
@@ -64,15 +64,12 @@ blocks:
           os_image: ubuntu2004
         containers:
           - name: rake-compiler-dock
-            image: "larskanis/rake-compiler-dock-mri-x86_64-linux:1.2.1"
+            image: "larskanis/rake-compiler-dock-mri-x86-mingw32:1.2.1"
+            env_vars:
+              - name: RCD_PLATFORM
+                value: x86-mingw32
       jobs:
-        - name: build gems
-          matrix:
-            - env_var: RCD_PLATFORM
-              values:
-                - x86-mingw32
-                - x64-mingw-ucrt
-                - x64-mingw32
+        - name: build x86-mingw32 gem
           commands:
             - checkout
             - bundle install
