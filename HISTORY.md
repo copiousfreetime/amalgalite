@@ -1,4 +1,9 @@
 # Amalgalite Changelog
+
+## Version 1.8.0 - 2023-02-06
+* Update SQLite to 3.40.1
+* Update ruby compaibility to 2.5 -> 3.2
+
 ## Version 1.7.2 - 2022-06-17
 
 * Update SQLIte to 3.38.5

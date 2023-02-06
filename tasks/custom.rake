@@ -63,7 +63,7 @@ namespace :util do
 
     require 'uri'
     require 'open-uri'
-    require 'zip'
+    require 'archive/zip'
 
     parts = version.split(".")
     next_version = [ parts.shift.to_s ]
@@ -86,15 +86,14 @@ namespace :util do
 
     puts "extracting..."
     upstream_files = %w[ sqlite3.h sqlite3.c sqlite3ext.h ]
-    Zip::ZipInputStream.open( file ) do |io|
-      loop do
-        entry = io.get_next_entry
-        break unless entry
-        bname = File.basename( entry.name )
+    Archive::Zip.open( file ) do |archive|
+      archive.each do |entry|
+        next unless entry.file?
+        bname = File.basename( entry.zip_path)
         if upstream_files.include?( bname ) then
           dest_file = File.join( "ext", "amalgalite", "c", bname )
           puts "updating #{dest_file}"
-          entry.extract( dest_file ) { true }
+          entry.extract(file_path: dest_file)
         end
       end
     end

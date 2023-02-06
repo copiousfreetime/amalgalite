@@ -6,30 +6,17 @@
 # in your top level rakefile
 begin
   require 'rake/extensiontask'
-  require 'rake/javaextensiontask'
+  Rake::ExtensionTask.new( This.name ) do |ext|
+    ext.ext_dir   = File.join( 'ext', This.name, "c" )
+    ext.lib_dir   = File.join( 'lib', This.name )
+    ext.gem_spec  = This.ruby_gemspec
 
-  if RUBY_PLATFORM == "java" then
-
-    Rake::JavaExtensionTask.new( This.name) do |ext|
-      ext.ext_dir  = File.join( 'ext', This.name, "java" )
-      ext.lib_dir  = File.join( 'lib', This.name )
-      ext.gem_spec = This.java_gemspec
-    end
-
-  else
-
-    Rake::ExtensionTask.new( This.name ) do |ext|
-      ext.ext_dir   = File.join( 'ext', This.name, "c" )
-      ext.lib_dir   = File.join( 'lib', This.name )
-      ext.gem_spec  = This.ruby_gemspec
-
-      ext.cross_compile  = true  # enable cross compilation (requires cross compile toolchain)
-      ext.cross_platform = %w[
-        x86-mingw32
-        x64-mingw-ucrt
-        x64-mingw32
-      ]
-    end
+    ext.cross_compile  = true  # enable cross compilation (requires cross compile toolchain)
+    ext.cross_platform = %w[
+      x86-mingw32
+      x64-mingw-ucrt
+      x64-mingw32
+    ]
   end
 
   task :test_requirements => :compile
@@ -37,5 +24,5 @@ rescue LoadError
   This.task_warning( 'extension' )
 end
 
-CLOBBER << FileList["lib/**/*.{jar,so,bundle}"]
-CLOBBER << FileList["lib/#{This.name}/{1,2,3}.*/"]
+CLOBBER << "lib/**/*.{jar,so,bundle}"
+CLOBBER << "lib/#{This.name}/{1,2,3}.*/"

@@ -5,56 +5,125 @@ agent:
     type: e1-standard-2
     os_image: ubuntu2004
 blocks:
-  - name: Run tests in Linux environment
+  - name: Run Linux Tests
     dependencies: []
     task:
+      prologue:
+        commands:
+          - checkout
+          - sudo apt-get update && sudo apt-get install -y libyaml-dev
+          - git -C ${HOME}/.rbenv/plugins/ruby-build pull
       jobs:
-        - name: run tests
+        - name: linux matrix test
           matrix:
             - env_var: RUBY_VERSION
               values:
-                - 2.5.9
                 - 2.6.10
-                - 2.7.6
-                - 3.0.4
-                - 3.1.2
-                - jruby-9.3.4.0
-                - truffleruby-22.0.0.2
+                - 2.7.7
+                - 3.0.5
+                - 3.1.3
+                - 3.2.0
           commands:
-            - checkout
-            - sem-version ruby ${RUBY_VERSION}
+            - sem-version ruby ${RUBY_VERSION} -f
             - bundle config set --local deployment true
             - bundle config set --local path vendor/bundle
+            - gem install --no-doc bundler:2.4.6
             - bundle install
             - bundle exec rake test
-  - name: Run tests in macOS environment
+  - name: Run MacOS Tests
     dependencies: []
     task:
       agent:
         machine:
           type: a1-standard-4
           os_image: macos-xcode13
+      prologue:
+        commands:
+          - checkout
+          - git -C ${HOME}/.rbenv/plugins/ruby-build pull
       jobs:
         - name: macos matrix test
           matrix:
             - env_var: RUBY_VERSION
               values:
-                - 2.7.6
-                - 3.0.4
-                - 3.1.2
+                - 2.7.7
+                - 3.0.5
+                - 3.1.3
+                - 3.2.0
           commands:
-            - checkout
-            - git -C /Users/semaphore/.rbenv/plugins/ruby-build pull
-            - sem-version ruby $RUBY_VERSION -f
+            - sem-version ruby ${RUBY_VERSION} -f
             - bundle config set --local deployment true
             - bundle config set --local path vendor/bundle
+            - gem update --system --no-doc
+            - gem install --no-doc bundler:2.4.6
             - bundle install
             - bundle exec rake test
+  - name: Build x86-mingw32 gem
+    dependencies:
+      - Run Linux Tests
+    task:
+      agent:
+        machine:
+          type: e1-standard-2
+          os_image: ubuntu2004
+        containers:
+          - name: rake-compiler-dock
+            image: "larskanis/rake-compiler-dock-mri-x86-mingw32:1.2.2"
+      jobs:
+        - name: build x86-mingw32 gem
+          commands:
+            - checkout
+            - sudo apt-get update && sudo apt-get install -y libyaml-dev
+            - bundle install
+            - bundle exec rake native:x86-mingw32 gem
+            - artifact push project --force pkg/*x86-mingw32*.gem
+
+  - name: Build x64-mingw32 gem
+    dependencies:
+      - Run Linux Tests
+    task:
+      agent:
+        machine:
+          type: e1-standard-2
+          os_image: ubuntu2004
+        containers:
+          - name: rake-compiler-dock
+            image: "larskanis/rake-compiler-dock-mri-x64-mingw32:1.2.2"
+      jobs:
+        - name: build x64-mingw32
+          commands:
+            - checkout
+            - sudo apt-get update && sudo apt-get install -y libyaml-dev
+            - bundle install
+            - bundle exec rake native:x64-mingw32 gem
+            - artifact push project --force pkg/*x64-mingw32*.gem
+
+  - name: Build x64-mingw-ucrt gem
+    dependencies:
+      - Run Linux Tests
+    task:
+      agent:
+        machine:
+          type: e1-standard-2
+          os_image: ubuntu2004
+        containers:
+          - name: rake-compiler-dock
+            image: "larskanis/rake-compiler-dock-mri-x64-mingw-ucrt:1.2.2"
+      jobs:
+        - name: build x64-mingw-ucrt
+          commands:
+            - checkout
+            - sudo apt-get update && sudo apt-get install -y libyaml-dev
+            - bundle install
+            - bundle exec rake native:x64-mingw-ucrt gem
+            - artifact push project --force pkg/*x64-mingw-ucrt*.gem
+
+
 global_job_config:
   epilogue:
     always:
       commands:
-         - '[[ -f tmp/report.xml ]] && test-results publish tmp/report.xml'
+        - '[[ -f tmp/report.xml ]] && test-results publish tmp/report.xml'
 
 after_pipeline:
   task:
