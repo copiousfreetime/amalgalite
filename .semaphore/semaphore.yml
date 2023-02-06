@@ -28,7 +28,6 @@ blocks:
             - sem-version ruby ${RUBY_VERSION} -f
             - bundle config set --local deployment true
             - bundle config set --local path vendor/bundle
-            - gem update --system --no-doc
             - gem install --no-doc bundler:2.4.6
             - bundle install
             - bundle exec rake test
