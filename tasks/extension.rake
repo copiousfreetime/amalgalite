@@ -24,5 +24,5 @@ rescue LoadError
   This.task_warning( 'extension' )
 end
 
-CLOBBER << FileList["lib/**/*.{jar,so,bundle}"]
-CLOBBER << FileList["lib/#{This.name}/{1,2,3}.*/"]
+CLOBBER << "lib/**/*.{jar,so,bundle}"
+CLOBBER << "lib/#{This.name}/{1,2,3}.*/"

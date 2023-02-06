@@ -203,7 +203,7 @@ task :gemspec do
 end
 
 # .rbc files from ruby 2.0
-CLOBBER << FileList["**/*.rbc"]
+CLOBBER << "**/*.rbc"
 
 # The standard gem packaging task, everyone has it.
 require 'rubygems/package_task'
