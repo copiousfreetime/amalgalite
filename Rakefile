@@ -16,7 +16,7 @@ This.ruby_gemspec do |spec|
   spec.add_development_dependency( 'rake-compiler-dock', '~> 1.2'  )
   spec.add_development_dependency( 'rdoc',               '~> 6.4'  )
   spec.add_development_dependency( 'simplecov',          '~> 0.21' )
-  spec.add_development_dependency( 'zip',                '~> 2.0'  )
+  spec.add_development_dependency( 'archive-zip',        '~> 0.12' )
 
   spec.extensions.concat This.extension_conf_files
   spec.license = "BSD-3-Clause"
