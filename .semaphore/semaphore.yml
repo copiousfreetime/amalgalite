@@ -73,6 +73,7 @@ blocks:
         - name: build x86-mingw32 gem
           commands:
             - checkout
+            - sudo apt-get update && sudo apt-get install -y libyaml-dev
             - bundle install
             - bundle exec rake native:x86-mingw32 gem
             - artifact push project --force pkg/*x86-mingw32*.gem
@@ -92,6 +93,7 @@ blocks:
         - name: build x64-mingw32
           commands:
             - checkout
+            - sudo apt-get update && sudo apt-get install -y libyaml-dev
             - bundle install
             - bundle exec rake native:x64-mingw32 gem
             - artifact push project --force pkg/*x64-mingw32*.gem
@@ -111,6 +113,7 @@ blocks:
         - name: build x64-mingw-ucrt
           commands:
             - checkout
+            - sudo apt-get update && sudo apt-get install -y libyaml-dev
             - bundle install
             - bundle exec rake native:x64-mingw-ucrt gem
             - artifact push project --force pkg/*x64-mingw-ucrt*.gem
