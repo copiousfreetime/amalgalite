@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    amalgalite (1.7.3)
+    amalgalite (1.8.0)
       arrayfields (~> 4.9)
 
 GEM
