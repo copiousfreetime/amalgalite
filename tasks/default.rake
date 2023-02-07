@@ -37,13 +37,20 @@ task :develop => "develop:default"
 #------------------------------------------------------------------------------
 begin
   require 'rspec/core/rake_task'
+  junit_output = ENV.fetch('TEST_RESULTS_FILE', 'tmp/report.xml')
   RSpec::Core::RakeTask.new( :test ) do |t|
     t.ruby_opts    = %w[ -w ]
     t.rspec_opts   = %w[
       --color
       --format documentation
-      --format RspecJunitFormatter --out tmp/report.xml
     ]
+
+    if junit_output = ENV['TEST_RESULTS_FILE'] then
+      t.rspec_opts << '--format'
+      t.rspec_opts << 'RspecJunitFormatter'
+      t.rspec_opts << '--out'
+      t.rspec_opts << junit_output
+    end
   end
   task :test_requirements
   task :test => :test_requirements
