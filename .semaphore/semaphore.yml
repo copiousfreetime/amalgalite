@@ -31,7 +31,7 @@ blocks:
             - sem-version ruby ${RUBY_VERSION} -f
             - bundle config set --local deployment true
             - bundle config set --local path vendor/bundle
-            - gem udpate --no-doc bundler
+            - gem update --no-doc bundler
             - bundle install
             - mkdir -p tmp/test-results/
             - export TEST_RESULTS_FILE=tmp/test-results/${RUBY_VERSION}.xml
