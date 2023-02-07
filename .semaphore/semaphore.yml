@@ -13,6 +13,10 @@ blocks:
           - checkout
           - sudo apt-get update && sudo apt-get install -y libyaml-dev
           - git -C ${HOME}/.rbenv/plugins/ruby-build pull
+      epilogue:
+        always:
+          commands:
+            - test-results publish --name ${RUBY_VERSION} ${TEST_RESULTS_FILE}
       jobs:
         - name: linux matrix test
           matrix:
@@ -27,9 +31,12 @@ blocks:
             - sem-version ruby ${RUBY_VERSION} -f
             - bundle config set --local deployment true
             - bundle config set --local path vendor/bundle
-            - gem install --no-doc bundler:2.4.6
+            - gem udpate --no-doc bundler
             - bundle install
+            - mkdir -p tmp/test-results/
+            - export TEST_RESULTS_FILE=tmp/test-results/${RUBY_VERSION}.xml
             - bundle exec rake test
+
   - name: Run MacOS Tests
     dependencies: []
     task:
@@ -54,10 +61,12 @@ blocks:
             - sem-version ruby ${RUBY_VERSION} -f
             - bundle config set --local deployment true
             - bundle config set --local path vendor/bundle
-            - gem update --system --no-doc
-            - gem install --no-doc bundler:2.4.6
+            - gem update --no-doc bundler
             - bundle install
+            - mkdir -p tmp/test-results/
+            - export TEST_RESULTS_FILE=tmp/test-results/${RUBY_VERSION}.xml
             - bundle exec rake test
+
   - name: Build x86-mingw32 gem
     dependencies:
       - Run Linux Tests
@@ -117,13 +126,6 @@ blocks:
             - bundle install
             - bundle exec rake native:x64-mingw-ucrt gem
             - artifact push project --force pkg/*x64-mingw-ucrt*.gem
-
-
-global_job_config:
-  epilogue:
-    always:
-      commands:
-        - '[[ -f tmp/report.xml ]] && test-results publish tmp/report.xml'
 
 after_pipeline:
   task:
