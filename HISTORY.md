@@ -7,7 +7,6 @@
 * update compile time options
   * remove SQLITE_ENABLE_DESERIALIZE - it is now default on
   * remove SQLITE_ENABLE_JSON1 - it is now default on
-  * add SQLITE_ENABLE_LOCKING_STYLE
   * add SQLITE_ENABLE_MATH_FUNCTIONS
   * add SQLITE_ENABLE_NORMALIZE
   * add SQLITE_ENABLE_SOUNDEX
