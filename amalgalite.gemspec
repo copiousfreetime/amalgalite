@@ -21,8 +21,8 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/copiousfreetime/amalgalite".freeze
   s.licenses = ["BSD-3-Clause".freeze]
   s.rdoc_options = ["--main".freeze, "README.md".freeze, "--markup".freeze, "tomdoc".freeze]
-  s.required_ruby_version = Gem::Requirement.new(">= 2.2.2".freeze)
-  s.rubygems_version = "3.4.6".freeze
+  s.required_ruby_version = Gem::Requirement.new(">= 2.3.0".freeze)
+  s.rubygems_version = "3.4.11".freeze
   s.summary = "Amalgalite embeds the SQLite database engine as a ruby extension. There is no need to install SQLite separately.".freeze
   s.test_files = ["spec/aggregate_spec.rb".freeze, "spec/amalgalite_spec.rb".freeze, "spec/blob_spec.rb".freeze, "spec/boolean_spec.rb".freeze, "spec/busy_handler.rb".freeze, "spec/data/iso-3166-country.txt".freeze, "spec/data/iso-3166-schema.sql".freeze, "spec/data/iso-3166-subcountry.txt".freeze, "spec/data/make-iso-db.sh".freeze, "spec/database_spec.rb".freeze, "spec/default_map_spec.rb".freeze, "spec/function_spec.rb".freeze, "spec/integeration_spec.rb".freeze, "spec/iso_3166_database.rb".freeze, "spec/json_spec.rb".freeze, "spec/packer_spec.rb".freeze, "spec/paths_spec.rb".freeze, "spec/progress_handler_spec.rb".freeze, "spec/requires_spec.rb".freeze, "spec/rtree_spec.rb".freeze, "spec/schema_spec.rb".freeze, "spec/spec_helper.rb".freeze, "spec/sqlite3/constants_spec.rb".freeze, "spec/sqlite3/database_status_spec.rb".freeze, "spec/sqlite3/status_spec.rb".freeze, "spec/sqlite3/version_spec.rb".freeze, "spec/sqlite3_spec.rb".freeze, "spec/statement_spec.rb".freeze, "spec/storage_map_spec.rb".freeze, "spec/tap_spec.rb".freeze, "spec/text_map_spec.rb".freeze, "spec/type_map_spec.rb".freeze, "spec/version_spec.rb".freeze]
 
