@@ -1,5 +1,18 @@
 # Amalgalite Changelog
 
+## Version 1.9.0 - 2023-04-20
+* Update SQLite to 3.41.2
+* Update required_ruby_version in gemspec to >= 2.3.0
+* Update ruby compatability testing matrix to latest patch versions
+* update compile time options
+  * remove SQLITE_ENABLE_DESERIALIZE - it is now default on
+  * remove SQLITE_ENABLE_JSON1 - it is now default on
+  * add SQLITE_ENABLE_MATH_FUNCTIONS
+  * add SQLITE_ENABLE_NORMALIZE
+  * add SQLITE_ENABLE_SOUNDEX
+  * add -Wundef to reduce compiler warnings from sqlite on clang
+* fix a compiler warning in the extension code
+
 ## Version 1.8.0 - 2023-02-06
 * Update SQLite to 3.40.1
 * Update ruby compaibility to 2.5 -> 3.2

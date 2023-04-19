@@ -7,6 +7,7 @@
 
 #include "amalgalite.h"
 #include <stdio.h>
+#include <stdnoreturn.h>
 extern VALUE mA;
 VALUE cAR;
 VALUE cARB;
@@ -18,7 +19,7 @@ VALUE eARB_Error;
  * allocated via malloc() or the like.  It should be a local static buffer
  * that we do not have to worry about freeing.
  */
-void am_bootstrap_cleanup_and_raise( const char* msg, sqlite3* db, sqlite3_stmt* stmt )
+noreturn void am_bootstrap_cleanup_and_raise( const char* msg, sqlite3* db, sqlite3_stmt* stmt )
 {
 
     if ( NULL != stmt ) { sqlite3_finalize( stmt ); stmt = NULL; }

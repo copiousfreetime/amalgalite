@@ -7,21 +7,21 @@ describe "Amalgalite::SQLite3::Version" do
     expect(Amalgalite::SQLite3::Version.to_s).to match( /\d+\.\d+\.\d+/ )
     expect(Amalgalite::SQLite3::Version.runtime_version).to match( /\d+\.\d+\.\d+/ )
 
-    Amalgalite::SQLite3::Version.to_i.should eql(3040001)
-    Amalgalite::SQLite3::Version.runtime_version_number.should eql(3040001)
+    Amalgalite::SQLite3::Version.to_i.should eql(3041002)
+    Amalgalite::SQLite3::Version.runtime_version_number.should eql(3041002)
 
     Amalgalite::SQLite3::Version::MAJOR.should eql(3)
-    Amalgalite::SQLite3::Version::MINOR.should eql(40)
-    Amalgalite::SQLite3::Version::RELEASE.should eql(1)
+    Amalgalite::SQLite3::Version::MINOR.should eql(41)
+    Amalgalite::SQLite3::Version::RELEASE.should eql(2)
     expect(Amalgalite::SQLite3::Version.to_a.size).to eql(3)
 
-    Amalgalite::SQLite3::Version.compiled_version.should be == "3.40.1"
-    Amalgalite::SQLite3::Version.compiled_version_number.should be == 3040001
+    Amalgalite::SQLite3::Version.compiled_version.should be == "3.41.2"
+    Amalgalite::SQLite3::Version.compiled_version_number.should be == 3041002
     Amalgalite::SQLite3::Version.compiled_matches_runtime?.should be == true
   end
 
   it "should have the sqlite3 source id" do
-    source_id = "2022-12-28 14:03:47 df5c253c0b3dd24916e4ec7cf77d3db5294cc9fd45ae7b9c5e82ad8197f38a24"
+    source_id = "2023-03-22 11:56:21 0d1fc92f94cb6b76bffe3ec34d69cffde2924203304e8ffc4155597af0c191da"
     Amalgalite::SQLite3::Version.compiled_source_id.should be == source_id
     Amalgalite::SQLite3::Version.runtime_source_id.should be == source_id
   end

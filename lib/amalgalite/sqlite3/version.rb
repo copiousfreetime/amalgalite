@@ -10,13 +10,13 @@ module Amalgalite
 
       # major version number of the SQLite C library
       MAJOR   = (to_i / 1_000_000).freeze
-      
+
       # minor version number of the SQLite C library
       MINOR   = ((to_i % 1_000_000) / 1_000).freeze
-      
+
       # release version number of the SQLite C library
       RELEASE = (to_i % 1_000).freeze
-   
+
       #
       # call-seq:
       #   Amalgalite::SQLite3::Version.to_a -> [ MAJOR, MINOR, RELEASE ]
