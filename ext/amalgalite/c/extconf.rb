@@ -57,7 +57,7 @@ ignore_by_compiler = {
                   unused-const-variable
                   unused-variable
                   undef
-                ]
+  ],
 }
 
 if extras = ignore_by_compiler[RbConfig::MAKEFILE_CONFIG["CC"]] then
@@ -66,7 +66,7 @@ end
 
 ignoreable_warnings.each do |warning|
   $CFLAGS = $CFLAGS.gsub(/-W#{warning}/,'')
-  RbConfig::MAKEFILE_CONFIG['warnflags'] = RbConfig::MAKEFILE_CONFIG['warnflags'].gsub(/-W#{warning}/,'') if RbConfig::MAKEFILE_CONFIG['warnflags'] 
+  RbConfig::MAKEFILE_CONFIG['warnflags'] = RbConfig::MAKEFILE_CONFIG['warnflags'].gsub(/-W#{warning}/,'') if RbConfig::MAKEFILE_CONFIG['warnflags']
   $CFLAGS += " -Wno-#{warning}"
 end
 
