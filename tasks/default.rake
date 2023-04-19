@@ -152,14 +152,20 @@ namespace :fixme do
   end
 
   def local_fixme_files
-    This.manifest.select { |p| p =~ %r|^tasks/| }
+    local_files = This.manifest.select { |p| p =~ %r|^tasks/| }
+    local_files << ".semaphore/semaphore.yml"
   end
 
   def outdated_fixme_files
     local_fixme_files.select do |local|
       upstream     = fixme_project_path( local )
-      upstream.exist? &&
-        ( Digest::SHA256.file( local ) != Digest::SHA256.file( upstream ) )
+      if upstream.exist? then
+        if File.exist?( local ) then
+          ( Digest::SHA256.file( local ) != Digest::SHA256.file( upstream ) )
+        else
+          true
+        end
+      end
     end
   end
 
