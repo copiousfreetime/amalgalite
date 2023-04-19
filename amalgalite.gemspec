@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze]
   s.authors = ["Jeremy Hinegardner".freeze]
-  s.date = "2023-02-06"
+  s.date = "2023-04-20"
   s.description = "Amalgalite embeds the SQLite database engine as a ruby extension. There is no need to install SQLite separately.".freeze
   s.email = "jeremy@copiousfreetime.org".freeze
   s.executables = ["amalgalite-pack".freeze]
