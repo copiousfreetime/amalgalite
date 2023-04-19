@@ -16,7 +16,10 @@ $CFLAGS += " -DSQLITE_ENABLE_FTS3_PARENTHESIS=1"
 $CFLAGS += " -DSQLITE_ENABLE_FTS4=1"
 $CFLAGS += " -DSQLITE_ENABLE_FTS5=1"
 $CFLAGS += " -DSQLITE_ENABLE_GEOPOLY=1"
+$CFLAGS += " -DSQLITE_ENABLE_LOCKING_STYLE=1"
+$CFLAGS += " -DSQLITE_ENABLE_MATH_FUNCTIONS=1"
 $CFLAGS += " -DSQLITE_ENABLE_MEMORY_MANAGEMENT=1"
+$CFLAGS += " -DSQLITE_ENABLE_NORMALIZE=1"
 $CFLAGS += " -DSQLITE_ENABLE_NULL_TRIM=1"
 $CFLAGS += " -DSQLITE_ENABLE_PREUPDATE_HOOK=1"
 $CFLAGS ++ " -DSQLITE_EANBLE_QPSG=1"
@@ -27,7 +30,9 @@ $CFLAGS += " -DSQLITE_ENABLE_SNAPSHOT=1"
 $CFLAGS += " -DSQLITE_ENABLE_STMTVTAB=1"
 $CFLAGS += " -DSQLITE_ENABLE_STAT4=1"
 $CFLAGS += " -DSQLITE_ENABLE_UNLOCK_NOTIFY=1"
+$CFLAGS += " -DSQLITE_ENABLE_SOUNDEX=1"
 
+$CFLAGS += " -DSQLITE_USE_ALLOCA=1"
 $CFLAGS += " -DSQLITE_OMIT_DEPRECATED=1"
 
 # we compile sqlite the same way that the installation of ruby is compiled.
@@ -52,6 +57,7 @@ ignore_by_compiler = {
                   sign-compare
                   unused-const-variable
                   unused-variable
+                  undef
                 ]
 }
 
