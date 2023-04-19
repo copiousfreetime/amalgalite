@@ -65,6 +65,8 @@ ignore_by_compiler = {
               unused-variable
               unused-but-set-variable
               maybe-uninitialized
+              old-style-definition
+              undef
   ]
 }
 
