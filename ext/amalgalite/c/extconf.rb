@@ -56,8 +56,16 @@ ignore_by_compiler = {
                   sign-compare
                   unused-const-variable
                   unused-variable
+                  unused-but-set-variable
                   undef
   ],
+  "gcc" => %w[
+              declaration-after-statement
+              implicit-function-declaration
+              unused-variable
+              unused-but-set-variable
+              maybe-uninitialized
+  ]
 }
 
 if extras = ignore_by_compiler[RbConfig::MAKEFILE_CONFIG["CC"]] then
