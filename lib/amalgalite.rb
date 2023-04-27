@@ -21,7 +21,7 @@ end
 # this is the method recommended by rake-compiler
 begin
   # this will be for windows
-  require "amalgalite/#{RUBY_VERSION.sub(/\.\d$/,'')}/amalgalite"
+  require "amalgalite/#{RUBY_VERSION.sub(/\.\d+$/,'')}/amalgalite"
 rescue LoadError
   # everyone else.
   require 'amalgalite/amalgalite'
