@@ -1,5 +1,8 @@
 # Amalgalite Changelog
 
+## Version 1.9.1 - 2023-04-27
+* Fix loading of amagalite on ruby 2.6.10 and ruby 2.4.10 [#46]
+
 ## Version 1.9.0 - 2023-04-20
 * Update SQLite to 3.41.2
 * Update required_ruby_version in gemspec to >= 2.3.0
