@@ -1,5 +1,8 @@
 # Amalgalite Changelog
 
+## Version 1.9.3 - 2023-12-20
+* Update to SQLite 3.44.2
+
 ## Version 1.9.2 - 2023-11-14
 * Update to SQLite 3.44.0
 
