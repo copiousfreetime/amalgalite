@@ -4,8 +4,13 @@ agent:
   machine:
     type: e1-standard-2
     os_image: ubuntu2004
+
+auto_cancel:
+  running:
+    when: "branch != 'main'"
+
 blocks:
-  - name: Run Linux Tests
+  - name: Run tests in Linux environment
     dependencies: []
     task:
       prologue:
@@ -22,17 +27,13 @@ blocks:
           matrix:
             - env_var: RUBY_VERSION
               values:
-                - 2.6.10
-                - 2.7.8
                 - 3.0.6
                 - 3.1.4
-                - 3.2.2
+                - 3.2.3
+                - 3.3.0
           commands:
-            - sem-version ruby ${RUBY_VERSION} -f
-            - bundle config set --local deployment true
-            - bundle config set --local path vendor/bundle
-            - gem update --no-doc bundler
-            - bundle install
+            - source .semaphore/ensure-ruby-version.sh
+            - source .semaphore/ensure-bundle.sh
             - mkdir -p tmp/test-results/
             - export TEST_RESULTS_FILE=tmp/test-results/${RUBY_VERSION}.xml
             - bundle exec rake test
@@ -53,16 +54,13 @@ blocks:
           matrix:
             - env_var: RUBY_VERSION
               values:
-                - 2.7.8
                 - 3.0.6
                 - 3.1.4
-                - 3.2.2
+                - 3.2.3
+                - 3.3.0
           commands:
-            - sem-version ruby ${RUBY_VERSION} -f
-            - bundle config set --local deployment true
-            - bundle config set --local path vendor/bundle
-            - gem update --no-doc bundler
-            - bundle install
+            - source .semaphore/ensure-ruby-version.sh
+            - source .semaphore/ensure-bundle.sh
             - mkdir -p tmp/test-results/
             - export TEST_RESULTS_FILE=tmp/test-results/${RUBY_VERSION}.xml
             - bundle exec rake test
