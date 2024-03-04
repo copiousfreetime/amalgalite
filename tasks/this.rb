@@ -21,6 +21,9 @@ class ThisProject
   # The hash of Gem::Specifications keyed' by platform
   attr_accessor :gemspecs
 
+  # List of cross platforms to build the gem for
+  attr_accessor :cross_platforms
+
   # Public: Initialize ThisProject
   #
   # Yields self
