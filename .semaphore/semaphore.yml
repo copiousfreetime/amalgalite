@@ -10,7 +10,7 @@ auto_cancel:
     when: "branch != 'main'"
 
 blocks:
-  - name: Run tests in Linux environment
+  - name: Run Linux Tests
     dependencies: []
     task:
       prologue:
