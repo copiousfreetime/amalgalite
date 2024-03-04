@@ -1,7 +1,6 @@
 require 'yaml'
 require 'uri'
 require 'open-uri'
-require 'debug'
 
 namespace :semaphore do
 
