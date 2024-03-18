@@ -22,6 +22,13 @@ This.ruby_gemspec do |spec|
   spec.license = "BSD-3-Clause"
 end
 
+This.cross_platforms = %w[
+  x86-mingw32
+  x64-mingw-ucrt
+  x64-mingw32
+]
+
 load 'tasks/default.rake'
 load 'tasks/extension.rake'
 load 'tasks/custom.rake'
+load 'tasks/semaphore.rake'

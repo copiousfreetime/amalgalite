@@ -75,7 +75,7 @@ blocks:
           os_image: ubuntu2004
         containers:
           - name: rake-compiler-dock
-            image: "larskanis/rake-compiler-dock-mri-x86-mingw32:1.2.2"
+            image: "ghcr.io/rake-compiler/rake-compiler-dock-image:1.4.0-mri-x86-mingw32"
       jobs:
         - name: build x86-mingw32 gem
           commands:
@@ -95,7 +95,7 @@ blocks:
           os_image: ubuntu2004
         containers:
           - name: rake-compiler-dock
-            image: "larskanis/rake-compiler-dock-mri-x64-mingw32:1.2.2"
+            image: "ghcr.io/rake-compiler/rake-compiler-dock-image:1.4.0-mri-x64-mingw32"
       jobs:
         - name: build x64-mingw32
           commands:
@@ -115,7 +115,7 @@ blocks:
           os_image: ubuntu2004
         containers:
           - name: rake-compiler-dock
-            image: "larskanis/rake-compiler-dock-mri-x64-mingw-ucrt:1.2.2"
+            image: "ghcr.io/rake-compiler/rake-compiler-dock-image:1.4.0-mri-x64-mingw-ucrt"
       jobs:
         - name: build x64-mingw-ucrt
           commands:
