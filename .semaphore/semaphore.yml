@@ -115,7 +115,7 @@ blocks:
           os_image: ubuntu2004
         containers:
           - name: rake-compiler-dock
-            image: "ghcr.io/rake-compiler/rake-compiler-dock-image:1.4.0-mri-x64-mingw32-ucrt"
+            image: "ghcr.io/rake-compiler/rake-compiler-dock-image:1.4.0-mri-x64-mingw-ucrt"
       jobs:
         - name: build x64-mingw-ucrt
           commands:
