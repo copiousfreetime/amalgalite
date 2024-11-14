@@ -4,5 +4,5 @@
 #++
 
 module Amalgalite
-  VERSION = "1.9.4"
+  VERSION = "1.9.5"
 end
