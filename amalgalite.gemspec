@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze]
   s.authors = ["Jeremy Hinegardner".freeze]
-  s.date = "2024-03-04"
+  s.date = "2024-11-14"
   s.description = "Amalgalite embeds the SQLite database engine as a ruby extension. There is no need to install SQLite separately.".freeze
   s.email = "jeremy@copiousfreetime.org".freeze
   s.executables = ["amalgalite-pack".freeze]
@@ -22,13 +22,14 @@ Gem::Specification.new do |s|
   s.licenses = ["BSD-3-Clause".freeze]
   s.rdoc_options = ["--main".freeze, "README.md".freeze, "--markup".freeze, "tomdoc".freeze]
   s.required_ruby_version = Gem::Requirement.new(">= 2.3.0".freeze)
-  s.rubygems_version = "3.4.21".freeze
+  s.rubygems_version = "3.5.22".freeze
   s.summary = "Amalgalite embeds the SQLite database engine as a ruby extension. There is no need to install SQLite separately.".freeze
   s.test_files = ["spec/aggregate_spec.rb".freeze, "spec/amalgalite_spec.rb".freeze, "spec/blob_spec.rb".freeze, "spec/boolean_spec.rb".freeze, "spec/busy_handler.rb".freeze, "spec/data/iso-3166-country.txt".freeze, "spec/data/iso-3166-schema.sql".freeze, "spec/data/iso-3166-subcountry.txt".freeze, "spec/data/make-iso-db.sh".freeze, "spec/database_spec.rb".freeze, "spec/default_map_spec.rb".freeze, "spec/function_spec.rb".freeze, "spec/integeration_spec.rb".freeze, "spec/iso_3166_database.rb".freeze, "spec/json_spec.rb".freeze, "spec/packer_spec.rb".freeze, "spec/paths_spec.rb".freeze, "spec/progress_handler_spec.rb".freeze, "spec/requires_spec.rb".freeze, "spec/rtree_spec.rb".freeze, "spec/schema_spec.rb".freeze, "spec/spec_helper.rb".freeze, "spec/sqlite3/constants_spec.rb".freeze, "spec/sqlite3/database_status_spec.rb".freeze, "spec/sqlite3/status_spec.rb".freeze, "spec/sqlite3/version_spec.rb".freeze, "spec/sqlite3_spec.rb".freeze, "spec/statement_spec.rb".freeze, "spec/storage_map_spec.rb".freeze, "spec/tap_spec.rb".freeze, "spec/text_map_spec.rb".freeze, "spec/type_map_spec.rb".freeze, "spec/version_spec.rb".freeze]
 
   s.specification_version = 4
 
   s.add_runtime_dependency(%q<arrayfields>.freeze, ["~> 4.9".freeze])
+  s.add_runtime_dependency(%q<ostruct>.freeze, ["~> 0.6".freeze])
   s.add_development_dependency(%q<rspec>.freeze, ["~> 3.12".freeze])
   s.add_development_dependency(%q<rspec_junit_formatter>.freeze, ["~> 0.6".freeze])
   s.add_development_dependency(%q<rake>.freeze, ["~> 13.0".freeze])
