@@ -27,10 +27,10 @@ blocks:
           matrix:
             - env_var: RUBY_VERSION
               values:
-                - 3.0.6
-                - 3.1.4
-                - 3.2.3
-                - 3.3.0
+                - 3.0.7
+                - 3.1.6
+                - 3.2.6
+                - 3.3.6
           commands:
             - source .semaphore/ensure-ruby-version.sh
             - source .semaphore/ensure-bundle.sh
@@ -44,7 +44,7 @@ blocks:
       agent:
         machine:
           type: a1-standard-4
-          os_image: macos-xcode14
+          os_image: macos-xcode15
       prologue:
         commands:
           - checkout
@@ -54,10 +54,10 @@ blocks:
           matrix:
             - env_var: RUBY_VERSION
               values:
-                - 3.0.6
-                - 3.1.4
-                - 3.2.3
-                - 3.3.0
+                - 3.0.7
+                - 3.1.6
+                - 3.2.6
+                - 3.3.6
           commands:
             - source .semaphore/ensure-ruby-version.sh
             - source .semaphore/ensure-bundle.sh
