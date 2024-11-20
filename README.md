@@ -51,7 +51,7 @@ against the [compile options from SQLite](https://www.sqlite.org/compile.html)
 
 ## CHANGES
 
-Read the HISTORY.rdoc file.
+Read the [HISTORY.md](HISTORY.md) file.
 
 ## LICENSE
 

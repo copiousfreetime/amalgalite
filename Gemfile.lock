@@ -1,8 +1,9 @@
 PATH
   remote: .
   specs:
-    amalgalite (1.9.4)
+    amalgalite (1.9.5)
       arrayfields (~> 4.9)
+      ostruct (~> 0.6)
 
 GEM
   remote: https://rubygems.org/
@@ -11,26 +12,27 @@ GEM
       io-like (~> 0.3.0)
     arrayfields (4.9.2)
     diff-lcs (1.5.1)
-    docile (1.4.0)
+    docile (1.4.1)
     io-like (0.3.1)
-    psych (5.1.2)
+    ostruct (0.6.1)
+    psych (5.2.0)
       stringio
-    rake (13.1.0)
-    rake-compiler (1.2.7)
+    rake (13.2.1)
+    rake-compiler (1.2.8)
       rake
-    rake-compiler-dock (1.4.0)
-    rdoc (6.6.2)
+    rake-compiler-dock (1.5.2)
+    rdoc (6.8.1)
       psych (>= 4.0.0)
     rspec (3.13.0)
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
       rspec-mocks (~> 3.13.0)
-    rspec-core (3.13.0)
+    rspec-core (3.13.2)
       rspec-support (~> 3.13.0)
-    rspec-expectations (3.13.0)
+    rspec-expectations (3.13.3)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
-    rspec-mocks (3.13.0)
+    rspec-mocks (3.13.2)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-support (3.13.1)
@@ -40,9 +42,9 @@ GEM
       docile (~> 1.1)
       simplecov-html (~> 0.11)
       simplecov_json_formatter (~> 0.1)
-    simplecov-html (0.12.3)
+    simplecov-html (0.13.1)
     simplecov_json_formatter (0.1.4)
-    stringio (3.1.0)
+    stringio (3.1.2)
 
 PLATFORMS
   arm64-darwin-21
@@ -62,4 +64,4 @@ DEPENDENCIES
   simplecov (~> 0.21)
 
 BUNDLED WITH
-   2.4.12
+   2.5.23
