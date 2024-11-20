@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    amalgalite (1.9.4)
+    amalgalite (1.9.5)
       arrayfields (~> 4.9)
       ostruct (~> 0.6)
 
@@ -21,7 +21,7 @@ GEM
     rake-compiler (1.2.8)
       rake
     rake-compiler-dock (1.5.2)
-    rdoc (6.7.0)
+    rdoc (6.8.1)
       psych (>= 4.0.0)
     rspec (3.13.0)
       rspec-core (~> 3.13.0)
