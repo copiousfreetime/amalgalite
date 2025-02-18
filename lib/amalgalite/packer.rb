@@ -1,5 +1,4 @@
 require 'optparse'
-require 'ostruct'
 require 'pathname'
 require 'zlib'
 
@@ -12,6 +11,11 @@ module Amalgalite
     attr_reader :packing_list
     attr_reader :dbfile
     attr_reader :options
+
+    class Entry
+      attr_accessor :require_path
+      attr_accessor :file_path
+    end
 
     class << self
       def default_options
@@ -137,8 +141,6 @@ module Amalgalite
     # Stores all the .rb files in the list into the given database.  The prefix
     # is the file system path to remove from the front of the path on each file
     #
-    # manifest is an array of OpenStructs.  
-    #
     def pack_files( manifest )
       db = Amalgalite::Database.new( dbfile )
       check_db( db )
@@ -196,7 +198,7 @@ module Amalgalite
       prefix_path = ::Pathname.new( options[:strip_prefix] )
       file_list.each do |f|
         file_path = ::Pathname.new( File.expand_path( f ) )
-        m = ::OpenStruct.new
+        m = Entry.new
         # if it is a directory then grab all the .rb files from it
         if File.directory?( file_path ) then
           manifest.concat( make_manifest( Dir.glob( File.join( f, "**", "*.rb" ) ) ) )

@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 # To be used if the gem has extensions.
 # If this task set is inclueded then you will need to also have
 #
-#   spec.add_development_dependency( 'rake-compiler', '~> 0.8.1' )
+# gem "rake-compiler", "~> 1.0" in your Gemfile
 #
 # in your top level rakefile
 begin
@@ -15,9 +17,10 @@ begin
     ext.cross_platform = This.cross_platforms
   end
 
-  task :test_requirements => :compile
+  desc "compile before testing"
+  task test_requirements: :compile
 rescue LoadError
-  This.task_warning( 'extension' )
+  This.task_warning("extension")
 end
 
 CLOBBER << "lib/**/*.{jar,so,bundle}"
