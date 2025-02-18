@@ -340,7 +340,6 @@ void Init_amalgalite()
     Init_amalgalite_database( );
     Init_amalgalite_statement( );
     Init_amalgalite_blob( );
-    Init_amalgalite_requires_bootstrap( );
 
     /*
      * initialize sqlite itself
