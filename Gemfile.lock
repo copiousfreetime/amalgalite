@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    amalgalite (1.9.5)
+    amalgalite (2.0.0)
       csv (~> 3.0)
 
 GEM

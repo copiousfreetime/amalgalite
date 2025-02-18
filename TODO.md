@@ -40,7 +40,6 @@
 - sequel driver optimization
 
 ## Features:
-- Think about moving from arrayfields to ordered hash?
 - add to command line which directory to pack into a rubylibs table
 - amalgalite command line tool
 - use ruby's ALLOC_N and hook into sqlite3_mem_methods
@@ -53,5 +52,3 @@
   prepared statement
 - sqlite_sourceid, sqlite_source_id
 - sqlite3_strnicmp
--
-
