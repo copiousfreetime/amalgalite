@@ -27,6 +27,10 @@ module Amalgalite
     # the column name
     attr_accessor :name
 
+    # The column "as" name. This is what its name is in the query, if this is
+    # part of the query, then this is the result, otherwise it is the name
+    attr_accessor :as_name
+
     # the default value of the column.   This may not have a value and that
     # either means that there is no default value, or one could not be
     # determined.
@@ -47,11 +51,12 @@ module Amalgalite
     ##
     # Create a column with its name and associated table
     #
-    def initialize( db, table, name, order)
+    def initialize( db, table, name, order, as_name = nil)
       @db                 = db
       @table              = table
       @name               = name
       @order              = Float(order).to_i
+      @as_name            = as_name || name
       @declared_data_type = nil
       @default_value      = nil
     end
