@@ -7,6 +7,7 @@ This.email    = "jeremy@copiousfreetime.org"
 This.homepage = "http://github.com/copiousfreetime/#{ This.name }"
 
 This.ruby_gemspec do |spec|
+  spec.add_dependency( 'csv', '~> 3.0' )
 
   spec.add_development_dependency( 'rspec',              '~> 3.12' )
   spec.add_development_dependency( 'rspec_junit_formatter','~> 0.6' )
