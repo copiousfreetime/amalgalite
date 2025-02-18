@@ -68,7 +68,7 @@ blocks:
 
   - name: Build x86-mingw32 gem
     dependencies:
-      - Run Linux Tests
+      - Run tests in Linux environment
     task:
       agent:
         machine:
@@ -88,7 +88,7 @@ blocks:
 
   - name: Build x64-mingw32 gem
     dependencies:
-      - Run Linux Tests
+      - Run tests in Linux environment
     task:
       agent:
         machine:
@@ -108,7 +108,7 @@ blocks:
 
   - name: Build x64-mingw-ucrt gem
     dependencies:
-      - Run Linux Tests
+      - Run tests in Linux environment
     task:
       agent:
         machine:
