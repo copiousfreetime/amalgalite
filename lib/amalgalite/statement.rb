@@ -4,8 +4,7 @@
 #++
 #
 require 'date'
-require 'arrayfields'
-require 'ostruct'
+require 'amalgalite/result'
 
 module Amalgalite
   class Statement
@@ -258,9 +257,10 @@ module Amalgalite
     # Database#type_map
     #
     def next_row
-      row = []
+      row = nil
       case rc = @stmt_api.step
       when ResultCode::ROW
+        row = ::Amalgalite::Result::Row.new(field_map: result_field_map, values: Array.new(result_meta.size))
         result_meta.each_with_index do |col, idx|
           value = nil
           column_type = @stmt_api.column_type( idx )
@@ -278,24 +278,22 @@ module Amalgalite
             # blob api, otherwise we have to use the all at once version.
             if using_rowid_column? then
               value = Amalgalite::Blob.new( :db_blob => SQLite3::Blob.new( db.api,
-                                                                           col.schema.db,
-                                                                           col.schema.table,
-                                                                           col.schema.name,
+                                                                           col.db,
+                                                                           col.table,
+                                                                           col.name,
                                                                            @stmt_api.column_int64( @rowid_index ),
                                                                            "r"),
-                                            :column => col.schema)
+                                            :column => col)
             else
-              value = Amalgalite::Blob.new( :string => @stmt_api.column_blob( idx ), :column => col.schema )
+              value = Amalgalite::Blob.new( :string => @stmt_api.column_blob( idx ), :column => col )
             end
           else
             raise ::Amalgalite::Error, "BUG! : Unknown SQLite column type of #{column_type}"
           end
 
-          row << db.type_map.result_value_of( col.schema.declared_data_type, value )
+          row.store(idx, db.type_map.result_value_of( col.declared_data_type, value ))
         end
-        row.fields = result_fields
       when ResultCode::DONE
-        row = nil
         write_blobs
       else
         self.close # must close so that the error message is guaranteed to be pushed into the database handler
@@ -334,15 +332,13 @@ module Amalgalite
       unless @result_meta
         meta = []
         column_count.times do |idx|
-          column_meta = ::OpenStruct.new
-          column_meta.name = @stmt_api.column_name( idx )
-
+          as_name  = @stmt_api.column_name( idx )
           db_name  = @stmt_api.column_database_name( idx ) 
           tbl_name = @stmt_api.column_table_name( idx ) 
           col_name = @stmt_api.column_origin_name( idx ) 
 
-          column_meta.schema = ::Amalgalite::Column.new( db_name, tbl_name, col_name, idx )
-          column_meta.schema.declared_data_type = @stmt_api.column_declared_type( idx )
+          column_meta = ::Amalgalite::Column.new( db_name, tbl_name, col_name, idx, as_name )
+          column_meta.declared_data_type = @stmt_api.column_declared_type( idx )
 
           # only check for rowid if we have a table name and it is not one of the
           # sqlite_master tables.  We could get recursion in those cases.
@@ -351,7 +347,7 @@ module Amalgalite
             @rowid_index = idx
           end
 
-          meta << column_meta 
+          meta << column_meta
         end
 
         @result_meta = meta
@@ -382,7 +378,16 @@ module Amalgalite
     # all strings
     #
     def result_fields
-      @fields ||= result_meta.collect { |m| m.name }
+      @fields ||= result_meta.collect { |m| m.as_name }
+    end
+
+    def result_field_map
+      @result_field_map ||= {}.tap do |map|
+        result_meta.each do |column|
+          map[column.as_name.to_s] = column.order
+          map[column.as_name.to_sym] = column.order
+        end
+      end
     end
 
     ##
