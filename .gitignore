@@ -8,6 +8,7 @@ lib/amalgalite/2.0
 lib/amalgalite/2.1
 lib/amalgalite/2.2
 ext/amalgalite/Makefile
+ext/amangalite/Rakefile
 ext/amalgalite/rbconfig.rb
 ext/amalgalite/*.def
 examples/*.db
@@ -17,6 +18,9 @@ tmp/*
 email.txt
 spec/data/*.db
 *.bundle
+*.log
+*.o
+*.so
 .gem/
 vendor/
 .byebug_history
