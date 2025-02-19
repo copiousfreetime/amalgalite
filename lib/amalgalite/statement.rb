@@ -263,7 +263,8 @@ module Amalgalite
         row = ::Amalgalite::Result::Row.new(field_map: result_field_map, values: Array.new(result_meta.size))
         result_meta.each_with_index do |col, idx|
           value = nil
-          case col.statement_column_type
+          column_type = @stmt_api.column_type( idx )
+          case column_type
           when DataType::TEXT
             value = @stmt_api.column_text( idx )
           when DataType::FLOAT
@@ -341,7 +342,6 @@ module Amalgalite
 
           column_meta = ::Amalgalite::Column.new( db_name, tbl_name, col_name, idx, as_name )
           column_meta.declared_data_type = @stmt_api.column_declared_type( idx )
-          column_meta.statement_column_type = @stmt_api.column_type( idx )
 
           # only check for rowid if we have a table name and it is not one of the
           # sqlite_master tables.  We could get recursion in those cases.
