@@ -66,11 +66,11 @@ describe Amalgalite::Statement do
   end
 
   it "can execute the same prepared statement multiple times" do
-    @db.execute(" CREATE TABLE t(x,y); ")
+    @db.execute(" CREATE TABLE t(x int, y float); ")
     values = {}
     @db.prepare("INSERT INTO t( x, y ) VALUES( $x, $y )" ) do |stmt|
       20.times do |x|
-        y = rand( x )
+        y = rand( x ).to_f
         stmt.execute( { "$x" => x, "$y" => y } )
         values[x] = y
       end
@@ -84,11 +84,11 @@ describe Amalgalite::Statement do
   end
 
   it "expands an array when binding parameters" do
-    @db.execute(" CREATE TABLE t(x,y); ")
+    @db.execute(" CREATE TABLE t(x int, y float); ")
     values = {}
     @db.prepare( "INSERT INTO t( x, y ) VALUES( ?, ? )") do |stmt|
       20.times do |x|
-        y = rand( x )
+        y = rand( x ).to_f
         a = [ x, y ]
         stmt.execute( a )
         values[x] = y
