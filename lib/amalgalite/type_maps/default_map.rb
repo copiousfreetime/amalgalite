@@ -15,47 +15,42 @@ module Amalgalite::TypeMaps
   # out the best way to convert between populate SQL 'types' and ruby classes
   #
   class DefaultMap
-    class << self
-      def methods_handling_sql_types # :nodoc:
-        @methods_handling_sql_types ||= {
-          'date'      => %w[ date ],
-          'datetime'  => %w[ datetime ],
-          'time'      => %w[ timestamp time ],
-          'float'     => %w[ double float real numeric decimal ],
-          'integer'   => %w[ integer tinyint smallint int int2 int4 int8 bigint serial bigserial ],
-          'string'    => %w[ text char string varchar character json ],
-          'boolean'   => %w[ bool boolean ],
-          'blob'      => %w[ binary blob ],
-        }
-      end
+    SQL_TO_METHOD = {
+      'date'      => 'date',
+      'datetime'  => 'datetime',
+      'timestamp' => 'time',
+      'time'      => 'time',
 
-      # say what method to call to convert an sql type to a ruby type
-      #
-      def sql_to_method( sql_type  ) # :nodoc:
-        unless defined? @sql_to_method
-          @sql_to_method = {}
-          methods_handling_sql_types.each_pair do |method, sql_types|
-            sql_types.each { |t| @sql_to_method[t] = method }
-          end
-        end
-        return_method = @sql_to_method[sql_type]
+      'double'    => 'float',
+      'float'     => 'float',
+      'real'      => 'float',
+      'numeric'   => 'float',
+      'decimal'   => 'float',
 
-        # the straight lookup didn't work, try iterating through the types and
-        # see what is found
-        unless return_method
-          @sql_to_method.each_pair do |sql, method|
-            if sql_type.index(sql) then
-              return_method = method
-              break
-            end
-          end
-        end
-        return return_method
-      end
-    end
+      'integer'   => 'integer',
+      'tinyint'   => 'integer',
+      'smallint'  => 'integer',
+      'int'       => 'integer',
+      'int2'      => 'integer',
+      'int4'      => 'integer',
+      'int8'      => 'integer',
+      'bigint'    => 'integer',
+      'serial'    => 'integer',
+      'bigserial' => 'integer',
 
-    def initialize
-    end
+      'text'      => 'string',
+      'char'      => 'string',
+      'string'    => 'string',
+      'varchar'   => 'string',
+      'character' => 'string',
+      'json'      => 'string',
+
+      'bool'      => 'boolean',
+      'boolean'   => 'boolean',
+
+      'blob'      => 'blob',
+      'binary'    => 'blob',
+    }
 
     ##
     # A straight logical mapping (for me at least) of basic Ruby classes to SQLite types, if
@@ -81,21 +76,17 @@ module Amalgalite::TypeMaps
     # there will be no change, but for some (i.e. Dates and Times) there is some
     # conversion
     #
-    def result_value_of( declared_type, value )
+    def result_value_of( normalized_declared_type, value )
       case value
-      when Numeric
-        return value
-      when NilClass
-        return value
-      when Amalgalite::Blob
+      when Numeric, NilClass, Amalgalite::Blob
         return value
       when String
-        if declared_type then
-          conversion_method = DefaultMap.sql_to_method( declared_type.downcase )
+        if normalized_declared_type then
+          conversion_method = DefaultMap::SQL_TO_METHOD[normalized_declared_type]
           if conversion_method then
-            return send(conversion_method, value)  
+            return send(conversion_method, value)
           else
-            raise ::Amalgalite::Error, "Unable to convert SQL type of #{declared_type} to a Ruby class"
+            raise ::Amalgalite::Error, "Unable to convert SQL type of #{normalized_declared_type} to a Ruby class"
           end
         else
           # unable to do any other conversion, just return what we have.

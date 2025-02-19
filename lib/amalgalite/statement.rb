@@ -263,8 +263,7 @@ module Amalgalite
         row = ::Amalgalite::Result::Row.new(field_map: result_field_map, values: Array.new(result_meta.size))
         result_meta.each_with_index do |col, idx|
           value = nil
-          column_type = @stmt_api.column_type( idx )
-          case column_type
+          case col.statement_column_type
           when DataType::TEXT
             value = @stmt_api.column_text( idx )
           when DataType::FLOAT
@@ -291,7 +290,7 @@ module Amalgalite
             raise ::Amalgalite::Error, "BUG! : Unknown SQLite column type of #{column_type}"
           end
 
-          row.store(idx, db.type_map.result_value_of( col.declared_data_type, value ))
+          row.store(idx, db.type_map.result_value_of( col.normalized_declared_data_type, value ))
         end
       when ResultCode::DONE
         write_blobs
@@ -324,21 +323,25 @@ module Amalgalite
     # The full meta information from the origin column is also obtained for help
     # in doing type conversion.
     #
-    # As iteration over the row meta informatio happens, record if the special
+    # As iteration over the row meta information happens, record if the special
     # "ROWID", "OID", or "_ROWID_" column is encountered.  If that column is
     # encountered then we make note of it.
+    #
+    # This method cannot be called until after the @stmt_api has returne from
+    # `step` at least once
     #
     def result_meta
       unless @result_meta
         meta = []
         column_count.times do |idx|
           as_name  = @stmt_api.column_name( idx )
-          db_name  = @stmt_api.column_database_name( idx ) 
-          tbl_name = @stmt_api.column_table_name( idx ) 
-          col_name = @stmt_api.column_origin_name( idx ) 
+          db_name  = @stmt_api.column_database_name( idx )
+          tbl_name = @stmt_api.column_table_name( idx )
+          col_name = @stmt_api.column_origin_name( idx )
 
           column_meta = ::Amalgalite::Column.new( db_name, tbl_name, col_name, idx, as_name )
           column_meta.declared_data_type = @stmt_api.column_declared_type( idx )
+          column_meta.statement_column_type = @stmt_api.column_type( idx )
 
           # only check for rowid if we have a table name and it is not one of the
           # sqlite_master tables.  We could get recursion in those cases.

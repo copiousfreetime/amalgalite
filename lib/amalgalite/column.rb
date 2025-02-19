@@ -39,7 +39,14 @@ module Amalgalite
 
     # the declared data type of the column in the original sql that created the
     # column
-    attr_accessor :declared_data_type
+    attr_reader :declared_data_type
+
+    # the declared data type that is tokenized and then downcased
+    attr_reader :normalized_declared_data_type
+
+    # The sqlite statement type of the column, this will be a value in
+    # `DataType` and is one of the items mapped from sqlute3_column_type
+    attr_accessor :statement_column_type
 
     # the collation sequence name of the column
     attr_accessor :collation_sequence_name
@@ -51,7 +58,7 @@ module Amalgalite
     ##
     # Create a column with its name and associated table
     #
-    def initialize( db, table, name, order, as_name = nil)
+    def initialize( db, table, name, order, as_name = nil, statement_column_type = nil )
       @db                 = db
       @table              = table
       @name               = name
@@ -59,6 +66,16 @@ module Amalgalite
       @as_name            = as_name || name
       @declared_data_type = nil
       @default_value      = nil
+      @statement_column_type = statement_column_type
+    end
+
+    def declared_data_type=(input)
+      return nil if input.nil?
+      @declared_data_type = input
+
+      # just the first word token
+      @normalized_declared_data_type = input[/^\w+/].downcase
+      return @declared_data_type
     end
 
     # true if the column has a default value
