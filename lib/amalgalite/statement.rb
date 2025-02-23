@@ -261,7 +261,7 @@ module Amalgalite
       case rc = @stmt_api.step
       when ResultCode::ROW
         row = ::Amalgalite::Result::Row.new(field_map: result_field_map, values: Array.new(result_meta.size))
-        result_meta.each_with_index do |col, idx|
+        result_meta.each.with_index do |col, idx|
           value = nil
           column_type = @stmt_api.column_type( idx )
           case column_type
@@ -291,13 +291,13 @@ module Amalgalite
             raise ::Amalgalite::Error, "BUG! : Unknown SQLite column type of #{column_type}"
           end
 
-          row.store(idx, db.type_map.result_value_of( col.declared_data_type, value ))
+          row.store_by_index(idx, db.type_map.result_value_of( col.normalized_declared_data_type, value ))
         end
       when ResultCode::DONE
         write_blobs
       else
         self.close # must close so that the error message is guaranteed to be pushed into the database handler
-                   # and we can can call last_error_message on it
+                   # and we can call last_error_message on it
         msg = "SQLITE ERROR #{rc} (#{Amalgalite::SQLite3::Constants::ResultCode.name_from_value( rc )}) : #{@db.api.last_error_message}"
         raise Amalgalite::SQLite3::Error, msg
       end
@@ -324,18 +324,21 @@ module Amalgalite
     # The full meta information from the origin column is also obtained for help
     # in doing type conversion.
     #
-    # As iteration over the row meta informatio happens, record if the special
+    # As iteration over the row meta information happens, record if the special
     # "ROWID", "OID", or "_ROWID_" column is encountered.  If that column is
     # encountered then we make note of it.
+    #
+    # This method cannot be called until after the @stmt_api has returne from
+    # `step` at least once
     #
     def result_meta
       unless @result_meta
         meta = []
         column_count.times do |idx|
           as_name  = @stmt_api.column_name( idx )
-          db_name  = @stmt_api.column_database_name( idx ) 
-          tbl_name = @stmt_api.column_table_name( idx ) 
-          col_name = @stmt_api.column_origin_name( idx ) 
+          db_name  = @stmt_api.column_database_name( idx )
+          tbl_name = @stmt_api.column_table_name( idx )
+          col_name = @stmt_api.column_origin_name( idx )
 
           column_meta = ::Amalgalite::Column.new( db_name, tbl_name, col_name, idx, as_name )
           column_meta.declared_data_type = @stmt_api.column_declared_type( idx )

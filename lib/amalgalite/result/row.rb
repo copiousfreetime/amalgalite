@@ -32,18 +32,22 @@ module Amalgalite
         @field_map.keys
       end
 
+      def store_by_index(index, value)
+        @values[index] = value
+      end
+
       def store(field_name_or_index, value)
         index = field_name_or_index_to_index(field_name_or_index)
-        values[index] = value
+        @values[index] = value
       end
       alias []= store
 
       def fetch(field_name_or_index)
         case field_name_or_index
         when Integer
-          values[field_name_or_index]
+          @values[field_name_or_index]
         when Symbol, String
-          values[field_map[field_name_or_index]]
+          @values[field_map[field_name_or_index]]
         else
           raise Amalgalite::Error, "Unknown type (#{field_name_or_index.class}) of key for a Row value: #{field_name_or_index}"
         end
@@ -55,11 +59,11 @@ module Amalgalite
       end
 
       def length
-        values.size
+        @values.size
       end
 
       def to_h
-        Hash[field_map.keys.zip(values)]
+        Hash[@field_map.keys.zip(values)]
       end
 
       private
@@ -69,7 +73,7 @@ module Amalgalite
         when Integer
           field_name_or_index
         when Symbol, String
-          values[field_map[field_name_or_index]]
+          @values[@field_map[field_name_or_index]]
         else
           raise Amalgalite::Error, "Unknown type (#{field_name_or_index.class}) of key for a Row value: #{field_name_or_index}"
         end

@@ -39,7 +39,10 @@ module Amalgalite
 
     # the declared data type of the column in the original sql that created the
     # column
-    attr_accessor :declared_data_type
+    attr_reader :declared_data_type
+
+    # the declared data type that is tokenized and then downcased
+    attr_reader :normalized_declared_data_type
 
     # the collation sequence name of the column
     attr_accessor :collation_sequence_name
@@ -58,7 +61,17 @@ module Amalgalite
       @order              = Float(order).to_i
       @as_name            = as_name || name
       @declared_data_type = nil
+      @normalized_declared_data_type = nil
       @default_value      = nil
+    end
+
+    def declared_data_type=(input)
+      return nil if input.nil?
+      @declared_data_type = input
+
+      # just the first word token
+      @normalized_declared_data_type = input[/^\w+/]&.downcase
+      return @declared_data_type
     end
 
     # true if the column has a default value

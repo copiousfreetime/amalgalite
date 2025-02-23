@@ -1,7 +1,8 @@
 # Amalgalite Changelog
-## Version NEXT
+## Version 2.0.0 - 2025-XX-XX
 * Improve performance by removing dependency on arrayfields, and usage of ostruct
 * Add csv as dependency as that is now moved out of core standard library
+* Remove the boostrap requires and packer code
 
 ## Version 1.9.5 - 2024-11-15
 * Update to SQLite 3.47.0
