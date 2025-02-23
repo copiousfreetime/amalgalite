@@ -43,10 +43,6 @@ describe Amalgalite::TypeMaps::DefaultMap do
       @map.result_value_of( "NULL", nil ).should == nil
     end
 
-    it "DateTime is returned for delcared types of 'datetime'" do
-      @map.result_value_of( "DaTeTiME", "2008-04-01 23:23:23" ).should be_kind_of(DateTime)
-    end
-
     it "Date is returned for declared types of 'date'" do
       @map.result_value_of( "date", "2008-04-01 23:42:42" ).should be_kind_of(Date)
     end

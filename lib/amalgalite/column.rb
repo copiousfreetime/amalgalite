@@ -61,6 +61,7 @@ module Amalgalite
       @order              = Float(order).to_i
       @as_name            = as_name || name
       @declared_data_type = nil
+      @normalized_declared_data_type = nil
       @default_value      = nil
     end
 
@@ -69,7 +70,7 @@ module Amalgalite
       @declared_data_type = input
 
       # just the first word token
-      @normalized_declared_data_type = input[/^\w+/].downcase
+      @normalized_declared_data_type = input[/^\w+/]&.downcase
       return @declared_data_type
     end
 

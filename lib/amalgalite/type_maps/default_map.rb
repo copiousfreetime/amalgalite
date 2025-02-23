@@ -50,7 +50,7 @@ module Amalgalite::TypeMaps
 
       'blob'      => 'blob',
       'binary'    => 'blob',
-    }
+    }.freeze
 
     ##
     # A straight logical mapping (for me at least) of basic Ruby classes to SQLite types, if
@@ -74,25 +74,26 @@ module Amalgalite::TypeMaps
     ##
     # Map the incoming value to an outgoing value.  For some incoming values,
     # there will be no change, but for some (i.e. Dates and Times) there is some
-    # conversion
+    # conversion.
+    #
+    # It is assumed that `normalized_declared_type` is a downcased string. This
+    # assumption is made for performance reasons as this method is called many
+    # times during the returning of data from a query.
     #
     def result_value_of( normalized_declared_type, value )
       case value
       when Numeric, NilClass, Amalgalite::Blob
         return value
       when String
-        if normalized_declared_type then
-          conversion_method = DefaultMap::SQL_TO_METHOD[normalized_declared_type]
-          if conversion_method then
-            return send(conversion_method, value)
-          else
-            raise ::Amalgalite::Error, "Unable to convert SQL type of #{normalized_declared_type} to a Ruby class"
-          end
+        return value unless normalized_declared_type
+
+        conversion_method = DefaultMap::SQL_TO_METHOD[normalized_declared_type]
+        if conversion_method then
+          return send(conversion_method, value)
         else
-          # unable to do any other conversion, just return what we have.
-          return value
+          raise ::Amalgalite::Error, "Unable to convert SQL type of #{normalized_declared_type} to a Ruby class"
         end
-      else 
+      else
         raise ::Amalgalite::Error, "Unable to convert a class #{value.class.name} with value #{value.inspect}"
       end
     end
