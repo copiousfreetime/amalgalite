@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib".freeze]
   s.authors = ["Jeremy Hinegardner".freeze]
   s.bindir = "exe".freeze
-  s.date = "2025-02-18"
+  s.date = "2025-11-15"
   s.description = "Amalgalite embeds the SQLite database engine as a ruby extension. There is no\nneed to install SQLite separately.".freeze
   s.email = "jeremy@copiousfreetime.org".freeze
   s.extensions = ["ext/amalgalite/c/extconf.rb".freeze]
@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   s.licenses = ["BSD-3-Clause".freeze]
   s.rdoc_options = ["--main".freeze, "README.md".freeze, "--markup".freeze, "tomdoc".freeze]
   s.required_ruby_version = Gem::Requirement.new(">= 3.0.0".freeze)
-  s.rubygems_version = "3.6.3".freeze
+  s.rubygems_version = "3.7.1".freeze
   s.summary = "Amalgalite embeds the SQLite database engine as a ruby extension. There is no need to install SQLite separately.".freeze
 
   s.specification_version = 4
