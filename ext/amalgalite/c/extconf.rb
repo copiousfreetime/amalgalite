@@ -80,5 +80,5 @@ ignoreable_warnings.each do |warning|
   $CFLAGS += " -Wno-#{warning}"
 end
 
-subdir = RUBY_VERSION.sub(/\.\d$/,'')
+subdir = RUBY_VERSION.sub(/\.\d+\z/,'')
 create_makefile("amalgalite/#{subdir}/amalgalite")
