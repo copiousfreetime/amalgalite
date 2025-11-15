@@ -28,10 +28,10 @@ blocks:
           matrix:
             - env_var: RUBY_VERSION
               values:
-                - 3.1.6
-                - 3.2.7
-                - 3.3.7
-                - 3.4.2
+                - 3.1.7
+                - 3.2.9
+                - 3.3.10
+                - 3.4.7
           commands:
             - source .semaphore/ensure-ruby-version.sh
             - source .semaphore/ensure-bundle.sh
@@ -55,10 +55,10 @@ blocks:
           matrix:
             - env_var: RUBY_VERSION
               values:
-                - 3.1.6
-                - 3.2.7
-                - 3.3.7
-                - 3.4.2
+                - 3.1.7
+                - 3.2.9
+                - 3.3.10
+                - 3.4.7
           commands:
             - source .semaphore/ensure-ruby-version.sh
             - source .semaphore/ensure-bundle.sh
