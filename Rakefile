@@ -27,7 +27,6 @@ end
 This.cross_platforms = %w[
   x86-mingw32
   x64-mingw-ucrt
-  x64-mingw32
 ]
 
 load 'tasks/default.rake'
