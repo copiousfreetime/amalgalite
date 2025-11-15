@@ -51,7 +51,7 @@ describe "Scalar SQL Functions" do
   it "does not allow outrageous arity" do
     class FunctionTest3 < ::Amalgalite::Function
       def initialize
-        super( 'ftest3', 128)
+        super( 'ftest3', 1001)
       end
     end
     lambda { @iso_db.define_function("ftest3", FunctionTest3.new) }.should raise_error( ::Amalgalite::SQLite3::Error, /SQLITE_ERROR .* Library used incorrectly/ )

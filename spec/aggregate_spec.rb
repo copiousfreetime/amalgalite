@@ -81,7 +81,7 @@ describe "Aggregate SQL Functions" do
   it "does not allow outrageous arity" do
     class AggregateTest3 < AggregateTest1
       def name() "atest3"; end
-      def arity() 128; end
+      def arity() 1001; end
     end
     lambda { @iso_db.define_aggregate("atest3", AggregateTest3 ) }.should raise_error( ::Amalgalite::SQLite3::Error, /SQLITE_ERROR .* Library used incorrectly/ )
   end
