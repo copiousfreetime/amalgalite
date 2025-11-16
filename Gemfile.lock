@@ -2,87 +2,71 @@ PATH
   remote: .
   specs:
     amalgalite (2.0.0)
-      csv (~> 3.0)
+      csv (~> 3.3)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    archive-zip (0.12.0)
-      io-like (~> 0.3.0)
-    csv (3.3.2)
-    diff-lcs (1.5.1)
+    archive-zip (0.13.1)
+      io-like (~> 0.4.0)
+    cgi (0.5.0)
+    csv (3.3.5)
+    date (3.5.0)
+    diff-lcs (1.6.2)
     docile (1.4.1)
-    io-like (0.3.1)
-    psych (5.2.0)
+    erb (4.0.4)
+      cgi (>= 0.3.3)
+    io-like (0.4.0)
+    psych (5.2.6)
+      date
       stringio
-    rake (13.2.1)
-    rake-compiler (1.2.8)
+    rake (13.3.1)
+    rake-compiler (1.3.0)
       rake
-    rake-compiler-dock (1.5.2)
-    rdoc (6.8.1)
+    rake-compiler-dock (1.10.0)
+    rdoc (6.15.1)
+      erb
       psych (>= 4.0.0)
-    rspec (3.13.0)
+      tsort
+    rspec (3.13.2)
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
       rspec-mocks (~> 3.13.0)
-    rspec-core (3.13.2)
+    rspec-core (3.13.6)
       rspec-support (~> 3.13.0)
-    rspec-expectations (3.13.3)
+    rspec-expectations (3.13.5)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
-    rspec-mocks (3.13.2)
+    rspec-mocks (3.13.7)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
-    rspec-support (3.13.1)
+    rspec-support (3.13.6)
     rspec_junit_formatter (0.6.0)
       rspec-core (>= 2, < 4, != 2.12.0)
     simplecov (0.22.0)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
       simplecov_json_formatter (~> 0.1)
-    simplecov-html (0.13.1)
+    simplecov-html (0.13.2)
     simplecov_json_formatter (0.1.4)
-    stringio (3.1.2)
+    stringio (3.1.8)
+    tsort (0.2.0)
 
 PLATFORMS
-  arm64-darwin-21
+  arm64-darwin-23
   ruby
-  x86_64-darwin-21
   x86_64-linux
 
 DEPENDENCIES
   amalgalite!
-  archive-zip (~> 0.12)
-  rake (~> 13.0)
-  rake-compiler (~> 1.2)
-  rake-compiler-dock (~> 1.2)
-  rdoc (~> 6.5)
-  rspec (~> 3.12)
+  archive-zip (~> 0.13)
+  rake (~> 13.3)
+  rake-compiler (~> 1.3)
+  rake-compiler-dock (~> 1.10)
+  rdoc (~> 6.15)
+  rspec (~> 3.13)
   rspec_junit_formatter (~> 0.6)
-  simplecov (~> 0.21)
-
-CHECKSUMS
-  amalgalite (2.0.0)
-  archive-zip (0.12.0) sha256=068d0c24c205cb5c1f9e21c9691395d22fdbf2a811e2e1a466b87e05ebeb977b
-  csv (3.3.2) sha256=6ff0c135e65e485d1864dde6c1703b60d34cc9e19bed8452834a0b28a519bd4e
-  diff-lcs (1.5.1) sha256=273223dfb40685548436d32b4733aa67351769c7dea621da7d9dd4813e63ddfe
-  docile (1.4.1) sha256=96159be799bfa73cdb721b840e9802126e4e03dfc26863db73647204c727f21e
-  io-like (0.3.1) sha256=baae0724d18bea74ab0aa693f9477a983ac2fdf3bf40c1cc4c69568d302a8306
-  psych (5.2.0) sha256=6603fe756bcaf14daa25bc17625f36c90931dcf70452ac1e8da19760dc310573
-  rake (13.2.1) sha256=46cb38dae65d7d74b6020a4ac9d48afed8eb8149c040eccf0523bec91907059d
-  rake-compiler (1.2.8) sha256=f314105ecb3d23d4287014d30c189cab9da14150de0201e48b99c25a04749176
-  rake-compiler-dock (1.5.2) sha256=1fcb9aab42b7359897d42ed0167b5f7b539dcc421d0ef9326614fe758a9c41d9
-  rdoc (6.8.1) sha256=0128002d1bfc4892bdd780940841e4ca41275f63781fd832d11bc8ba4461462c
-  rspec (3.13.0) sha256=d490914ac1d5a5a64a0e1400c1d54ddd2a501324d703b8cfe83f458337bab993
-  rspec-core (3.13.2) sha256=94fbda6e4738e478f1c7532b7cc241272fcdc8b9eac03a97338b1122e4573300
-  rspec-expectations (3.13.3) sha256=0e6b5af59b900147698ea0ff80456c4f2e69cac4394fbd392fbd1ca561f66c58
-  rspec-mocks (3.13.2) sha256=2327335def0e1665325a9b617e3af9ae20272741d80ac550336309a7c59abdef
-  rspec-support (3.13.1) sha256=48877d4f15b772b7538f3693c22225f2eda490ba65a0515c4e7cf6f2f17de70f
-  rspec_junit_formatter (0.6.0) sha256=40dde674e6ae4e6cc0ff560da25497677e34fefd2338cc467a8972f602b62b15
-  simplecov (0.22.0) sha256=fe2622c7834ff23b98066bb0a854284b2729a569ac659f82621fc22ef36213a5
-  simplecov-html (0.13.1) sha256=5dab0b7ee612e60e9887ad57693832fdf4695b4c0c859eaea5f95c18791ef10b
-  simplecov_json_formatter (0.1.4) sha256=529418fbe8de1713ac2b2d612aa3daa56d316975d307244399fa4838c601b428
-  stringio (3.1.2) sha256=204f1828f85cdb39d57cac4abc6dc44b04505a223f131587f2e20ae3729ba131
+  simplecov (~> 0.22)
 
 BUNDLED WITH
-   2.7.2
+   2.6.9
