@@ -4,6 +4,7 @@
 * Add csv as dependency as that is now moved out of core standard library
 * Remove the boostrap requires and packer code
 * Fix bug with 2 digit ruby version [#55]
+* Update minimum ruby version to 3.1.0
 * Update to SQLite 3.51.0
   - enabling new compile time options
     * [`SQLITE_ENABLE_CARRAY`](https://sqlite.org/compile.html#enable_carray)
