@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib".freeze]
   s.authors = ["Jeremy Hinegardner".freeze]
   s.bindir = "exe".freeze
-  s.date = "2025-02-18"
+  s.date = "2025-11-15"
   s.description = "Amalgalite embeds the SQLite database engine as a ruby extension. There is no\nneed to install SQLite separately.".freeze
   s.email = "jeremy@copiousfreetime.org".freeze
   s.extensions = ["ext/amalgalite/c/extconf.rb".freeze]
@@ -21,19 +21,19 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/copiousfreetime/amalgalite".freeze
   s.licenses = ["BSD-3-Clause".freeze]
   s.rdoc_options = ["--main".freeze, "README.md".freeze, "--markup".freeze, "tomdoc".freeze]
-  s.required_ruby_version = Gem::Requirement.new(">= 3.0.0".freeze)
-  s.rubygems_version = "3.6.3".freeze
+  s.required_ruby_version = Gem::Requirement.new(">= 3.1.0".freeze)
+  s.rubygems_version = "3.6.9".freeze
   s.summary = "Amalgalite embeds the SQLite database engine as a ruby extension. There is no need to install SQLite separately.".freeze
 
   s.specification_version = 4
 
-  s.add_runtime_dependency(%q<csv>.freeze, ["~> 3.0".freeze])
-  s.add_development_dependency(%q<rspec>.freeze, ["~> 3.12".freeze])
+  s.add_runtime_dependency(%q<csv>.freeze, ["~> 3.3".freeze])
+  s.add_development_dependency(%q<rspec>.freeze, ["~> 3.13".freeze])
   s.add_development_dependency(%q<rspec_junit_formatter>.freeze, ["~> 0.6".freeze])
-  s.add_development_dependency(%q<rake>.freeze, ["~> 13.0".freeze])
-  s.add_development_dependency(%q<rake-compiler>.freeze, ["~> 1.2".freeze])
-  s.add_development_dependency(%q<rake-compiler-dock>.freeze, ["~> 1.2".freeze])
-  s.add_development_dependency(%q<rdoc>.freeze, ["~> 6.5".freeze])
-  s.add_development_dependency(%q<simplecov>.freeze, ["~> 0.21".freeze])
-  s.add_development_dependency(%q<archive-zip>.freeze, ["~> 0.12".freeze])
+  s.add_development_dependency(%q<rake>.freeze, ["~> 13.3".freeze])
+  s.add_development_dependency(%q<rake-compiler>.freeze, ["~> 1.3".freeze])
+  s.add_development_dependency(%q<rake-compiler-dock>.freeze, ["~> 1.10".freeze])
+  s.add_development_dependency(%q<rdoc>.freeze, ["~> 6.15".freeze])
+  s.add_development_dependency(%q<simplecov>.freeze, ["~> 0.22".freeze])
+  s.add_development_dependency(%q<archive-zip>.freeze, ["~> 0.13".freeze])
 end

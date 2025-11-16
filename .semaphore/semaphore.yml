@@ -86,26 +86,6 @@ blocks:
             - bundle exec rake native:x86-mingw32 gem
             - artifact push project --force pkg/*x86-mingw32*.gem
 
-  - name: Build x64-mingw32 gem
-    dependencies:
-      - Run tests in Linux environment
-    task:
-      agent:
-        machine:
-          type: e1-standard-2
-          os_image: ubuntu2004
-        containers:
-          - name: main
-            image: "ghcr.io/rake-compiler/rake-compiler-dock-image:1.5.2-mri-x64-mingw32"
-      jobs:
-        - name: build x64-mingw32
-          commands:
-            - checkout
-            - sudo apt-get update && sudo apt-get install -y libyaml-dev
-            - bundle install
-            - bundle exec rake native:x64-mingw32 gem
-            - artifact push project --force pkg/*x64-mingw32*.gem
-
   - name: Build x64-mingw-ucrt gem
     dependencies:
       - Run tests in Linux environment

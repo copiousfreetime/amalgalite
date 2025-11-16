@@ -24,6 +24,10 @@
 - activate SQLITE_ENABLE_ICU extension
 - activate SQLITE_ENABLE_LOCKING_STYLE
 - activate SQLITE_ENABLE_UNLOCK_NOTIFY
+- activate SQLITE_ENABLE_ORDERED_SET_AGGREGATES
+- activate [`SQLITE_ENABLE_SORTER_REFERENCES`](https://sqlite.org/compile.html#enable_sorter_references)
+- activate [`SQLITE_ENABLE_SQLLOG`](https://sqlite.org/compile.html#enable_sqllog)
+- activate `SQLITE_STRICT_SUBTYPE`
 - expose PRAGMA foreign_keys
 - virtual file system
 - full text search (FTS3)

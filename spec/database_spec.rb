@@ -269,7 +269,7 @@ describe Amalgalite::Database do
     it "does not allow outrageous arity" do
       class DBFunctionTest3 < ::Amalgalite::Function
         def initialize
-          super( 'ftest3', 128 )
+          super( 'ftest3', 1001)
         end
         def call( *args) ; end
       end
