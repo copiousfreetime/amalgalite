@@ -1,4 +1,7 @@
 # Amalgalite Changelog
+## Version 2.1.0 - 2026-10-25
+* Update minimum ruby version to 3.2
+
 ## Version 2.0.0 - 2025-11-15
 * Improve performance by removing dependency on arrayfields, and usage of ostruct
 * Add csv as dependency as that is now moved out of core standard library
