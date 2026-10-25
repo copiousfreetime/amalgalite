@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    amalgalite (2.0.0)
+    amalgalite (2.1.0)
       csv (~> 3.3)
 
 GEM
@@ -69,7 +69,7 @@ DEPENDENCIES
   simplecov (~> 0.22)
 
 CHECKSUMS
-  amalgalite (2.0.0)
+  amalgalite (2.1.0)
   archive-zip (0.13.1) sha256=e54fa4bd136a3fe7fe7a5a5c5704c2585e5d93efce57482510098793f32a496c
   bundler (4.0.23) sha256=407ba8a1d928f412847f819aa5f8b6aef7c59fb51feb517112af8a165487287b
   cgi (0.5.0) sha256=fe99f65bb2c146e294372ebb27602adbc3b4c008e9ea7038c6bd48c1ec9759da
