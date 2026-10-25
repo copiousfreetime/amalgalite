@@ -1,6 +1,7 @@
 # Amalgalite Changelog
 ## Version 2.1.0 - 2026-10-25
 * Update minimum ruby version to 3.2
+* Update to SQLite 3.54.1
 
 ## Version 2.0.0 - 2025-11-15
 * Improve performance by removing dependency on arrayfields, and usage of ostruct
