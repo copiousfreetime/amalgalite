@@ -30,8 +30,9 @@ blocks:
               values:
                 - 3.1.7
                 - 3.2.9
-                - 3.3.10
-                - 3.4.7
+                - 3.3.13
+                - 3.4.12
+                - 4.0.9
           commands:
             - source .semaphore/ensure-ruby-version.sh
             - source .semaphore/ensure-bundle.sh
@@ -45,7 +46,7 @@ blocks:
       agent:
         machine:
           type: a2-standard-4
-          os_image: macos-xcode16
+          os_image: macos-xcode27
       prologue:
         commands:
           - checkout
@@ -57,8 +58,9 @@ blocks:
               values:
                 - 3.1.7
                 - 3.2.9
-                - 3.3.10
-                - 3.4.7
+                - 3.3.13
+                - 3.4.12
+                - 4.0.9
           commands:
             - source .semaphore/ensure-ruby-version.sh
             - source .semaphore/ensure-bundle.sh
@@ -72,8 +74,8 @@ blocks:
     task:
       agent:
         machine:
-          type: e1-standard-2
-          os_image: ubuntu2004
+          type: f1-standard-2
+          os_image: ubuntu2204
         containers:
           - name: main
             image: "ghcr.io/rake-compiler/rake-compiler-dock-image:1.10.0-mri-x86-mingw32"
@@ -92,8 +94,8 @@ blocks:
     task:
       agent:
         machine:
-          type: e1-standard-2
-          os_image: ubuntu2004
+          type: f1-standard-2
+          os_image: ubuntu2204
         containers:
           - name: main
             image: "ghcr.io/rake-compiler/rake-compiler-dock-image:1.10.0-mri-x64-mingw-ucrt"
