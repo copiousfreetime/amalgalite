@@ -2,7 +2,7 @@ version: v1.0
 name: CI Pipeline
 agent:
   machine:
-    type: f1-standard-2
+    type: e2-standard-2
     os_image: ubuntu2204
 
 auto_cancel:
@@ -74,7 +74,7 @@ blocks:
     task:
       agent:
         machine:
-          type: f1-standard-2
+          type: e2-standard-2
           os_image: ubuntu2204
         containers:
           - name: main
@@ -94,7 +94,7 @@ blocks:
     task:
       agent:
         machine:
-          type: f1-standard-2
+          type: e2-standard-2
           os_image: ubuntu2204
         containers:
           - name: main
