@@ -28,7 +28,6 @@ blocks:
           matrix:
             - env_var: RUBY_VERSION
               values:
-                - 3.1.7
                 - 3.2.9
                 - 3.3.13
                 - 3.4.12
@@ -56,7 +55,6 @@ blocks:
           matrix:
             - env_var: RUBY_VERSION
               values:
-                - 3.1.7
                 - 3.2.9
                 - 3.3.13
                 - 3.4.12

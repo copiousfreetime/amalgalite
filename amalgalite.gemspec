@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/copiousfreetime/amalgalite".freeze
   s.licenses = ["BSD-3-Clause".freeze]
   s.rdoc_options = ["--main".freeze, "README.md".freeze, "--markup".freeze, "tomdoc".freeze]
-  s.required_ruby_version = Gem::Requirement.new(">= 3.1.0".freeze)
+  s.required_ruby_version = Gem::Requirement.new(">= 3.2.0".freeze)
   s.rubygems_version = "4.0.16".freeze
   s.summary = "Amalgalite embeds the SQLite database engine as a ruby extension. There is no need to install SQLite separately.".freeze
 
